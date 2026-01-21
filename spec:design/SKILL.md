@@ -1,11 +1,11 @@
 ---
-name: create-design
+name: spec:design
 description: Create Design Document - generates a technical design document based on the requirements document
 ---
 
 # Create Design Document
 
-Creates a design document based on the requirements document. This command reads the requirements from `.claude/specs/<spec-name>/requirements.md` and generates a technical design.
+Creates a design document based on the requirements document. This command reads the requirements from `.specs/<spec-name>/requirements.md` and generates a technical design.
 
 ## When to use
 
@@ -32,7 +32,7 @@ Before writing the design:
 
 ### Step 3: Create the Design Document
 
-Create the document at `.claude/specs/<spec-name>/design.md` with this structure:
+Create the document at `.specs/<spec-name>/design.md` with this structure:
 
 ```markdown
 # Design Document: [Feature Name]

@@ -1,5 +1,5 @@
 ---
-name: create-tasks
+name: spec:tasks
 description: Create Tasks Document - generates an implementation plan with tracked tasks based on requirements and design documents
 ---
 
