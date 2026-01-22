@@ -17,6 +17,7 @@ npx add-skill ikatsuba/skills --skill spec:tasks
 npx add-skill ikatsuba/skills --skill spec:do-all
 npx add-skill ikatsuba/skills --skill spec:do-next
 npx add-skill ikatsuba/skills --skill spec:do-task
+npx add-skill ikatsuba/skills --skill changelog
 ```
 
 ### Global installation
@@ -49,6 +50,12 @@ npx add-skill ikatsuba/skills --list
 | `spec:do-next` | Execute Next Task - runs the next pending task from the tasks document |
 | `spec:do-task` | Execute Specific Task - runs a task by its number (e.g., `spec:do-task 1.2`) |
 
+### Utility
+
+| Skill | Description |
+|-------|-------------|
+| `changelog` | Generate Changelog - analyzes git history and creates a human-readable changelog for non-technical teams |
+
 ## Workflow
 
 These skills support a specification-driven development workflow:
@@ -64,6 +71,16 @@ These skills support a specification-driven development workflow:
 4. **`/spec:do-all <name>`** - Execute all tasks automatically
 5. **`/spec:do-next <name>`** - Execute tasks one at a time with review
 6. **`/spec:do-task <name> <number>`** - Execute a specific task (e.g., `/spec:do-task user-auth 1.2`)
+
+### Changelog Generation
+
+Generate human-readable changelogs for stakeholders:
+
+```
+/changelog last week           # Changes from the past 7 days
+/changelog since 2024-01-01    # All changes since a date
+/changelog v1.0.0..v1.1.0      # Changes between releases
+```
 
 ## Documents Structure
 

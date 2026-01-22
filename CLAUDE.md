@@ -21,6 +21,7 @@ spec:tasks/SKILL.md         - Implementation task breakdown skill
 spec:do-all/SKILL.md        - Execute all tasks from specification
 spec:do-next/SKILL.md       - Execute next pending task
 spec:do-task/SKILL.md       - Execute specific task by number
+changelog/SKILL.md          - Human-readable changelog generation
 ```
 
 ## Workflow Architecture
@@ -57,6 +58,14 @@ After creating a tasks document, use these skills to execute the implementation:
    - Allows out-of-order or re-execution of tasks
 
 All specification documents are stored in `.specs/<spec-name>/` directories using kebab-case naming.
+
+### Utility Skills
+
+7. **`changelog [period]`** → Generates human-readable changelog
+   - Analyzes git history for a specified time period
+   - Creates changelog suitable for non-technical teams (product, marketing, support)
+   - Transforms technical commits into user-facing benefit descriptions
+   - Supports relative periods (`last week`), dates (`since 2024-01-01`), and tags (`v1.0.0..v1.1.0`)
 
 ## Key Patterns
 
