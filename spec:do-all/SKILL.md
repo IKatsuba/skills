@@ -64,7 +64,8 @@ For each pending task:
 3. **Wait for completion** - Let the subagent complete its work
 4. **Verify result** - Review the subagent's output for success
 5. **Mark as complete** - Update the checkbox to `[x]` in tasks.md
-6. **Proceed to next task**
+6. **Commit the changes** - Create a git commit for the completed task (see Committing Changes section)
+7. **Proceed to next task**
 
 Example Task tool call for a task:
 ```
@@ -103,6 +104,33 @@ After completing all tasks:
 1. Summarize what was implemented
 2. List any issues encountered
 3. Suggest next steps (e.g., testing, review)
+
+## Committing Changes
+
+After completing each task, create a git commit unless the user has specified otherwise:
+
+1. Stage the changed files related to the task
+2. Create a commit with a descriptive message referencing the task number
+3. Do NOT include Co-Authored-By in commit messages
+
+Commit message format (Conventional Commits):
+```
+<type>(<spec-name>): <description>
+```
+
+Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, etc.
+
+Examples:
+```
+feat(user-auth): add login form component
+fix(payment): resolve checkout validation error
+refactor(api): simplify request handling
+test(user-auth): add unit tests for login service
+```
+
+Skip committing if:
+- The user explicitly asked not to commit
+- The task only modified the tasks.md file (checkpoint tasks)
 
 ## Error Handling
 

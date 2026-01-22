@@ -60,6 +60,7 @@ All specification documents are located in `.specs/<spec-name>/` directory:
    - Follow project patterns and conventions
 5. **Verify implementation** - Ensure the change is correct
 6. **Mark as complete** - Update the checkbox to `[x]` in tasks.md
+7. **Commit the changes** - Create a git commit for the completed task (see Committing Changes section)
 
 ### Step 4: Handle Checkpoint Tasks
 
@@ -75,6 +76,33 @@ After completing the task:
 1. Summarize what was implemented
 2. Show the next pending task (if any)
 3. Ask if the user wants to continue with the next task
+
+## Committing Changes
+
+After completing the task, create a git commit unless the user has specified otherwise:
+
+1. Stage the changed files related to the task
+2. Create a commit with a descriptive message referencing the task number
+3. Do NOT include Co-Authored-By in commit messages
+
+Commit message format (Conventional Commits):
+```
+<type>(<spec-name>): <description>
+```
+
+Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, etc.
+
+Examples:
+```
+feat(user-auth): add login form component
+fix(payment): resolve checkout validation error
+refactor(api): simplify request handling
+test(user-auth): add unit tests for login service
+```
+
+Skip committing if:
+- The user explicitly asked not to commit
+- The task only modified the tasks.md file (checkpoint tasks)
 
 ## Error Handling
 
