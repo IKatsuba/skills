@@ -1,6 +1,6 @@
 # Skills
 
-A collection of skills for Claude Code to streamline specification-driven development workflow.
+A collection of skills for Claude Code, Codex, Cursor and OpenCode to streamline specification-driven development workflow.
 
 ## Installation
 
