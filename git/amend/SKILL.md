@@ -90,6 +90,8 @@ git commit --amend --no-edit
 git commit --amend -m "<new message>"
 ```
 
+**Important:** Do NOT add `Co-Authored-By`, `Signed-off-by`, or any other trailers to the commit message.
+
 ### Step 6: Safety Checks
 
 **Before amending, verify:**

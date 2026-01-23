@@ -102,6 +102,8 @@ fix(auth): Fixed the bug       # Past tense, capitalized
 feat(authentication-module): add new feature  # Scope too long, description vague
 ```
 
+**Important:** Do NOT add `Co-Authored-By`, `Signed-off-by`, or any other trailers to the commit message.
+
 ### Step 6: Present and Confirm
 
 Show the user:
