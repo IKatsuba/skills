@@ -1,41 +1,41 @@
 # 📋 Changelog
 
-**Period:** January 21, 2026 → January 22, 2026
+**Period:** 2026-01-16 → 2026-01-23
 
 ---
 
 ## ✨ Highlights
 
-> Introducing a complete toolkit for specification-driven development! Create structured requirements, technical design documents, and automatically execute tasks from your implementation plan. Plus — generate human-readable changelogs for non-technical teams.
+> This week was huge! We completely revamped how skills are organized — making them easier to find and use. Plus, we added powerful new tools: auto-commit capabilities, a changelog generator, and a meta-skill that helps you create new skills. Your workflow just got a serious upgrade!
 
 ---
 
 ## 🚀 New Features
 
-- **Specification-Driven Development** — Full toolkit for creating specifications:
-  - `spec:requirements` — generate structured requirements documents
-  - `spec:design` — create technical design documents
-  - `spec:tasks` — build implementation plans with tracked tasks
+- **Changelog Generator** — You can now automatically create beautiful, human-readable changelogs from your git history. Perfect for sharing progress with non-technical teams!
 
-- **Task Execution Skills** — Automatically execute tasks from specifications:
-  - `spec:do-all` — run all tasks sequentially
-  - `spec:do-next` — run the next pending task
-  - `spec:do-task` — run a specific task by number
+- **Auto-Commit on Task Completion** — Tasks now automatically commit your work when completed, following Conventional Commits format. One less thing to remember!
 
-- **Changelog Generation** — Create human-readable changelogs for product, marketing, and support teams
+- **Task Execution Skills** — New `spec:do-all`, `spec:do-next`, and `spec:do-task` commands let you execute implementation tasks directly from your specifications. Work through your task list without leaving the flow.
 
-- **Auto-Commit** — Automatic commit after task completion using conventional commits format
+- **Git Workflow Skills** — New `git:commit` and `git:amend` skills for smart conventional commits with auto-detected commit types.
+
+- **Skill Creation Helper** — The new `dev:skill` meta-skill helps you create properly structured skill definitions. Building skills is now easier than ever!
+
+- **Specification Skills** — Full suite of spec-driven development tools: requirements gathering, technical design, and task breakdown — all working together seamlessly.
 
 ## 💪 Improvements
 
-- **Consistent Skill Names** — All skills now use the unified `spec:*` format for better organization
+- **Better Organization** — Skills are now organized into intuitive category folders (`spec/`, `git/`, `utils/`, `dev/`) instead of flat naming. Finding the right skill is much easier!
 
-## 📚 Documentation
+- **Expanded Tool Support** — Now works with Codex, Cursor, and OpenCode in addition to existing integrations.
 
-- Added support for Codex, Cursor, and OpenCode tools
+- **Consistent Naming** — All skills now follow the `category:name` format for a cleaner, more predictable experience.
+
+- **Vibrant Documentation** — README and docs got a fresh makeover with better examples and clearer explanations.
 
 ---
 
-📊 **Stats:** 6 changes by 1 contributor
+📊 **Stats:** 8 changes by 1 contributor
 
 🙏 **Contributors:** @IKatsuba

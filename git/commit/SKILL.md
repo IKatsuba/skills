@@ -122,8 +122,8 @@ If user wants to modify, let them edit and retry.
 
 If the change breaks backward compatibility:
 
-1. Add `!` after type/scope: `feat(api)!: change response format`
-2. Or add `BREAKING CHANGE:` in body for details:
+1. Add exclamation mark after type/scope, for example: **feat(api)!: change response format**
+2. Or add BREAKING CHANGE: in commit body for details:
 
 ```
 feat(api)!: change response format
