@@ -25,7 +25,7 @@ npx add-skill ikatsuba/skills --skill spec:tasks
 npx add-skill ikatsuba/skills --skill spec:do-all
 npx add-skill ikatsuba/skills --skill spec:do-next
 npx add-skill ikatsuba/skills --skill spec:do-task
-npx add-skill ikatsuba/skills --skill changelog
+npx add-skill ikatsuba/skills --skill utils:changelog
 ```
 
 ### Global installation
@@ -66,7 +66,7 @@ npx add-skill ikatsuba/skills --list
 
 | Skill | Description |
 |-------|-------------|
-| `changelog` | 📰 Generate beautiful, human-readable changelogs for product, marketing, and support teams |
+| `utils:changelog` | 📰 Generate beautiful, human-readable changelogs for product, marketing, and support teams |
 
 ---
 
@@ -95,9 +95,9 @@ Let the magic happen:
 Keep your stakeholders in the loop:
 
 ```bash
-/changelog last week           # Changes from the past 7 days
-/changelog since 2024-01-01    # All changes since a date
-/changelog v1.0.0..v1.1.0      # Changes between releases
+/utils:changelog last week           # Changes from the past 7 days
+/utils:changelog since 2024-01-01    # All changes since a date
+/utils:changelog v1.0.0..v1.1.0      # Changes between releases
 ```
 
 ---

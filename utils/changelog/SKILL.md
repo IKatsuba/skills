@@ -1,5 +1,5 @@
 ---
-name: changelog
+name: utils:changelog
 description: Generate Changelog - analyzes git history and creates a human-readable changelog for non-technical teams
 ---
 
