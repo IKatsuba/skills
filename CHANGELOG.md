@@ -6,11 +6,13 @@
 
 ## ✨ Highlights
 
-> This week was huge! We completely revamped how skills are organized — making them easier to find and use. Plus, we added powerful new tools: auto-commit capabilities, a changelog generator, and a meta-skill that helps you create new skills. Your workflow just got a serious upgrade!
+> This week was huge! We completely revamped how skills are organized — making them easier to find and use. Plus, we added powerful new tools: local code review, auto-commit capabilities, a changelog generator, and a meta-skill that helps you create new skills. Your workflow just got a serious upgrade!
 
 ---
 
 ## 🚀 New Features
+
+- **Local Code Review** — New `review:local` skill performs thorough code review before you commit! Get feedback on bugs, security issues, and code quality with structured severity levels.
 
 - **Changelog Generator** — You can now automatically create beautiful, human-readable changelogs from your git history. Perfect for sharing progress with non-technical teams!
 
@@ -36,6 +38,6 @@
 
 ---
 
-📊 **Stats:** 8 changes by 1 contributor
+📊 **Stats:** 11 changes by 1 contributor
 
 🙏 **Contributors:** @IKatsuba

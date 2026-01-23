@@ -27,6 +27,8 @@ git/                        - Git workflow skills
   amend/SKILL.md            - Amend last commit
 utils/                      - Utility skills
   changelog/SKILL.md        - Human-readable changelog generation
+review/                     - Code review skills
+  local/SKILL.md            - Local code review before commit
 dev/                        - Development and meta skills
   skill/SKILL.md            - Skill creation helper (meta-skill)
 ```
@@ -88,9 +90,16 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
    - Updates commit message while keeping format
    - Warns if commit was already pushed
 
+### Review Skills
+
+10. **`review:local [scope]`** → Performs local code review
+    - Analyzes changes for bugs, security issues, and code quality
+    - Auto-detects scope (staged, unstaged, last commit)
+    - Generates structured summary report with severity levels
+
 ### Development Skills
 
-10. **`dev:skill [category/name]`** → Creates a new skill definition
+11. **`dev:skill [category/name]`** → Creates a new skill definition
    - Scaffolds a SKILL.md with proper structure and conventions
    - Ensures consistency across all skills in the repository
    - Updates CLAUDE.md with the new skill entry

@@ -26,6 +26,7 @@ npx add-skill ikatsuba/skills --skill spec:do-all
 npx add-skill ikatsuba/skills --skill spec:do-next
 npx add-skill ikatsuba/skills --skill spec:do-task
 npx add-skill ikatsuba/skills --skill utils:changelog
+npx add-skill ikatsuba/skills --skill review:local
 ```
 
 ### Global installation
@@ -68,6 +69,12 @@ npx add-skill ikatsuba/skills --list
 |-------|-------------|
 | `utils:changelog` | 📰 Generate beautiful, human-readable changelogs for product, marketing, and support teams |
 
+### 🔍 Code Review
+
+| Skill | Description |
+|-------|-------------|
+| `review:local` | 🔎 Perform local code review with structured feedback before committing |
+
 ---
 
 ## 🎯 Workflow
@@ -89,6 +96,17 @@ Let the magic happen:
 4. **`/spec:do-all <name>`** — Execute all tasks automatically
 5. **`/spec:do-next <name>`** — Execute tasks one at a time with review
 6. **`/spec:do-task <name> <number>`** — Execute a specific task
+
+### Code Review 🔍
+
+Review your code before committing:
+
+```bash
+/review:local                # Auto-detect changes to review
+/review:local staged         # Review staged changes only
+/review:local branch         # Review all branch changes vs main
+/review:local src/auth/      # Review specific directory
+```
 
 ### Changelog Generation 📰
 
