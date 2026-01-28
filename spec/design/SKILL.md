@@ -24,11 +24,37 @@ Use this skill when the user needs to:
 
 ### Step 2: Analyze the Codebase
 
-Before writing the design:
-1. Explore the existing architecture and patterns in the codebase
-2. Identify components that will be created or modified
-3. Understand existing services, interfaces, and data models
-4. Note integration points with other parts of the system
+Before writing the design, perform a deep analysis using **parallel sub-agents and all available information sources**. Launch the following investigations concurrently:
+
+#### 2a. Codebase Exploration (launch in parallel)
+
+Use the `Task` tool with `subagent_type=Explore` to run **multiple exploration agents in parallel**. Each agent should investigate a different aspect:
+
+1. **Architecture agent** — explore overall project structure, entry points, module boundaries, and dependency graph
+2. **Patterns agent** — identify coding conventions, design patterns, naming styles, error handling approaches, and testing patterns used in the codebase
+3. **Integration points agent** — find APIs, services, database models, external dependencies, and configuration files relevant to the requirements
+4. **Affected areas agent** — based on the requirements document, identify specific files and components that will need to be created or modified
+
+All four agents MUST be launched in a **single message** (parallel tool calls) to maximize efficiency.
+
+#### 2b. Technology Research (launch in parallel with 2a)
+
+Use all available external information sources to gather context about the technologies and libraries used in the project:
+
+1. **Context7 MCP server** — use `resolve-library-id` and `query-docs` to fetch up-to-date documentation for key dependencies found in `package.json`, `go.mod`, `Cargo.toml`, or equivalent manifest files. Query best practices, API references, and recommended patterns relevant to the design
+2. **Web search** — use `WebSearch` to find current best practices, architectural recommendations, and known pitfalls for the technologies and patterns relevant to the feature being designed
+3. **Web fetch** — if the requirements reference specific APIs, services, or specs (e.g., OAuth, OpenAPI schemas, RFC documents), use `WebFetch` to retrieve and analyze them
+
+Launch these research tasks **in parallel** with the codebase exploration agents above.
+
+#### 2c. Synthesize Findings
+
+After all parallel agents and research complete, synthesize the results into a unified understanding:
+- Current architecture and where the new feature fits
+- Existing patterns to follow (or consciously deviate from with justification)
+- Technology constraints and best practices from documentation
+- Files and components to create or modify
+- Integration points and potential risks
 
 ### Step 3: Create the Design Document
 
