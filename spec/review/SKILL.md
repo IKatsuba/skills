@@ -1,0 +1,191 @@
+---
+name: spec:review
+description: Review Specification - validates requirements, design, and tasks documents for quality and consistency
+---
+
+# Review Specification
+
+Reviews one or more specification documents (requirements, design, tasks) for completeness, quality, internal consistency, and alignment with the actual codebase. Can review a single document or all three at once.
+
+## When to use
+
+Use this skill when the user needs to:
+- Validate a specification before starting implementation
+- Check consistency between requirements, design, and tasks
+- Verify that spec documents accurately reflect the codebase
+- Get structured feedback on document quality
+
+## Instructions
+
+### Step 1: Determine Review Scope
+
+Parse `<args>` to determine:
+
+1. **Spec name** — which specification to review
+2. **Document scope** — which documents to review:
+   - `requirements` — review only requirements.md
+   - `design` — review only design.md
+   - `tasks` — review only tasks.md
+   - `all` (default if omitted) — review all three documents
+
+If no spec name provided, list available specs in `.specs/` and ask the user to choose.
+
+Locate documents in `.specs/<spec-name>/`:
+- `requirements.md`
+- `design.md`
+- `tasks.md`
+
+If a requested document does not exist, report it and review only the available ones.
+
+### Step 2: Read Documents
+
+Read all documents in scope. If reviewing `all`, also note which documents are missing — their absence is itself a finding.
+
+### Step 3: Review Each Document
+
+For each document in scope, check the criteria below. Use **parallel sub-agents** (`subagent_type: "Explore"`) to investigate the codebase where needed.
+
+#### 3a. Requirements Review
+
+| Criteria | What to check |
+|----------|---------------|
+| **Completeness** | Are there enough requirements to describe the feature? Are user stories present? |
+| **Testability** | Does every acceptance criterion use SHALL / WHEN-THEN / SHALL NOT format? Can each one be objectively verified? |
+| **Atomicity** | Is each requirement a single, independent statement? No compound requirements? |
+| **Clarity** | No ambiguous language ("should", "might", "ideally")? No undefined terms without a glossary entry? |
+| **Codebase alignment** | Do referenced components, services, or APIs actually exist? Are names consistent with the codebase? |
+
+#### 3b. Design Review
+
+| Criteria | What to check |
+|----------|---------------|
+| **Requirements coverage** | Does the design address every requirement? Are any requirements missing from the design? |
+| **Architecture** | Are component diagrams present? Do they accurately reflect the project structure? |
+| **Interfaces** | Are all new interfaces and types defined? Are they compatible with existing code? |
+| **Data flow** | Is the data flow described and diagrammed? Are edge cases covered? |
+| **Error handling** | Are error types documented? Do they match the project's error handling patterns? |
+| **Testing strategy** | Is a testing approach defined? Are test examples relevant? |
+| **Codebase alignment** | Do file paths, module names, and patterns match reality? Are existing APIs used correctly? |
+
+#### 3c. Tasks Review
+
+| Criteria | What to check |
+|----------|---------------|
+| **Requirements traceability** | Does every task reference requirements with `_Requirements: X.X_`? Are all requirements covered by at least one task? |
+| **Design alignment** | Do tasks follow the architecture from the design? Are file paths consistent with the design? |
+| **Completeness** | Are there enough tasks to implement the full feature? Are testing and verification tasks included? |
+| **Ordering** | Are dependencies respected? Do prerequisite tasks come before dependent ones? |
+| **Actionability** | Is each subtask specific enough to implement? Does it include file paths and key implementation points? |
+| **Checkpoints** | Are verification checkpoints present after major milestones? |
+| **Codebase alignment** | Do mentioned files exist (for modifications) or do parent directories exist (for new files)? |
+
+### Step 4: Cross-Document Consistency (when reviewing multiple documents)
+
+If two or more documents are available, check cross-document consistency:
+
+1. **Requirements → Design** — every requirement has a corresponding design component
+2. **Design → Tasks** — every design component has implementation tasks
+3. **Requirements → Tasks** — every requirement is traceable through to tasks
+4. **Terminology** — names, terms, and file paths are consistent across all documents
+5. **No orphans** — no tasks reference non-existent requirements; no design components lack a requirements basis
+
+### Step 5: Generate Review Report
+
+Present a structured report:
+
+```markdown
+# Specification Review: [spec-name]
+
+**Documents reviewed:** [list]
+**Overall assessment:** [Good / Needs Improvement / Major Issues]
+
+---
+
+## 🔴 Critical Issues
+
+> Problems that must be fixed before proceeding
+
+### [Issue Title]
+**Document:** `requirements.md` | `design.md` | `tasks.md`
+**Section:** [section reference]
+
+[Description of the issue and why it matters]
+
+**Recommendation:** [How to fix it]
+
+---
+
+## 🟠 Warnings
+
+> Issues that should be addressed
+
+- **[document:section]** — [Brief description]
+- **[document:section]** — [Brief description]
+
+---
+
+## 🟡 Suggestions
+
+> Optional improvements
+
+- [Suggestion 1]
+- [Suggestion 2]
+
+---
+
+## ✅ What Looks Good
+
+- [Positive observation 1]
+- [Positive observation 2]
+
+---
+
+## Coverage Matrix
+
+| Requirement | Design | Tasks | Status |
+|-------------|--------|-------|--------|
+| 1.1 [name]  | Yes/No | Yes/No | ✅ / ⚠️ / ❌ |
+| 1.2 [name]  | Yes/No | Yes/No | ✅ / ⚠️ / ❌ |
+
+---
+
+## Summary
+
+- **Critical:** [N] issues
+- **Warnings:** [N] issues
+- **Suggestions:** [N] items
+```
+
+Omit the Coverage Matrix section when reviewing a single document that is not tasks.
+
+### Step 6: Offer Next Steps
+
+After presenting the report, offer actions:
+
+1. **Fix issues** — help update the documents to resolve findings
+2. **Re-review** — run the review again after changes
+3. **Proceed anyway** — continue to the next stage despite findings
+4. **Explain** — provide more detail on any finding
+
+## Severity Levels
+
+| Level | Criteria | Action |
+|-------|----------|--------|
+| 🔴 Critical | Missing requirements, design gaps, broken traceability, codebase contradictions | Must fix before proceeding |
+| 🟠 Warning | Ambiguous wording, weak test coverage, minor inconsistencies | Should fix |
+| 🟡 Suggestion | Style improvements, additional edge cases, clearer wording | Nice to have |
+
+## Arguments
+
+- `<args>` - Spec name and optionally which document(s) to review
+  - `<spec-name>` — review all documents (default)
+  - `<spec-name> requirements` — review only requirements
+  - `<spec-name> design` — review only design
+  - `<spec-name> tasks` — review only tasks
+  - `<spec-name> all` — review all (explicit)
+
+Examples:
+- `spec:review user-auth` — review all documents for user-auth
+- `spec:review user-auth requirements` — review only requirements
+- `spec:review user-auth design` — review only the design document
+- `spec:review payment-flow tasks` — review only the tasks document

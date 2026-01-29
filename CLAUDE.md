@@ -22,6 +22,7 @@ spec/                       - Specification-driven development skills
   do-all/SKILL.md           - Execute all tasks from specification
   do-next/SKILL.md          - Execute next pending task
   do-task/SKILL.md          - Execute specific task by number
+  review/SKILL.md           - Review spec documents for quality and consistency
 git/                        - Git workflow skills
   commit/SKILL.md           - Smart commit with Conventional Commits
   amend/SKILL.md            - Amend last commit
@@ -51,20 +52,30 @@ The skills implement a three-stage specification pipeline where each stage build
    - Reads both requirements and design documents
    - Generates hierarchical task breakdown with file paths and requirement references
 
+### Specification Review
+
+After creating any spec document (or all three), use this skill to validate quality:
+
+7. **`spec:review [spec-name] [document]`** → Reviews spec documents
+   - Validates completeness, testability, and clarity of each document
+   - Cross-checks consistency between requirements, design, and tasks
+   - Verifies alignment with the actual codebase
+   - Produces a structured report with severity levels and a coverage matrix
+
 ### Task Execution Skills
 
 After creating a tasks document, use these skills to execute the implementation:
 
-4. **`spec:do-all`** → Executes all pending tasks
+8. **`spec:do-all`** → Executes all pending tasks
    - Runs tasks sequentially from the tasks document
    - Marks each task complete as it finishes
    - Handles checkpoints and verification
 
-5. **`spec:do-next`** → Executes the next pending task
+9. **`spec:do-next`** → Executes the next pending task
    - Finds and runs the first incomplete task
    - Ideal for incremental implementation with review
 
-6. **`spec:do-task <number>`** → Executes a specific task
+10. **`spec:do-task <number>`** → Executes a specific task
    - Runs a task by its number (e.g., "1.2", "3")
    - Allows out-of-order or re-execution of tasks
 
@@ -72,7 +83,7 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Utility Skills
 
-7. **`utils:changelog [period]`** → Generates human-readable changelog
+11. **`utils:changelog [period]`** → Generates human-readable changelog
    - Analyzes git history for a specified time period
    - Creates changelog suitable for non-technical teams (product, marketing, support)
    - Transforms technical commits into user-facing benefit descriptions
@@ -80,26 +91,26 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Git Skills
 
-8. **`git:commit`** → Creates a conventional commit
+12. **`git:commit`** → Creates a conventional commit
    - Analyzes staged changes to auto-detect commit type
    - Asks user to choose type when ambiguous
    - Follows Conventional Commits specification
 
-9. **`git:amend`** → Modifies the last commit
+13. **`git:amend`** → Modifies the last commit
    - Adds staged changes to the previous commit
    - Updates commit message while keeping format
    - Warns if commit was already pushed
 
 ### Review Skills
 
-10. **`review:local [scope]`** → Performs local code review
+14. **`review:local [scope]`** → Performs local code review
     - Analyzes changes for bugs, security issues, and code quality
     - Auto-detects scope (staged, unstaged, last commit)
     - Generates structured summary report with severity levels
 
 ### Development Skills
 
-11. **`dev:skill [category/name]`** → Creates a new skill definition
+15. **`dev:skill [category/name]`** → Creates a new skill definition
    - Scaffolds a SKILL.md with proper structure and conventions
    - Ensures consistency across all skills in the repository
    - Updates CLAUDE.md with the new skill entry
