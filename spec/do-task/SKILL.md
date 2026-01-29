@@ -57,27 +57,30 @@ Format examples:
 
 ### Step 4: Execute the Task
 
-1. **Mark as in-progress** - Update the checkbox to `[-]` in tasks.md
+**IMPORTANT:** Each **subtask** is executed as a separate subagent and committed independently. Do NOT group subtasks into a single agent or commit.
+
+**If the task number points to a subtask** (e.g., "1.2"):
+
+1. **Mark subtask as in-progress** - Update the subtask checkbox to `[-]` in tasks.md
 2. **Show task info** - Display to the user:
-   - Task number and description
+   - Subtask number and description
    - Files to create/modify
    - Requirements being addressed
    - Current status (pending/in-progress/completed)
-3. **Read context** - Load relevant files mentioned in the task
-4. **Implement the task** - Follow the task description:
-   - Create new files as specified
-   - Modify existing files as described
-   - Follow project patterns and conventions
-5. **Verify implementation** - Ensure the change is correct
-6. **Mark as complete** - Update the checkbox to `[x]` in tasks.md
-7. **Commit the changes** - Create a git commit for the completed task (see Committing Changes section)
+3. **Launch subagent** - Use the Task tool with `subagent_type: "general-purpose"` to execute the subtask:
+   - Provide the full subtask description, file paths, and requirements
+   - Include relevant context from the spec (requirements.md, design.md)
+4. **Verify result** - Review the subagent's output for success
+5. **Mark subtask as complete** - Update the subtask checkbox to `[x]` in tasks.md
+6. **Commit the changes** - Use the `git:commit` skill to commit (see Committing Changes section)
+7. If all subtasks of the parent major task are now complete, mark the major task as `[x]` in tasks.md and commit this change using the `git:commit` skill
 
-### Step 5: Handle Subtasks
+### Step 5: Handle Major Tasks with Subtasks
 
-If executing a major task with subtasks:
-1. Execute each subtask in order
-2. Mark each subtask as complete when done
-3. Mark the major task as complete when all subtasks finish
+If the task number points to a **major task** (e.g., "2") that has subtasks:
+1. Iterate over each subtask in order
+2. For each subtask, follow the subtask execution flow from Step 4 (separate subagent + separate commit per subtask)
+3. Mark the major task as `[x]` in tasks.md and commit this change using the `git:commit` skill
 
 ### Step 6: Report Completion
 
@@ -88,30 +91,14 @@ After completing the task:
 
 ## Committing Changes
 
-After completing the task, create a git commit unless the user has specified otherwise:
+After completing each **subtask**, commit using the `git:commit` skill:
 
-1. Stage the changed files related to the task
-2. Create a commit with a descriptive message referencing the task number
-3. Do NOT include Co-Authored-By in commit messages
-
-Commit message format (Conventional Commits):
-```
-<type>(<spec-name>): <description>
-```
-
-Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, etc.
-
-Examples:
-```
-feat(user-auth): add login form component
-fix(payment): resolve checkout validation error
-refactor(api): simplify request handling
-test(user-auth): add unit tests for login service
-```
+1. Stage the changed files related to the subtask
+2. Invoke the `git:commit` skill — it will analyze staged changes, determine the commit type, and create a properly formatted Conventional Commits message
 
 Skip committing if:
 - The user explicitly asked not to commit
-- The task only modified the tasks.md file (checkpoint tasks)
+- The subtask only modified the tasks.md file (checkpoint tasks)
 
 ## Warning on Dependencies
 

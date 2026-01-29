@@ -32,7 +32,18 @@ Before creating tasks:
 3. Determine the optimal order of implementation
 4. Note checkpoints for verification
 
-### Step 3: Create the Tasks Document
+### Step 3: Verify Against the Codebase
+
+Do not blindly trust the documents — cross-check key assumptions against the real codebase:
+
+1. **Check existing code** — verify that files, modules, and APIs mentioned in the design actually exist and match the described structure
+2. **Validate assumptions** — if the design references specific patterns, frameworks, or utilities, confirm they are present and used as described
+3. **Detect drift** — if the codebase has changed since the documents were written, note discrepancies and adjust tasks accordingly
+4. **Identify missing context** — look for related code, tests, or configs that the documents may have overlooked but that the tasks should account for
+
+If you find significant discrepancies between the documents and the codebase, mention them in the **Notes** section of the tasks document.
+
+### Step 4: Create the Tasks Document
 
 Create the document at `.specs/<spec-name>/tasks.md` with this structure:
 
@@ -101,7 +112,7 @@ Create the document at `.specs/<spec-name>/tasks.md` with this structure:
 - `[-]` - Pending tasks
 - `[x]` - Completed
 
-### Step 4: Confirm with User
+### Step 5: Confirm with User
 
 After creating the document, show the user:
 1. The location of the created file
