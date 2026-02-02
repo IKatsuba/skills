@@ -1,5 +1,11 @@
 # 📋 Changelog
 
+## 2026-02-02
+
+- **UX Flow Validation** — Skills `spec:review`, `spec:requirements` and `spec:design` now check that user flows feel natural. Related entities (e.g., category and subcategory) must support inline creation — no more forcing users to navigate to a separate page just to create a dependency.
+
+---
+
 **Period:** 2026-01-16 → 2026-01-23
 
 ---
