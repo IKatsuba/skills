@@ -70,6 +70,7 @@ Create the document at `.specs/<spec-name>/requirements.md` with this structure:
 4. **Be specific and testable** - Each criterion should be verifiable
 5. **Reference existing code patterns** - Align with project conventions
 6. **Keep requirements atomic** - One requirement per item
+7. **Prioritize user experience** - Every user flow must feel natural. When related entities exist (e.g., category and subcategory), requirements MUST include inline/contextual creation — the user should never be forced to navigate away from the current page to create a dependent entity and then return. For example, if a form needs a parent entity that doesn't exist yet, there must be a way to create it on the spot (inline dialog, quick-add in dropdown, etc.).
 
 ### Step 4: Confirm with User
 

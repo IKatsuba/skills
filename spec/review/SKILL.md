@@ -54,6 +54,7 @@ For each document in scope, check the criteria below. Use **parallel sub-agents*
 | **Atomicity** | Is each requirement a single, independent statement? No compound requirements? |
 | **Clarity** | No ambiguous language ("should", "might", "ideally")? No undefined terms without a glossary entry? |
 | **Codebase alignment** | Do referenced components, services, or APIs actually exist? Are names consistent with the codebase? |
+| **User experience** | Do the described user flows feel natural? Are there cases where the user is forced to navigate between unrelated pages to complete a single logical action? For related entities (e.g., category + subcategory), can the user create or select dependent entities inline without leaving the current context? Flag any flow that requires unnecessary navigation hops. |
 
 #### 3b. Design Review
 
@@ -66,6 +67,7 @@ For each document in scope, check the criteria below. Use **parallel sub-agents*
 | **Error handling** | Are error types documented? Do they match the project's error handling patterns? |
 | **Testing strategy** | Is a testing approach defined? Are test examples relevant? |
 | **Codebase alignment** | Do file paths, module names, and patterns match reality? Are existing APIs used correctly? |
+| **User experience** | Does the designed data flow support inline/contextual creation of related entities? Are there unnecessary round-trips or page navigations that could be eliminated? Do UI components allow quick creation of dependent objects (e.g., creating a parent entity from a child entity form via inline dialog or dropdown action)? |
 
 #### 3c. Tasks Review
 
@@ -88,6 +90,7 @@ If two or more documents are available, check cross-document consistency:
 3. **Requirements → Tasks** — every requirement is traceable through to tasks
 4. **Terminology** — names, terms, and file paths are consistent across all documents
 5. **No orphans** — no tasks reference non-existent requirements; no design components lack a requirements basis
+6. **UX flow coherence** — user flows described in requirements are preserved through design and tasks without introducing unnecessary navigation steps or degrading the user experience. If design or tasks split a single user action into multiple disconnected steps (e.g., requiring the user to visit a separate page to create a related entity before returning), flag it as a critical issue.
 
 ### Step 5: Generate Review Report
 

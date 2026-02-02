@@ -183,6 +183,7 @@ describe('ComponentName', () => {
 4. **Map to requirements** - Ensure design covers all requirements
 5. **Consider error cases** - Document error handling strategy
 6. **Include test examples** - Show how components will be tested
+7. **Design for natural user flows** - Every interaction flow must minimize navigation hops. When related entities are managed on different pages (e.g., categories and subcategories), the design MUST include inline creation mechanisms (modal dialogs, quick-add controls in dropdowns/selects) so the user can create a dependent entity without leaving the current context. Never design flows where the user has to go to page A, create entity X, go back to page B, and then link X — instead, provide in-context creation of X directly on page B.
 
 ### Step 4: Confirm with User
 
