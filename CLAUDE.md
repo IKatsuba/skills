@@ -30,6 +30,7 @@ utils/                      - Utility skills
   changelog/SKILL.md        - Human-readable changelog generation
 review/                     - Code review skills
   local/SKILL.md            - Local code review before commit
+  ux/SKILL.md               - UX review for user experience quality
 dev/                        - Development and meta skills
   skill/SKILL.md            - Skill creation helper (meta-skill)
 ```
@@ -108,9 +109,15 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
     - Auto-detects scope (staged, unstaged, last commit)
     - Generates structured summary report with severity levels
 
+15. **`review:ux [spec-name|path|branch]`** → Performs UX review
+    - Analyzes user flows for efficiency and unnecessary navigation hops
+    - Checks UI consistency with existing app patterns
+    - Validates edge case handling (empty states, errors, loading)
+    - Generates structured report with UX-specific severity levels
+
 ### Development Skills
 
-15. **`dev:skill [category/name]`** → Creates a new skill definition
+16. **`dev:skill [category/name]`** → Creates a new skill definition
    - Scaffolds a SKILL.md with proper structure and conventions
    - Ensures consistency across all skills in the repository
    - Updates CLAUDE.md with the new skill entry

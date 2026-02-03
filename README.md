@@ -27,6 +27,7 @@ npx add-skill ikatsuba/skills --skill spec:do-next
 npx add-skill ikatsuba/skills --skill spec:do-task
 npx add-skill ikatsuba/skills --skill utils:changelog
 npx add-skill ikatsuba/skills --skill review:local
+npx add-skill ikatsuba/skills --skill review:ux
 ```
 
 ### Global installation
@@ -74,6 +75,7 @@ npx add-skill ikatsuba/skills --list
 | Skill | Description |
 |-------|-------------|
 | `review:local` | 🔎 Perform local code review with structured feedback before committing |
+| `review:ux` | 🧑‍💻 Detailed UX review — user flows, edge cases, and UI consistency |
 
 ---
 
@@ -106,6 +108,16 @@ Review your code before committing:
 /review:local staged         # Review staged changes only
 /review:local branch         # Review all branch changes vs main
 /review:local src/auth/      # Review specific directory
+```
+
+### UX Review 🧑‍💻
+
+Review the user experience of a feature:
+
+```bash
+/review:ux user-auth         # UX review based on spec documents
+/review:ux src/pages/settings/  # UX review of specific files
+/review:ux branch            # UX review of all UI changes on branch
 ```
 
 ### Changelog Generation 📰
