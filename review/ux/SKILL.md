@@ -1,20 +1,37 @@
 ---
 name: review:ux
-description: UX Review - analyzes feature implementation for user experience quality, flow efficiency, and UI consistency
+description: UX Review - analyzes feature for efficiency-first UX patterns, keyboard navigation, and pro-tool experience
 ---
 
 # UX Review
 
-Performs a detailed user experience review of a feature being developed. Analyzes user flows, UI consistency, and edge case handling by examining spec documents and the actual codebase implementation. Focuses on what the user sees and does, not on code internals.
+Performs a UX review optimized for **productivity tools and admin interfaces**. Based on the principle: **"Hands stay on keyboard, mouse is optional."**
+
+This review evaluates features against efficiency-first UX patterns used in best-in-class productivity tools: command palettes, keyboard-first navigation, inline editing, optimistic UI, and minimal context switching.
 
 ## When to use
 
 Use this skill when the user needs to:
-- Validate that a feature is convenient and intuitive before release
-- Check user flows for unnecessary steps or navigation hops
-- Verify UI consistency with the rest of the application
-- Ensure edge cases (empty states, errors, loading) are handled gracefully
-- Review a feature from the end-user perspective after implementation
+- Validate that a feature feels fast and professional
+- Check if keyboard shortcuts and command palette are properly integrated
+- Verify inline editing vs unnecessary page transitions
+- Ensure optimistic UI and instant feedback
+- Review a feature for "pro tool" experience quality
+
+## Core UX Principles
+
+> The interface should think faster than the user
+
+1. **Command Palette** — single entry point for all actions (⌘K / Ctrl+K)
+2. **Keyboard-First** — frequent actions have shortcuts, arrow navigation works
+3. **Inline Editing** — no modals for simple edits, Enter saves, Esc cancels
+4. **Minimal States** — side panels over pages, overlays without context loss
+5. **Search-First** — search is the primary navigation method
+6. **Strong Defaults** — zero decisions needed for common actions
+7. **Optimistic UI** — instant response, no spinners when avoidable
+8. **List-Centric** — lists as main screens, saved views, fast filters
+9. **Context > Settings** — actions next to objects, not buried in settings
+10. **Visual Clarity** — no noise, color = meaning only
 
 ## Instructions
 
@@ -42,57 +59,65 @@ Read all available materials depending on the target:
 #### From codebase:
 Use **parallel sub-agents** (`subagent_type: "Explore"`) to investigate:
 
-1. **UI components agent** — find all UI components related to the feature (forms, dialogs, pages, lists, buttons)
-2. **Routing agent** — find route definitions and navigation logic for the feature
-3. **Error handling agent** — find error boundaries, error messages, toast notifications, fallback UI related to the feature
-4. **Existing patterns agent** — examine 2-3 similar existing features in the app to understand established UX patterns (component layouts, form patterns, feedback patterns)
+1. **Command palette agent** — find command palette implementation, registered commands, keyboard shortcut definitions
+2. **UI patterns agent** — find forms, dialogs, pages, lists; identify inline editing vs modal patterns
+3. **Navigation agent** — find route definitions, side panels, drawers, overlay patterns
+4. **Feedback agent** — find optimistic updates, loading states, toast notifications, undo mechanisms
 
 Launch all four agents in a **single message** (parallel tool calls).
 
-### Step 3: Analyze User Flows
+### Step 3: Evaluate Efficiency-First Patterns
 
-For each user flow described in the requirements (or inferred from the code):
+For each pattern, evaluate the current implementation level:
 
-#### 3a. Flow Efficiency
+#### 3a. Command & Control
 
-| Check | What to look for |
-|-------|-----------------|
-| **Navigation hops** | Can the user complete the task without leaving the current page? Are related entities creatable inline (modals, dropdowns with quick-add)? |
-| **Click count** | Is the number of interactions minimal for the task? Are there redundant confirmation steps? |
-| **Data entry** | Are forms pre-filled with sensible defaults? Are optional fields clearly marked? Is field ordering logical? |
-| **Feedback** | Does the user get immediate feedback after every action (save, delete, create)? Are success/error states clearly communicated? |
-| **Reversibility** | Can the user undo or correct mistakes easily? Is there confirmation before destructive actions? |
+| Pattern | ❌ Missing | ⚠️ Basic | ✅ Good | 🚀 Excellent |
+|---------|-----------|----------|---------|--------------|
+| **Command Palette** | No ⌘K | Opens but limited actions | Search + navigation + actions | Context-aware commands, recent items, fuzzy search |
+| **Keyboard Shortcuts** | None | Only global (save, close) | CRUD shortcuts (C/E/D) + navigation (↑↓) | Full coverage, discoverable hints, customizable |
+| **Focus Management** | Random focus | Focus on page load | Logical tab order | Keyboard trap-free, skip links, roving tabindex |
 
-#### 3b. Edge Cases and Error States
+#### 3b. Editing & Data Entry
 
-| Check | What to look for |
-|-------|-----------------|
-| **Empty states** | What does the user see when a list is empty, data hasn't loaded, or no results match a filter? Is there a clear call-to-action? |
-| **Loading states** | Are loading indicators shown during async operations? Are skeleton screens or spinners used appropriately? |
-| **Error messages** | Are errors user-friendly (not technical stack traces)? Do they explain what happened and what the user can do? |
-| **Validation** | Is form validation shown inline as the user types, or only on submit? Are validation messages clear and specific? |
-| **Boundary conditions** | What happens with very long text, many items, special characters, or zero values? |
-| **Concurrent actions** | What happens if the user double-clicks a submit button or navigates away mid-operation? |
+| Pattern | ❌ Missing | ⚠️ Basic | ✅ Good | 🚀 Excellent |
+|---------|-----------|----------|---------|--------------|
+| **Inline Editing** | Always navigate away | Modal for every edit | Click-to-edit in lists | Enter=save, Esc=cancel, blur=save, multi-field inline |
+| **Strong Defaults** | All fields required | Some defaults | Smart defaults based on context | Auto-fill from context, minimal required fields |
+| **Form Efficiency** | One field per page | Standard form | Logical grouping, clear optionals | Auto-advance, paste-to-fill, batch entry |
 
-#### 3c. UI Consistency
+#### 3c. Navigation & Context
 
-| Check | What to look for |
-|-------|-----------------|
-| **Component reuse** | Does the feature use existing UI components from the project, or does it introduce new ones for similar purposes? |
-| **Layout patterns** | Are page layouts, spacing, and section ordering consistent with the rest of the app? |
-| **Interaction patterns** | Do similar actions (create, edit, delete) follow the same patterns as in other parts of the app? |
-| **Terminology** | Are labels, button texts, and messages consistent with the vocabulary used elsewhere? |
-| **Visual hierarchy** | Are primary actions visually prominent? Are secondary actions de-emphasized? |
-| **Responsive behavior** | If the app supports it, does the feature work on different screen sizes? |
+| Pattern | ❌ Missing | ⚠️ Basic | ✅ Good | 🚀 Excellent |
+|---------|-----------|----------|---------|--------------|
+| **Minimal States** | Full page transitions | Modals for everything | Side panels for details | Overlays preserve context, split views, peek preview |
+| **Search-First** | No search | Basic text match | Instant search, multiple entities | Filters, saved searches, search by ID/status/user |
+| **List-Centric** | Card grids only | Basic lists | Sortable, filterable lists | Saved views, column customization, bulk actions |
+
+#### 3d. Feedback & Performance
+
+| Pattern | ❌ Missing | ⚠️ Basic | ✅ Good | 🚀 Excellent |
+|---------|-----------|----------|---------|--------------|
+| **Optimistic UI** | Wait for server | Spinner on every action | Optimistic for reads | Full optimistic with rollback, background sync |
+| **Response Time** | Visible delays | < 500ms responses | < 200ms, skeleton loading | < 100ms, no spinners, prefetching |
+| **Undo/Redo** | Confirm dialogs only | Toast with undo for delete | Undo for all destructive | Full undo stack, Ctrl+Z support |
+
+#### 3e. Visual Design
+
+| Pattern | ❌ Missing | ⚠️ Basic | ✅ Good | 🚀 Excellent |
+|---------|-----------|----------|---------|--------------|
+| **Visual Clarity** | Cluttered, many icons | Some organization | Clean, purposeful layout | Typography-driven, color = status only |
+| **Context > Settings** | Actions in settings page | Actions in dropdown menu | Actions visible on hover | Inline actions, contextual toolbars |
+| **Information Density** | Too sparse or too dense | Acceptable density | Scannable, grouped info | Progressive disclosure, smart truncation |
 
 ### Step 4: Cross-Reference with Spec
 
 If spec documents are available, verify:
 
-1. **All user stories covered** — every user story in requirements has a corresponding UI flow
-2. **Acceptance criteria met** — each acceptance criterion is achievable through the implemented UI
-3. **Design followed** — UI components match what the design document describes
-4. **No orphan UI** — no screens or flows exist that aren't backed by requirements
+1. **Keyboard flows documented** — spec mentions keyboard shortcuts and navigation
+2. **Inline editing specified** — design prefers inline over modal where appropriate
+3. **Performance requirements** — response time and optimistic UI mentioned
+4. **Command palette integration** — new actions registered in command palette
 
 ### Step 5: Generate UX Review Report
 
@@ -102,103 +127,138 @@ Present a structured report:
 # UX Review: [Feature Name]
 
 **Scope:** [What was reviewed — spec docs, files, branch diff]
-**Overall UX Assessment:** [Good / Needs Improvement / Major Issues]
+**UX Maturity:** [🚀 Pro-tool / ✅ Good / ⚠️ Basic / ❌ Needs Work]
 
 ---
 
-## User Flows Analyzed
+## Efficiency-First Assessment
 
-1. [Flow name] — [Brief description]
-2. [Flow name] — [Brief description]
+### Command & Control
+| Pattern | Level | Evidence |
+|---------|-------|----------|
+| Command Palette | [emoji] | [What was found] |
+| Keyboard Shortcuts | [emoji] | [What was found] |
+| Focus Management | [emoji] | [What was found] |
+
+### Editing & Data Entry
+| Pattern | Level | Evidence |
+|---------|-------|----------|
+| Inline Editing | [emoji] | [What was found] |
+| Strong Defaults | [emoji] | [What was found] |
+| Form Efficiency | [emoji] | [What was found] |
+
+### Navigation & Context
+| Pattern | Level | Evidence |
+|---------|-------|----------|
+| Minimal States | [emoji] | [What was found] |
+| Search-First | [emoji] | [What was found] |
+| List-Centric | [emoji] | [What was found] |
+
+### Feedback & Performance
+| Pattern | Level | Evidence |
+|---------|-------|----------|
+| Optimistic UI | [emoji] | [What was found] |
+| Response Time | [emoji] | [What was found] |
+| Undo/Redo | [emoji] | [What was found] |
+
+### Visual Design
+| Pattern | Level | Evidence |
+|---------|-------|----------|
+| Visual Clarity | [emoji] | [What was found] |
+| Context > Settings | [emoji] | [What was found] |
+| Information Density | [emoji] | [What was found] |
 
 ---
 
-## 🔴 Critical UX Issues
+## 🔴 Critical Issues
 
-> Problems that will confuse or block users
+> Blocks keyboard users or forces unnecessary navigation
 
 ### [Issue Title]
-**Flow:** [Which user flow is affected]
-**Location:** `path/to/component.tsx` (or spec document section)
+**Pattern violated:** [Which efficiency pattern]
+**Location:** `path/to/component.tsx`
 
-[Description: what the user experiences and why it's a problem]
+[What the user experiences and why it slows them down]
 
-**Recommendation:** [How to improve the experience]
-
----
-
-## 🟠 UX Warnings
-
-> Issues that degrade the experience
-
-- **[Flow/Location]** — [Brief description of the friction point]
-- **[Flow/Location]** — [Brief description of the friction point]
+**Fix:** [Specific recommendation]
 
 ---
 
-## 🟡 UX Suggestions
+## 🟠 Friction Points
 
-> Enhancements that would polish the experience
+> Slows down power users
 
-- [Suggestion 1]
-- [Suggestion 2]
-
----
-
-## ✅ What Works Well
-
-- [Positive UX observation 1]
-- [Positive UX observation 2]
+- **[Location]** — [What's slow and why]
+- **[Location]** — [What's slow and why]
 
 ---
 
-## Edge Case Coverage
+## 🟡 Polish Opportunities
+
+> Would elevate to pro-tool level
+
+- [Opportunity 1]
+- [Opportunity 2]
+
+---
+
+## ✅ What's Already Great
+
+- [Positive finding 1]
+- [Positive finding 2]
+
+---
+
+## Edge Cases
 
 | Scenario | Status | Notes |
 |----------|--------|-------|
-| Empty state | ✅ / ⚠️ / ❌ | [How it's handled] |
-| Loading state | ✅ / ⚠️ / ❌ | [How it's handled] |
-| Error state | ✅ / ⚠️ / ❌ | [How it's handled] |
-| Long content | ✅ / ⚠️ / ❌ | [How it's handled] |
-| No permissions | ✅ / ⚠️ / ❌ | [How it's handled] |
+| Empty state | [emoji] | [Has CTA? Keyboard accessible?] |
+| Error state | [emoji] | [Dismissible? Undo available?] |
+| Loading state | [emoji] | [Skeleton? Optimistic?] |
+| Bulk operations | [emoji] | [Keyboard select? Batch actions?] |
 
 ---
 
-## UI Consistency Check
+## Quick Wins
 
-| Aspect | Consistent | Notes |
-|--------|-----------|-------|
-| Component reuse | ✅ / ⚠️ / ❌ | [Details] |
-| Layout patterns | ✅ / ⚠️ / ❌ | [Details] |
-| Interaction patterns | ✅ / ⚠️ / ❌ | [Details] |
-| Terminology | ✅ / ⚠️ / ❌ | [Details] |
+> Low effort, high impact improvements
+
+1. [ ] [Quick win 1]
+2. [ ] [Quick win 2]
+3. [ ] [Quick win 3]
 
 ---
 
 ## Summary
 
-- **Critical:** [N] issues
-- **Warnings:** [N] issues
-- **Suggestions:** [N] items
-- **Edge cases covered:** [N/M]
+| Category | Score |
+|----------|-------|
+| Command & Control | [X/3 patterns at Good+] |
+| Editing & Data Entry | [X/3 patterns at Good+] |
+| Navigation & Context | [X/3 patterns at Good+] |
+| Feedback & Performance | [X/3 patterns at Good+] |
+| Visual Design | [X/3 patterns at Good+] |
+| **Overall** | [X/15 patterns at Good+] |
 ```
 
 ### Step 6: Offer Next Steps
 
 After presenting the report, offer actions:
 
-1. **Fix issues** — help update the spec documents or code to resolve UX findings
-2. **Re-review** — run the review again after changes
-3. **Deep dive** — analyze a specific flow or issue in more detail
-4. **Proceed** — continue with implementation despite findings
+1. **Add keyboard shortcuts** — help implement missing shortcuts
+2. **Convert to inline editing** — refactor modals to inline patterns
+3. **Add to command palette** — register new actions in ⌘K
+4. **Implement optimistic UI** — add optimistic updates for slow operations
+5. **Re-review** — run the review again after changes
 
 ## Severity Levels
 
-| Level | Criteria | Action |
-|-------|----------|--------|
-| 🔴 Critical | User is blocked, confused, or loses data; flow requires unnecessary navigation hops for basic tasks | Must fix |
-| 🟠 Warning | User can complete the task but with friction; inconsistent patterns; missing feedback | Should fix |
-| 🟡 Suggestion | Polish improvements; better defaults; minor wording changes | Nice to have |
+| Level | Criteria | Examples |
+|-------|----------|----------|
+| 🔴 Critical | Keyboard users blocked; forced full-page navigation for simple actions | No keyboard access to primary action; modal required for single-field edit |
+| 🟠 Friction | Power users slowed down; inconsistent with app patterns | Missing shortcut for frequent action; spinner where optimistic would work |
+| 🟡 Polish | Good but not pro-level; minor efficiency gains possible | Could add to command palette; could show undo toast |
 
 ## Arguments
 
