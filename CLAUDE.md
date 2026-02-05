@@ -16,6 +16,7 @@ Skills are installed via the `npx add-skill` command:
 
 ```
 spec/                       - Specification-driven development skills
+  research/SKILL.md         - Research and brainstorm before requirements
   requirements/SKILL.md     - Requirements document generation skill
   design/SKILL.md           - Technical design document generation skill
   tasks/SKILL.md            - Implementation task breakdown skill
@@ -39,7 +40,12 @@ dev/                        - Development and meta skills
 
 ## Workflow Architecture
 
-The skills implement a three-stage specification pipeline where each stage builds on the previous:
+The skills implement a four-stage specification pipeline where each stage builds on the previous:
+
+0. **`spec:research`** → Creates `.specs/<name>/research.md` _(optional)_
+   - Brainstorm and explore ideas before formalizing
+   - Compare approaches, analyze tradeoffs
+   - Build shared understanding of the problem and direction
 
 1. **`spec:requirements`** → Creates `.specs/<name>/requirements.md`
    - Gathers user stories, constraints, acceptance criteria
