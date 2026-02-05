@@ -16,7 +16,7 @@ Skills are installed via the `npx add-skill` command:
 
 ```
 spec/                       - Specification-driven development skills
-  research/SKILL.md         - Research and brainstorm before requirements
+  research/SKILL.md         - Technical research after requirements
   requirements/SKILL.md     - Requirements document generation skill
   design/SKILL.md           - Technical design document generation skill
   tasks/SKILL.md            - Implementation task breakdown skill
@@ -42,30 +42,32 @@ dev/                        - Development and meta skills
 
 The skills implement a four-stage specification pipeline where each stage builds on the previous:
 
-0. **`spec:research`** → Creates `.specs/<name>/research.md` _(optional)_
-   - Brainstorm and explore ideas before formalizing
-   - Compare approaches, analyze tradeoffs
-   - Build shared understanding of the problem and direction
-
 1. **`spec:requirements`** → Creates `.specs/<name>/requirements.md`
    - Gathers user stories, constraints, acceptance criteria
+   - Asks clarifying questions about ambiguities, edge cases, and priorities
    - Uses SHALL/WHEN-THEN format for testable requirements
 
-2. **`spec:design`** → Creates `.specs/<name>/design.md`
-   - Reads requirements, analyzes codebase patterns
+2. **`spec:research`** → Creates `.specs/<name>/research.md`
+   - Investigates codebase and explores solution alternatives based on requirements
+   - Generates 2-4 variants per problem area with pros/cons/effort/risk
+   - User selects a variant per problem area (marked CHOSEN/Rejected)
+
+3. **`spec:design`** → Creates `.specs/<name>/design.md`
+   - Reads requirements and chosen research solutions
    - Produces architecture diagrams (Mermaid), TypeScript interfaces, test strategy
 
-3. **`spec:tasks`** → Creates `.specs/<name>/tasks.md`
-   - Reads both requirements and design documents
+4. **`spec:tasks`** → Creates `.specs/<name>/tasks.md`
+   - Reads requirements, research, and design documents
    - Generates hierarchical task breakdown with file paths and requirement references
 
 ### Specification Review
 
-After creating any spec document (or all three), use this skill to validate quality:
+Can be invoked at **any stage** of the pipeline to validate quality of existing documents:
 
-7. **`spec:review [spec-name] [document]`** → Reviews spec documents
+5. **`spec:review [spec-name] [document]`** → Reviews spec documents
+   - Can review any combination: requirements, research, design, tasks
    - Validates completeness, testability, and clarity of each document
-   - Cross-checks consistency between requirements, design, and tasks
+   - Cross-checks consistency between whatever documents exist
    - Verifies alignment with the actual codebase
    - Produces a structured report with severity levels and a coverage matrix
 
@@ -73,16 +75,16 @@ After creating any spec document (or all three), use this skill to validate qual
 
 After creating a tasks document, use these skills to execute the implementation:
 
-8. **`spec:do-all`** → Executes all pending tasks
+6. **`spec:do-all`** → Executes all pending tasks
    - Runs tasks sequentially from the tasks document
    - Marks each task complete as it finishes
    - Handles checkpoints and verification
 
-9. **`spec:do-next`** → Executes the next pending task
+7. **`spec:do-next`** → Executes the next pending task
    - Finds and runs the first incomplete task
    - Ideal for incremental implementation with review
 
-10. **`spec:do-task <number>`** → Executes a specific task
+8. **`spec:do-task <number>`** → Executes a specific task
    - Runs a task by its number (e.g., "1.2", "3")
    - Allows out-of-order or re-execution of tasks
 
@@ -90,7 +92,7 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Utility Skills
 
-11. **`utils:changelog [period]`** → Generates human-readable changelog
+9. **`utils:changelog [period]`** → Generates human-readable changelog
    - Analyzes git history for a specified time period
    - Creates changelog suitable for non-technical teams (product, marketing, support)
    - Transforms technical commits into user-facing benefit descriptions
@@ -98,24 +100,24 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Git Skills
 
-12. **`git:commit`** → Creates a conventional commit
+10. **`git:commit`** → Creates a conventional commit
    - Analyzes staged changes to auto-detect commit type
    - Asks user to choose type when ambiguous
    - Follows Conventional Commits specification
 
-13. **`git:amend`** → Modifies the last commit
+11. **`git:amend`** → Modifies the last commit
    - Adds staged changes to the previous commit
    - Updates commit message while keeping format
    - Warns if commit was already pushed
 
 ### Review Skills
 
-14. **`review:local [scope]`** → Performs local code review
+12. **`review:local [scope]`** → Performs local code review
     - Analyzes changes for bugs, security issues, and code quality
     - Auto-detects scope (staged, unstaged, last commit)
     - Generates structured summary report with severity levels
 
-15. **`review:ux [spec-name|path|branch]`** → Performs UX review
+13. **`review:ux [spec-name|path|branch]`** → Performs UX review
     - Analyzes user flows for efficiency and unnecessary navigation hops
     - Checks UI consistency with existing app patterns
     - Validates edge case handling (empty states, errors, loading)
@@ -123,7 +125,7 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Development Skills
 
-16. **`dev:skill [category/name]`** → Creates a new skill definition
+14. **`dev:skill [category/name]`** → Creates a new skill definition
    - Scaffolds a SKILL.md with proper structure and conventions
    - Ensures consistency across all skills in the repository
    - Updates CLAUDE.md with the new skill entry

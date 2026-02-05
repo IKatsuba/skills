@@ -20,17 +20,19 @@ Use this skill when the user needs to:
 
 1. If `<args>` contains a spec name, look for:
    - Requirements at `.specs/<spec-name>/requirements.md`
+   - Research at `.specs/<spec-name>/research.md` (optional but recommended)
    - Design at `.specs/<spec-name>/design.md`
 2. If no spec name provided, list available specs in `.specs/` and ask user to choose
-3. Read and analyze both documents
+3. Read and analyze all available documents
 
 ### Step 2: Analyze the Design
 
 Before creating tasks:
 1. Review the architecture and components from the design
-2. Identify dependencies between components
-3. Determine the optimal order of implementation
-4. Note checkpoints for verification
+2. Review `research.md` chosen solutions to understand the rationale behind design decisions
+3. Identify dependencies between components
+4. Determine the optimal order of implementation
+5. Note checkpoints for verification
 
 ### Step 3: Verify Against the Codebase
 

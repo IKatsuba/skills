@@ -21,10 +21,11 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 | File | Description |
 |------|-------------|
 | `.specs/<spec-name>/requirements.md` | Requirements and acceptance criteria |
+| `.specs/<spec-name>/research.md` | Research findings and chosen solutions |
 | `.specs/<spec-name>/design.md` | Technical design and architecture |
 | `.specs/<spec-name>/tasks.md` | Implementation tasks with checkboxes |
 
-**Always read all three files** to understand the full context before executing tasks.
+**Always read all four files** to understand the full context before executing tasks.
 
 ## Instructions
 
@@ -46,6 +47,7 @@ Format examples:
 3. If multiple specs exist without a name specified, list them and ask user to choose
 4. Read and parse all specification documents:
    - `requirements.md` - understand what needs to be built
+   - `research.md` - understand chosen solutions and their rationale
    - `design.md` - understand how it should be built
    - `tasks.md` - get the list of tasks to execute
 
@@ -94,7 +96,8 @@ After completing the task:
 After completing each **subtask**, commit using the `git:commit` skill:
 
 1. Stage the changed files related to the subtask
-2. Invoke the `git:commit` skill — it will analyze staged changes, determine the commit type, and create a properly formatted Conventional Commits message
+2. Check if `tasks.md` is tracked by git (run `git check-ignore .specs/<spec-name>/tasks.md`). If it is NOT ignored, also stage `tasks.md` in the same commit so the task progress is captured
+3. Invoke the `git:commit` skill — it will analyze staged changes, determine the commit type, and create a properly formatted Conventional Commits message
 
 Skip committing if:
 - The user explicitly asked not to commit

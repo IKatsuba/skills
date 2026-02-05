@@ -5,13 +5,13 @@ description: Review Specification - validates requirements, design, and tasks do
 
 # Review Specification
 
-Reviews one or more specification documents (requirements, design, tasks) for completeness, quality, internal consistency, and alignment with the actual codebase. Can review a single document or all three at once.
+Reviews one or more specification documents (requirements, research, design, tasks) for completeness, quality, internal consistency, and alignment with the actual codebase. Can be invoked at **any stage** of the pipeline — after requirements, after research, after design, or after tasks. It reviews whatever documents exist at that point and checks their quality and mutual consistency. Partial reviews (e.g., only requirements exist) are normal and expected.
 
 ## When to use
 
 Use this skill when the user needs to:
-- Validate a specification before starting implementation
-- Check consistency between requirements, design, and tasks
+- Validate a specification at any stage of the pipeline
+- Check consistency between whatever documents exist (requirements, research, design, tasks)
 - Verify that spec documents accurately reflect the codebase
 - Get structured feedback on document quality
 
@@ -24,14 +24,16 @@ Parse `<args>` to determine:
 1. **Spec name** — which specification to review
 2. **Document scope** — which documents to review:
    - `requirements` — review only requirements.md
+   - `research` — review only research.md
    - `design` — review only design.md
    - `tasks` — review only tasks.md
-   - `all` (default if omitted) — review all three documents
+   - `all` (default if omitted) — review all available documents
 
 If no spec name provided, list available specs in `.specs/` and ask the user to choose.
 
 Locate documents in `.specs/<spec-name>/`:
 - `requirements.md`
+- `research.md`
 - `design.md`
 - `tasks.md`
 
@@ -69,7 +71,18 @@ For each document in scope, check the criteria below. Use **parallel sub-agents*
 | **Codebase alignment** | Do file paths, module names, and patterns match reality? Are existing APIs used correctly? |
 | **User experience** | Does the designed data flow support inline/contextual creation of related entities? Are there unnecessary round-trips or page navigations that could be eliminated? Do UI components allow quick creation of dependent objects (e.g., creating a parent entity from a child entity form via inline dialog or dropdown action)? |
 
-#### 3c. Tasks Review
+#### 3c. Research Review
+
+| Criteria | What to check |
+|----------|---------------|
+| **Requirements coverage** | Does the research address all major problem areas from the requirements? Are any significant requirements overlooked? |
+| **Variant quality** | Are there at least 2 distinct variants per problem area? Are they meaningfully different (not minor variations)? |
+| **CHOSEN/Rejected marking** | Is every variant clearly marked as CHOSEN or Rejected? Is there exactly one CHOSEN variant per problem area? |
+| **Evidence basis** | Are variant assessments backed by documentation, codebase examples, or benchmarks? Are pros/cons concrete rather than vague? |
+| **Codebase alignment** | Do the proposed solutions respect existing architectural patterns? Are integration points accurately identified? |
+| **Clarity** | Are chosen solutions described clearly enough for the design phase to implement them without ambiguity? |
+
+#### 3d. Tasks Review
 
 | Criteria | What to check |
 |----------|---------------|
@@ -83,14 +96,17 @@ For each document in scope, check the criteria below. Use **parallel sub-agents*
 
 ### Step 4: Cross-Document Consistency (when reviewing multiple documents)
 
-If two or more documents are available, check cross-document consistency:
+If two or more documents are available, check cross-document consistency. Only check consistency for document pairs that both exist — partial reviews are normal:
 
-1. **Requirements → Design** — every requirement has a corresponding design component
-2. **Design → Tasks** — every design component has implementation tasks
-3. **Requirements → Tasks** — every requirement is traceable through to tasks
-4. **Terminology** — names, terms, and file paths are consistent across all documents
-5. **No orphans** — no tasks reference non-existent requirements; no design components lack a requirements basis
-6. **UX flow coherence** — user flows described in requirements are preserved through design and tasks without introducing unnecessary navigation steps or degrading the user experience. If design or tasks split a single user action into multiple disconnected steps (e.g., requiring the user to visit a separate page to create a related entity before returning), flag it as a critical issue.
+1. **Requirements → Research** — every major problem area from requirements is investigated in research; no significant requirements are overlooked
+2. **Requirements → Design** — every requirement has a corresponding design component
+3. **Research → Design** — CHOSEN variants from research are reflected in the design; any deviation has explicit rationale
+4. **Design → Tasks** — every design component has implementation tasks
+5. **Requirements → Tasks** — every requirement is traceable through to tasks
+6. **Research → Tasks** — tasks implement the chosen solutions from research, not the rejected ones
+7. **Terminology** — names, terms, and file paths are consistent across all documents
+8. **No orphans** — no tasks reference non-existent requirements; no design components lack a requirements basis
+9. **UX flow coherence** — user flows described in requirements are preserved through design and tasks without introducing unnecessary navigation steps or degrading the user experience. If design or tasks split a single user action into multiple disconnected steps (e.g., requiring the user to visit a separate page to create a related entity before returning), flag it as a critical issue.
 
 ### Step 5: Generate Review Report
 
@@ -145,10 +161,10 @@ Present a structured report:
 
 ## Coverage Matrix
 
-| Requirement | Design | Tasks | Status |
-|-------------|--------|-------|--------|
-| 1.1 [name]  | Yes/No | Yes/No | ✅ / ⚠️ / ❌ |
-| 1.2 [name]  | Yes/No | Yes/No | ✅ / ⚠️ / ❌ |
+| Requirement | Research | Design | Tasks | Status |
+|-------------|----------|--------|-------|--------|
+| 1.1 [name]  | Yes/No   | Yes/No | Yes/No | ✅ / ⚠️ / ❌ |
+| 1.2 [name]  | Yes/No   | Yes/No | Yes/No | ✅ / ⚠️ / ❌ |
 
 ---
 
@@ -188,7 +204,8 @@ After presenting the report, offer actions:
   - `<spec-name> all` — review all (explicit)
 
 Examples:
-- `spec:review user-auth` — review all documents for user-auth
+- `spec:review user-auth` — review all available documents for user-auth
 - `spec:review user-auth requirements` — review only requirements
+- `spec:review user-auth research` — review only the research document
 - `spec:review user-auth design` — review only the design document
 - `spec:review payment-flow tasks` — review only the tasks document

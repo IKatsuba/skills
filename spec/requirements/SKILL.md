@@ -1,11 +1,11 @@
 ---
 name: spec:requirements
-description: Create Requirements Document - generates a structured requirements document based on the task context and project
+description: Create Requirements Document - generates a structured requirements document, asking clarifying questions about ambiguities before proceeding
 ---
 
 # Create Requirements Document
 
-Creates a requirements document based on the task context and project. The user provides a spec name and task description, and this command generates a structured requirements document.
+This is the first step in the specification pipeline. Creates a requirements document based on the task context and project. The user provides a spec name and task description, and this command gathers context, asks targeted clarifying questions, and generates a structured requirements document.
 
 ## When to use
 
@@ -23,6 +23,14 @@ If the user hasn't provided sufficient context, ask them:
 2. What is the main goal or purpose of this feature/task?
 3. What are the key user stories or use cases?
 4. Are there any specific technical constraints or requirements?
+
+After gathering initial context, ask targeted clarifying questions about:
+- **Ambiguities** — anything unclear or open to interpretation in the description
+- **Edge cases** — boundary conditions, error scenarios, empty states
+- **Priorities** — which aspects are most important, what can be deferred
+- **Scope boundaries** — what is explicitly out of scope
+
+Do not proceed to codebase analysis until these questions are answered.
 
 ### Step 2: Analyze the Codebase
 
@@ -78,6 +86,7 @@ After creating the document, show the user:
 1. The location of the created file
 2. A summary of the requirements
 3. Ask if they want to make any changes
+4. Suggest proceeding with `spec:research <spec-name>` to investigate implementation approaches
 
 ## Arguments
 
