@@ -1,5 +1,13 @@
 # 📋 Changelog
 
+## 2026-02-05
+
+- **Research & Brainstorm Skill** — New `spec:research` skill helps you explore ideas before jumping into requirements. Compare approaches, analyze tradeoffs, and build shared understanding — perfect for when you're not quite sure where to start!
+
+## 2026-02-03
+
+- **UX Review Skill** — New `review:ux` skill analyzes your features for efficiency-first UX patterns. Checks for keyboard navigation, command palette support, inline editing, optimistic UI, and 11 more pro-tool patterns. Get a maturity score and actionable recommendations!
+
 ## 2026-02-02
 
 - **UX Flow Validation** — Skills `spec:review`, `spec:requirements` and `spec:design` now check that user flows feel natural. Related entities (e.g., category and subcategory) must support inline creation — no more forcing users to navigate to a separate page just to create a dependency.
