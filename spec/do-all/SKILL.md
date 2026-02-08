@@ -1,11 +1,11 @@
 ---
 name: spec:do-all
-description: Execute All Tasks - runs all pending tasks from the tasks document sequentially
+description: Execute All Tasks - runs all pending tasks from the tasks document, with parallel subtask execution when safe
 ---
 
 # Execute All Tasks
 
-Executes all pending tasks from a specification's tasks document. This skill reads the tasks.md file and implements each task in order, marking them as complete.
+Executes all pending tasks from a specification's tasks document. Major tasks run sequentially. Subtasks within a single major task can run in parallel via concurrent subagents when they are independent.
 
 ## When to use
 
@@ -52,24 +52,93 @@ All specification documents are located in `.specs/<spec-name>/` directory:
    - Requirements references
 3. Determine execution order based on task numbering
 
-### Step 3: Execute Tasks Using Subagents
+### Step 3: Execute Major Tasks Sequentially
 
-**IMPORTANT:** Each **subtask** is executed as a separate subagent and committed independently. Do NOT group subtasks of a major task into a single agent or a single commit.
+**CRITICAL RULE: Major tasks ALWAYS execute sequentially, one after another.** Never start major task N+1 until major task N is fully complete. Parallelism is ONLY allowed between subtasks of the SAME major task.
 
-For each major task, iterate over its subtasks. For each pending subtask:
+For each major task:
+1. Analyze its subtasks for parallelism (see Step 3a)
+2. Execute subtasks using the chosen strategy — parallel or sequential (see Steps 3b/3c)
+3. After ALL subtasks are complete, mark the major task as `[x]` in tasks.md
+4. Commit the major task completion using the `git:commit` skill
+5. **Only then** proceed to the next major task
 
-1. **Mark subtask as in-progress** - Update the subtask checkbox to `[-]` in tasks.md
-2. **Launch subagent** - Use the Task tool with `subagent_type: "general-purpose"` to execute the subtask:
+### Step 3a: Analyze Subtask Dependencies
+
+Before executing a major task's subtasks, analyze whether they can run in parallel. Check each subtask pair for conflicts:
+
+**Subtasks are DEPENDENT (must run sequentially) when ANY of the following is true:**
+- They modify the same file
+- One creates a file/module/export that another imports or uses
+- One generates types, schemas, or configs consumed by another
+- They have an explicit ordering requirement in the task description
+- One subtask's output is another's input (e.g., "create API" → "write tests for API")
+- They modify related parts of the same system (e.g., both touch the same database table schema)
+
+**Subtasks are INDEPENDENT (can run in parallel) when ALL of the following are true:**
+- They touch completely different files
+- No data or import dependencies between them
+- No shared state (database tables, config files, global state)
+- Each is self-contained and can be verified independently
+
+**When in doubt, choose sequential execution.** The quality of the implementation is more important than speed.
+
+Produce a short dependency verdict for the major task before proceeding:
+
+```
+Major Task 2 — dependency analysis:
+  2.1 Create user model (files: src/models/user.ts)
+  2.2 Create auth middleware (files: src/middleware/auth.ts) — depends on 2.1 (imports User type)
+  2.3 Add login route (files: src/routes/login.ts) — depends on 2.1, 2.2
+  Verdict: SEQUENTIAL — chain of dependencies
+```
+
+or
+
+```
+Major Task 3 — dependency analysis:
+  3.1 Add email validation util (files: src/utils/email.ts)
+  3.2 Add phone validation util (files: src/utils/phone.ts)
+  3.3 Add address validation util (files: src/utils/address.ts)
+  Verdict: PARALLEL — all independent, no shared files or imports
+```
+
+### Step 3b: Parallel Execution with Concurrent Subagents
+
+Use this strategy when the dependency analysis yields **PARALLEL**.
+
+1. **Mark all parallel subtasks as in-progress** — update each checkbox to `[-]` in tasks.md
+2. **Launch all subagents in a single message** — use multiple Task tool calls (one per subtask) in the same response, each with `subagent_type: "general-purpose"`:
    - Provide the full subtask description, file paths, and requirements
    - Include relevant context from the spec (requirements.md, design.md)
-   - The subagent will implement the subtask autonomously
-3. **Wait for completion** - Let the subagent complete its work
-4. **Verify result** - Review the subagent's output for success
-5. **Mark subtask as complete** - Update the subtask checkbox to `[x]` in tasks.md
-6. **Commit the changes** - Use the `git:commit` skill to commit (see Committing Changes section)
-7. **Proceed to next subtask**
+   - Instruct each subagent: implement the subtask but do NOT commit
+3. **Wait for all subagents to complete**
+4. **Verify results** — review each subagent's output for correctness
+5. **Mark all subtasks as `[x]`** in tasks.md
+6. **Commit all changes together** — stage all files from the parallel batch and use `git:commit` skill once for the group
 
-After all subtasks of a major task are complete, mark the major task as `[x]` in tasks.md and commit this change using the `git:commit` skill.
+**IMPORTANT constraints for parallel execution:**
+- Maximum 3 parallel subagents at a time to avoid resource contention
+- If a major task has more than 3 independent subtasks, batch them in groups of 3
+- If any subagent fails, stop and fall back to sequential execution for remaining subtasks
+- Subagents must NOT commit — only you commit after verifying all results
+
+### Step 3c: Sequential Execution with Subagents
+
+Use this strategy when the dependency analysis yields **SEQUENTIAL**, or for single subtasks, or as a fallback.
+
+For each pending subtask in order:
+
+1. **Mark subtask as in-progress** — update the checkbox to `[-]` in tasks.md
+2. **Launch subagent** — use the Task tool with `subagent_type: "general-purpose"`:
+   - Provide the full subtask description, file paths, and requirements
+   - Include relevant context from the spec (requirements.md, design.md)
+   - The subagent implements the subtask autonomously
+3. **Wait for completion**
+4. **Verify result** — review the subagent's output for success
+5. **Mark subtask as complete** — update the checkbox to `[x]` in tasks.md
+6. **Commit the changes** — use the `git:commit` skill (see Committing Changes section)
+7. **Proceed to next subtask**
 
 Example Task tool call for a subtask:
 ```
@@ -106,23 +175,35 @@ When encountering a checkpoint task:
 After completing all tasks:
 1. Summarize what was implemented
 2. List any issues encountered
-3. Suggest next steps (e.g., testing, review)
+3. Note which major tasks used parallel vs sequential execution
+4. Suggest next steps (e.g., testing, review)
 
 ## Committing Changes
 
-After completing each **subtask**, commit using the `git:commit` skill:
+### After sequential subtask execution
+
+Commit each subtask individually using the `git:commit` skill:
 
 1. Stage the changed files related to the subtask
 2. Check if `tasks.md` is tracked by git (run `git check-ignore .specs/<spec-name>/tasks.md`). If it is NOT ignored, also stage `tasks.md` in the same commit so the task progress is captured
 3. Invoke the `git:commit` skill — it will analyze staged changes, determine the commit type, and create a properly formatted Conventional Commits message
 
-Skip committing if:
+### After parallel subtask execution
+
+Commit ALL subtasks from the parallel batch together as a single commit:
+
+1. Stage all changed files from all completed parallel subtasks
+2. Include `tasks.md` if tracked
+3. Invoke the `git:commit` skill — the commit message should reference the major task (e.g., "feat(auth): implement validation utilities (tasks 3.1-3.3)")
+
+### Skip committing if:
 - The user explicitly asked not to commit
 - The subtask only modified the tasks.md file (checkpoint tasks)
 
 ## Error Handling
 
 - If a task fails, mark it as `[-]` and report the issue
+- If a parallel subagent fails, fall back to sequential for the remaining subtasks of that major task
 - Ask the user how to proceed (skip, retry, abort)
 - Do not proceed with dependent tasks if a prerequisite fails
 

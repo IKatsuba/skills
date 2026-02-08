@@ -57,11 +57,9 @@ Format examples:
 2. If task number is a major task (e.g., "2"), include all subtasks (2.1, 2.2, etc.)
 3. If task not found, list available tasks and ask for correction
 
-### Step 4: Execute the Task
+### Step 4: Execute a Single Subtask
 
-**IMPORTANT:** Each **subtask** is executed as a separate subagent and committed independently. Do NOT group subtasks into a single agent or commit.
-
-**If the task number points to a subtask** (e.g., "1.2"):
+If the task number points to a **single subtask** (e.g., "1.2"):
 
 1. **Mark subtask as in-progress** - Update the subtask checkbox to `[-]` in tasks.md
 2. **Show task info** - Display to the user:
@@ -77,29 +75,95 @@ Format examples:
 6. **Commit the changes** - Use the `git:commit` skill to commit (see Committing Changes section)
 7. If all subtasks of the parent major task are now complete, mark the major task as `[x]` in tasks.md and commit this change using the `git:commit` skill
 
-### Step 5: Handle Major Tasks with Subtasks
+### Step 5: Execute a Major Task with Subtasks
 
 If the task number points to a **major task** (e.g., "2") that has subtasks:
-1. Iterate over each subtask in order
-2. For each subtask, follow the subtask execution flow from Step 4 (separate subagent + separate commit per subtask)
-3. Mark the major task as `[x]` in tasks.md and commit this change using the `git:commit` skill
+
+#### Step 5a: Analyze Subtask Dependencies
+
+Before executing subtasks, analyze whether they can run in parallel. Check each subtask pair for conflicts:
+
+**Subtasks are DEPENDENT (must run sequentially) when ANY of the following is true:**
+- They modify the same file
+- One creates a file/module/export that another imports or uses
+- One generates types, schemas, or configs consumed by another
+- They have an explicit ordering requirement in the task description
+- One subtask's output is another's input (e.g., "create API" → "write tests for API")
+- They modify related parts of the same system (e.g., both touch the same database table schema)
+
+**Subtasks are INDEPENDENT (can run in parallel) when ALL of the following are true:**
+- They touch completely different files
+- No data or import dependencies between them
+- No shared state (database tables, config files, global state)
+- Each is self-contained and can be verified independently
+
+**When in doubt, choose sequential execution.** The quality of the implementation is more important than speed.
+
+Produce a short dependency verdict before proceeding:
+
+```
+Major Task 2 — dependency analysis:
+  2.1 Create user model (files: src/models/user.ts)
+  2.2 Create auth middleware (files: src/middleware/auth.ts) — depends on 2.1 (imports User type)
+  2.3 Add login route (files: src/routes/login.ts) — depends on 2.1, 2.2
+  Verdict: SEQUENTIAL — chain of dependencies
+```
+
+#### Step 5b: Parallel Execution with Concurrent Subagents
+
+Use this strategy when the dependency analysis yields **PARALLEL**.
+
+1. **Mark all parallel subtasks as in-progress** — update each checkbox to `[-]` in tasks.md
+2. **Launch all subagents in a single message** — use multiple Task tool calls (one per subtask) in the same response, each with `subagent_type: "general-purpose"`:
+   - Provide the full subtask description, file paths, and requirements
+   - Include relevant context from the spec (requirements.md, design.md)
+   - Instruct each subagent: implement the subtask but do NOT commit
+3. **Wait for all subagents to complete**
+4. **Verify results** — review each subagent's output
+5. **Mark all subtasks as `[x]`** in tasks.md
+6. **Commit all changes together** — single commit for the batch using `git:commit` skill
+
+**Constraints:**
+- Maximum 3 parallel subagents at a time
+- If more than 3 independent subtasks, batch them in groups of 3
+- If any subagent fails, fall back to sequential for remaining subtasks
+- Subagents must NOT commit — only you commit after verification
+
+#### Step 5c: Sequential Execution with Subagents
+
+Use this strategy when the dependency analysis yields **SEQUENTIAL**, or as a fallback.
+
+For each subtask, follow the single subtask execution flow from Step 4 (separate subagent + separate commit per subtask).
+
+After all subtasks complete, mark the major task as `[x]` in tasks.md and commit using `git:commit` skill.
 
 ### Step 6: Report Completion
 
 After completing the task:
 1. Summarize what was implemented
 2. Note if this was a re-execution of a completed task
-3. Show related tasks that might need attention
+3. Note whether parallel or sequential strategy was used
+4. Show related tasks that might need attention
 
 ## Committing Changes
 
-After completing each **subtask**, commit using the `git:commit` skill:
+### After sequential subtask execution
+
+Commit each subtask individually using the `git:commit` skill:
 
 1. Stage the changed files related to the subtask
 2. Check if `tasks.md` is tracked by git (run `git check-ignore .specs/<spec-name>/tasks.md`). If it is NOT ignored, also stage `tasks.md` in the same commit so the task progress is captured
-3. Invoke the `git:commit` skill — it will analyze staged changes, determine the commit type, and create a properly formatted Conventional Commits message
+3. Invoke the `git:commit` skill
 
-Skip committing if:
+### After parallel subtask execution
+
+Commit ALL subtasks from the parallel batch together as a single commit:
+
+1. Stage all changed files from all completed parallel subtasks
+2. Include `tasks.md` if tracked
+3. Invoke the `git:commit` skill
+
+### Skip committing if:
 - The user explicitly asked not to commit
 - The subtask only modified the tasks.md file (checkpoint tasks)
 
@@ -116,6 +180,7 @@ If the specified task depends on incomplete prerequisite tasks:
 ## Error Handling
 
 - If the task fails, keep it marked as `[-]`
+- If a parallel subagent fails, fall back to sequential for remaining subtasks
 - Report the issue to the user
 - Suggest fixes or ask for guidance
 
