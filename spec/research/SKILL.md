@@ -20,10 +20,10 @@ Use this skill when the user needs to:
 ### Step 1: Read Requirements
 
 1. If `<args>` contains a spec name, look for requirements at `.specs/<spec-name>/requirements.md`
-2. If no spec name provided, list available specs in `.specs/` and ask user to choose
+2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and analyze the requirements document
 4. Identify **distinct problem areas** — groups of related requirements that need separate technical investigation (e.g., "authentication mechanism", "data storage", "notification delivery")
-5. Ask clarifying questions about any ambiguous requirements or priorities before proceeding
+5. Use the `AskUserQuestion` tool to ask clarifying questions about any ambiguous requirements or priorities before proceeding
 
 ### Step 2: Explore Codebase
 
@@ -82,10 +82,10 @@ For each variant, consider:
 
 ### Step 5: Discuss and Select
 
-Present the variants to the user and engage in discussion:
-- Explain tradeoffs clearly
-- Highlight which variant best fits the existing codebase
-- Ask the user to **pick one variant per problem area**
+Present the variants to the user and use the `AskUserQuestion` tool for each problem area to let the user **pick one variant**:
+- Explain tradeoffs clearly before asking
+- Highlight which variant best fits the existing codebase (mark it as "(Recommended)" in the options)
+- Use the `AskUserQuestion` tool with variant names as options — one question per problem area
 - Note any constraints or dependencies between choices across problem areas
 
 ### Step 6: Write research.md
@@ -153,10 +153,7 @@ Ready for `spec:design <spec-name>` to create the technical design based on thes
 
 ### Step 7: Confirm with User
 
-Present the summary and ask:
-1. Does this capture our research and decisions accurately?
-2. Any changes before we move to design?
-3. Would you like to proceed with `spec:design <spec-name>` now?
+Present the summary and use the `AskUserQuestion` tool to confirm, with options like "Looks good, proceed to design", "I want to make changes", "Review research first"
 
 ## Arguments
 

@@ -132,6 +132,7 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ## Key Patterns
 
+- **Interactive questions**: Skills MUST use the `AskUserQuestion` tool for all user interactions — never output questions as plain text. Provide meaningful options to reduce user typing.
 - **Codebase awareness**: Skills analyze existing patterns before generating content
 - **Traceability**: Each task references the requirements it fulfills (`_Requirements: X.X_`)
 - **Verification checkpoints**: Tasks include milestone verification steps

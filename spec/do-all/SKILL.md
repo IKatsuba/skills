@@ -32,7 +32,7 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 ### Step 1: Locate and Read Specification Documents
 
 1. If `<args>` contains a spec name, look in `.specs/<spec-name>/`
-2. If no spec name provided, list available specs in `.specs/` and ask user to choose
+2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and parse all specification documents:
    - `requirements.md` - understand what needs to be built
    - `research.md` - understand chosen solutions and their rationale
@@ -223,7 +223,7 @@ Commit ALL subtasks from the parallel batch together as a single commit:
 
 - If a task fails, mark it as `[-]` and report the issue
 - If a parallel subagent fails, fall back to sequential for the remaining subtasks of that major task
-- Ask the user how to proceed (skip, retry, abort)
+- Use the `AskUserQuestion` tool to ask how to proceed, with options like "Skip this task", "Retry", "Abort execution"
 - Do not proceed with dependent tasks if a prerequisite fails
 
 ## Arguments

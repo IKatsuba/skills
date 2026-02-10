@@ -19,7 +19,7 @@ Use this skill when the user needs to:
 ### Step 1: Locate Specification Documents
 
 1. If `<args>` contains a spec name, look in `.specs/<spec-name>/`
-2. If no spec name provided, list available specs in `.specs/` and ask user to choose
+2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and analyze:
    - `requirements.md` — the requirements document (required)
    - `research.md` — the research document with chosen solutions (recommended)
@@ -223,8 +223,7 @@ describe('ComponentName', () => {
 After creating the document, show the user:
 1. The location of the created file
 2. A summary of the design decisions
-3. Ask if they want to make any changes
-4. Suggest proceeding with `spec:tasks <spec-name>` to create the implementation plan
+3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to tasks", "I want to make changes", "Review design first"
 
 ## Arguments
 

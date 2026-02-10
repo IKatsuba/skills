@@ -18,17 +18,19 @@ Use this skill when the user needs to:
 
 ### Step 1: Gather Information
 
-If the user hasn't provided sufficient context, ask them:
+If the user hasn't provided sufficient context, use the `AskUserQuestion` tool to ask them interactively:
 1. What is the name for this specification? (used for folder name, e.g., "user-authentication", "payment-integration")
 2. What is the main goal or purpose of this feature/task?
 3. What are the key user stories or use cases?
 4. Are there any specific technical constraints or requirements?
 
-After gathering initial context, ask targeted clarifying questions about:
+After gathering initial context, use the `AskUserQuestion` tool to ask targeted clarifying questions about:
 - **Ambiguities** — anything unclear or open to interpretation in the description
 - **Edge cases** — boundary conditions, error scenarios, empty states
 - **Priorities** — which aspects are most important, what can be deferred
 - **Scope boundaries** — what is explicitly out of scope
+
+**Always use the `AskUserQuestion` tool** for these questions — never output them as plain text. Provide meaningful options where possible to reduce user typing.
 
 Do not proceed to codebase analysis until these questions are answered.
 
@@ -96,8 +98,7 @@ Create the document at `.specs/<spec-name>/requirements.md` with this structure:
 After creating the document, show the user:
 1. The location of the created file
 2. A summary of the requirements
-3. Ask if they want to make any changes
-4. Suggest proceeding with `spec:research <spec-name>` to investigate implementation approaches
+3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to research", "I want to make changes", "Review requirements first"
 
 ## Arguments
 

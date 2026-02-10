@@ -44,7 +44,7 @@ Format examples:
 
 1. If spec name provided, look in `.specs/<spec-name>/`
 2. If no spec name, check if there's only one spec in `.specs/`
-3. If multiple specs exist without a name specified, list them and ask user to choose
+3. If multiple specs exist without a name specified, list them and use the `AskUserQuestion` tool to let the user choose
 4. Read and parse all specification documents:
    - `requirements.md` - understand what needs to be built
    - `research.md` - understand chosen solutions and their rationale
@@ -185,10 +185,7 @@ Commit ALL subtasks from the parallel batch together as a single commit:
 If the specified task depends on incomplete prerequisite tasks:
 1. Warn the user about missing dependencies
 2. List the prerequisite tasks
-3. Ask if they want to:
-   - Execute prerequisites first
-   - Proceed anyway
-   - Cancel
+3. Use the `AskUserQuestion` tool to ask how to proceed, with options like "Execute prerequisites first", "Proceed anyway", "Cancel"
 
 ## Error Handling
 

@@ -29,7 +29,7 @@ Parse `<args>` to determine:
    - `tasks` — review only tasks.md
    - `all` (default if omitted) — review all available documents
 
-If no spec name provided, list available specs in `.specs/` and ask the user to choose.
+If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose.
 
 Locate documents in `.specs/<spec-name>/`:
 - `requirements.md`
@@ -179,12 +179,12 @@ Omit the Coverage Matrix section when reviewing a single document that is not ta
 
 ### Step 6: Offer Next Steps
 
-After presenting the report, offer actions:
+After presenting the report, use the `AskUserQuestion` tool to offer next steps, with options like:
 
-1. **Fix issues** — help update the documents to resolve findings
-2. **Re-review** — run the review again after changes
-3. **Proceed anyway** — continue to the next stage despite findings
-4. **Explain** — provide more detail on any finding
+1. "Fix issues" — help update the documents to resolve findings
+2. "Re-review" — run the review again after changes
+3. "Proceed anyway" — continue to the next stage despite findings
+4. "Explain a finding" — provide more detail on any finding
 
 ## Severity Levels
 

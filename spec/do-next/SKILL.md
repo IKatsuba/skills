@@ -32,7 +32,7 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 ### Step 1: Locate and Read Specification Documents
 
 1. If `<args>` contains a spec name, look in `.specs/<spec-name>/`
-2. If no spec name provided, list available specs in `.specs/` and ask user to choose
+2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and parse all specification documents:
    - `requirements.md` - understand what needs to be built
    - `research.md` - understand chosen solutions and their rationale
@@ -90,7 +90,7 @@ If the next task is a checkpoint:
 After completing the task:
 1. Summarize what was implemented
 2. Show the next pending task (if any)
-3. Ask if the user wants to continue with the next task
+3. Use the `AskUserQuestion` tool to ask if the user wants to continue, with options like "Continue with next task", "Stop here", "Review changes first"
 
 ## Committing Changes
 

@@ -22,7 +22,7 @@ Use this skill when the user needs to:
    - Requirements at `.specs/<spec-name>/requirements.md`
    - Research at `.specs/<spec-name>/research.md` (optional but recommended)
    - Design at `.specs/<spec-name>/design.md`
-2. If no spec name provided, list available specs in `.specs/` and ask user to choose
+2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and analyze all available documents
 
 ### Step 2: Analyze the Design
@@ -140,7 +140,7 @@ After creating the document, show the user:
 1. The location of the created file
 2. A summary of the task breakdown
 3. Total number of tasks and estimated checkpoints
-4. Ask if they want to make any changes
+4. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, start execution", "I want to make changes", "Review tasks first"
 
 ## Arguments
 
