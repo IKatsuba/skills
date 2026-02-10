@@ -112,8 +112,13 @@ Use this strategy when the dependency analysis yields **PARALLEL**.
    - Provide the full subtask description, file paths, and requirements
    - Include relevant context from the spec (requirements.md, design.md)
    - Instruct each subagent: implement the subtask but do NOT commit
+   - Include these rules in each prompt:
+     - Implement directly. Do NOT explore the codebase beyond the files listed in the task.
+     - If you need to understand an existing pattern, read ONLY the specific file — do not launch broad searches.
+     - If tests fail because behavior was intentionally changed, update the tests. NEVER re-add removed functionality.
+     - For new fields/entities, ensure they appear in ALL layers: schema, query/mutation, API response type, frontend type, and UI rendering.
 3. **Wait for all subagents to complete**
-4. **Verify results** — review each subagent's output for correctness
+4. **Verify results** — for each subagent, confirm every file listed in the subtask was modified and new fields appear in all required layers
 5. **Mark all subtasks as `[x]`** in tasks.md
 6. **Commit all changes together** — stage all files from the parallel batch and use `git:commit` skill once for the group
 
@@ -154,13 +159,27 @@ Task tool:
 
     Context from design.md: [relevant design context]
 
-    Implement this subtask following the project patterns.
+    RULES:
+    - Implement directly. Do NOT explore the codebase beyond the files listed above.
+    - If you need to understand an existing pattern, read ONLY the specific file — do not launch broad searches.
+    - If tests fail because behavior was intentionally changed, update the tests to match the new behavior. NEVER re-add removed functionality to make old tests pass.
+    - For new fields/entities, ensure they appear in ALL layers: schema, query/mutation, API response type, frontend type, and UI rendering.
 ```
 
 **When NOT to use subagent:**
 - Simple one-line changes
 - Checkpoint/verification tasks (handle these directly)
 - Tasks that require user interaction
+
+### Step 3d: Post-Subtask Verification
+
+After each subagent completes (whether parallel or sequential), verify before marking as `[x]`:
+
+1. **File check** — confirm that every file listed in the subtask was actually modified (use `git diff --stat`)
+2. **Field completeness** — if the subtask adds a new field or entity, spot-check that it appears in all required layers (schema → query → type → UI)
+3. **No regressions** — if the subtask modified existing files, ensure no unrelated code was changed or removed
+
+If verification fails, either fix it directly or re-run the subagent with specific correction instructions. Do NOT mark the subtask as `[x]` until verification passes.
 
 ### Step 4: Handle Checkpoints
 

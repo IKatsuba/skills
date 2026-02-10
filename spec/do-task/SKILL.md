@@ -70,8 +70,16 @@ If the task number points to a **single subtask** (e.g., "1.2"):
 3. **Launch subagent** - Use the Task tool with `subagent_type: "general-purpose"` to execute the subtask:
    - Provide the full subtask description, file paths, and requirements
    - Include relevant context from the spec (requirements.md, design.md)
-4. **Verify result** - Review the subagent's output for success
-5. **Mark subtask as complete** - Update the subtask checkbox to `[x]` in tasks.md
+   - Include these rules in the prompt:
+     - Implement directly. Do NOT explore the codebase beyond the files listed in the task.
+     - If you need to understand an existing pattern, read ONLY the specific file — do not launch broad searches.
+     - If tests fail because behavior was intentionally changed, update the tests to match the new behavior. NEVER re-add removed functionality to make old tests pass.
+     - For new fields/entities, ensure they appear in ALL layers: schema, query/mutation, API response type, frontend type, and UI rendering.
+4. **Verify result** - After the subagent completes:
+   - Confirm every file listed in the subtask was actually modified (`git diff --stat`)
+   - If the subtask adds a new field, spot-check it appears in all required layers (schema → query → type → UI)
+   - If verification fails, fix directly or re-run the subagent with specific corrections
+5. **Mark subtask as complete** - Update the subtask checkbox to `[x]` in tasks.md only after verification passes
 6. **Commit the changes** - Use the `git:commit` skill to commit (see Committing Changes section)
 7. If all subtasks of the parent major task are now complete, mark the major task as `[x]` in tasks.md and commit this change using the `git:commit` skill
 
@@ -118,8 +126,13 @@ Use this strategy when the dependency analysis yields **PARALLEL**.
    - Provide the full subtask description, file paths, and requirements
    - Include relevant context from the spec (requirements.md, design.md)
    - Instruct each subagent: implement the subtask but do NOT commit
+   - Include these rules in each prompt:
+     - Implement directly. Do NOT explore the codebase beyond the files listed in the task.
+     - If you need to understand an existing pattern, read ONLY the specific file — do not launch broad searches.
+     - If tests fail because behavior was intentionally changed, update the tests. NEVER re-add removed functionality.
+     - For new fields/entities, ensure they appear in ALL layers: schema, query/mutation, API response type, frontend type, and UI rendering.
 3. **Wait for all subagents to complete**
-4. **Verify results** — review each subagent's output
+4. **Verify results** — for each subagent, confirm every file listed in the subtask was modified and new fields appear in all required layers
 5. **Mark all subtasks as `[x]`** in tasks.md
 6. **Commit all changes together** — single commit for the batch using `git:commit` skill
 

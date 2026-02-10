@@ -62,8 +62,16 @@ If the next pending item is a **subtask** (e.g., 1.2):
 3. **Launch subagent** - Use the Task tool with `subagent_type: "general-purpose"` to execute the subtask:
    - Provide the full subtask description, file paths, and requirements
    - Include relevant context from the spec (requirements.md, design.md)
-4. **Verify result** - Review the subagent's output for success
-5. **Mark subtask as complete** - Update the subtask checkbox to `[x]` in tasks.md
+   - Include these rules in the prompt:
+     - Implement directly. Do NOT explore the codebase beyond the files listed in the task.
+     - If you need to understand an existing pattern, read ONLY the specific file — do not launch broad searches.
+     - If tests fail because behavior was intentionally changed, update the tests to match the new behavior. NEVER re-add removed functionality to make old tests pass.
+     - For new fields/entities, ensure they appear in ALL layers: schema, query/mutation, API response type, frontend type, and UI rendering.
+4. **Verify result** - After the subagent completes:
+   - Confirm every file listed in the subtask was actually modified (`git diff --stat`)
+   - If the subtask adds a new field, spot-check it appears in all required layers (schema → query → type → UI)
+   - If verification fails, fix directly or re-run the subagent with specific corrections
+5. **Mark subtask as complete** - Update the subtask checkbox to `[x]` in tasks.md only after verification passes
 6. **Commit the changes** - Use the `git:commit` skill to commit (see Committing Changes section)
 7. If all subtasks of the parent major task are now complete, mark the major task as `[x]` in tasks.md and commit this change using the `git:commit` skill
 

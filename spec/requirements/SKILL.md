@@ -68,6 +68,12 @@ Create the document at `.specs/<spec-name>/requirements.md` with this structure:
 3. THE [Component] SHALL NOT [prohibited action]
 
 [Continue with additional requirements following the same pattern]
+
+## Superseded Behaviors
+
+[If this feature modifies or removes existing functionality, list each change explicitly. If the feature is entirely new, omit this section.]
+
+- [Old behavior] → REMOVED / REPLACED BY Requirement X.X
 ```
 
 ### Writing Guidelines
@@ -79,6 +85,11 @@ Create the document at `.specs/<spec-name>/requirements.md` with this structure:
 5. **Reference existing code patterns** - Align with project conventions
 6. **Keep requirements atomic** - One requirement per item
 7. **Prioritize user experience** - Every user flow must feel natural. When related entities exist (e.g., category and subcategory), requirements MUST include inline/contextual creation — the user should never be forced to navigate away from the current page to create a dependent entity and then return. For example, if a form needs a parent entity that doesn't exist yet, there must be a way to create it on the spot (inline dialog, quick-add in dropdown, etc.).
+8. **Document intentional behavior changes** - When the feature modifies or removes existing behavior, add a "Superseded Behaviors" section that explicitly lists what is being replaced or removed. This prevents the implementer from accidentally restoring old behavior (e.g., re-adding removed undo functionality to make old tests pass). Format:
+   ```
+   ### Superseded Behaviors
+   - [Old behavior description] → REMOVED / REPLACED BY [new behavior or requirement reference]
+   ```
 
 ### Step 4: Confirm with User
 

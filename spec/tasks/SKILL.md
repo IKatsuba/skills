@@ -102,6 +102,16 @@ Create the document at `.specs/<spec-name>/tasks.md` with this structure:
 5. **Add checkpoints** - Include verification points after major milestones (see Checkpoint Guidelines)
 6. **Order by dependencies** - Tasks that depend on others come later
 7. **Be specific** - Each subtask should be actionable and clear
+8. **Full-stack data flow trace** - When a task introduces a new field, entity, or data attribute, it MUST include subtasks for EVERY layer in the data flow. Missing even one layer causes bugs that require follow-up fix sessions. Use this checklist:
+   - Schema/model definition
+   - Database migration (if applicable)
+   - Query/mutation that reads or writes the field
+   - API response type/DTO that exposes the field
+   - Frontend type/interface that receives the field
+   - UI component that renders or edits the field
+   - Validation (if the field has constraints)
+
+   If a single subtask spans multiple layers, explicitly list every file path — do not rely on the implementer to infer which files need changes.
 
 ### Task Types
 

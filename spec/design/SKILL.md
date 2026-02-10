@@ -27,18 +27,27 @@ Use this skill when the user needs to:
 
 ### Step 2: Analyze the Codebase
 
-Before writing the design, perform a deep analysis using **parallel sub-agents and all available information sources**. If `research.md` exists, use the chosen solutions as the starting point — agents should validate and refine those choices against the codebase rather than starting from scratch. Launch the following investigations concurrently:
+Before writing the design, analyze the codebase using **parallel sub-agents**. The depth of exploration depends on whether `research.md` exists:
 
 #### 2a. Codebase Exploration (launch in parallel)
 
-Use the `Task` tool with `subagent_type=Explore` to run **multiple exploration agents in parallel**. Each agent should investigate a different aspect:
+Use the `Task` tool with `subagent_type=Explore` to run exploration agents in parallel.
+
+**When `research.md` EXISTS with CHOSEN solutions** — run 2 focused validation agents:
+
+1. **Integration points agent** — find specific files, APIs, database models, and configuration files that will be affected by the chosen solutions. Validate that the integration points described in research.md actually exist and match the current codebase state
+2. **Affected areas agent** — based on the requirements and chosen solutions, identify the exact files and components that will need to be created or modified. Map the full data flow for each new field/entity
+
+The research already covers architecture and patterns — do NOT re-discover what is already documented.
+
+**When `research.md` is MISSING** — run 4 broad discovery agents:
 
 1. **Architecture agent** — explore overall project structure, entry points, module boundaries, and dependency graph
 2. **Patterns agent** — identify coding conventions, design patterns, naming styles, error handling approaches, and testing patterns used in the codebase
 3. **Integration points agent** — find APIs, services, database models, external dependencies, and configuration files relevant to the requirements
 4. **Affected areas agent** — based on the requirements document, identify specific files and components that will need to be created or modified
 
-All four agents MUST be launched in a **single message** (parallel tool calls) to maximize efficiency.
+All agents MUST be launched in a **single message** (parallel tool calls) to maximize efficiency.
 
 #### 2b. Technology Research (launch in parallel with 2a)
 
@@ -155,6 +164,17 @@ interface ModelName {
   field2: number;  // Description
 }
 \`\`\`
+
+## Data Flow Completeness
+
+For each new field or entity introduced by this feature, trace the full data flow to ensure nothing is missed during implementation:
+
+| Field/Entity | Schema | Migration | Query/Mutation | API Type | Frontend Type | UI Component |
+|-------------|--------|-----------|---------------|----------|--------------|-------------|
+| [field1]    | `path` | `path`    | `path`        | `path`   | `path`       | `path`      |
+| [field2]    | `path` | N/A       | `path`        | `path`   | `path`       | `path`      |
+
+Any field missing from a layer in this table is a bug waiting to happen. If a layer is not applicable (e.g., no migration needed), mark it as N/A with a reason.
 
 ## Error Handling
 
