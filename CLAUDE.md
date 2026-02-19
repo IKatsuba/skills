@@ -24,6 +24,10 @@ spec/                       - Specification-driven development skills
   do-next/SKILL.md          - Execute next pending task
   do-task/SKILL.md          - Execute specific task by number
   review/SKILL.md           - Review spec documents for quality and consistency
+  test-plan/SKILL.md        - Generate manual test plan from specification
+  test-next/SKILL.md        - Execute next pending test case
+  test-all/SKILL.md         - Execute all pending test cases
+  test-task/SKILL.md        - Execute specific test case by number
 git/                        - Git workflow skills
   commit/SKILL.md           - Smart commit with Conventional Commits
   amend/SKILL.md            - Amend last commit
@@ -90,9 +94,33 @@ After creating a tasks document, use these skills to execute the implementation:
 
 All specification documents are stored in `.specs/<spec-name>/` directories using kebab-case naming.
 
+### Manual Testing Skills
+
+After implementation is complete, use these skills to generate and execute a manual test plan:
+
+9. **`spec:test-plan`** → Creates `.specs/<name>/test-plan.md`
+   - Reads all spec documents to generate test scenarios
+   - Each test case traces back to requirements via `_Requirements: X.X_`
+   - Checkbox states: `[ ]` pending, `[-]` in progress, `[x]` passed, `[!]` failed, `[s]` skipped
+   - Includes Summary section with pass/fail/skip counters
+
+10. **`spec:test-next`** → Executes the next pending test
+    - Finds the first incomplete test case and presents it
+    - User performs the test and reports result (passed/failed/skipped)
+    - Updates test-plan.md and commits after each test
+
+11. **`spec:test-all`** → Walks through all pending tests
+    - Presents each test sequentially, waits for user result
+    - Commits after each test, shows final summary when done
+    - User can stop at any time
+
+12. **`spec:test-task <number>`** → Executes a specific test
+    - Runs a test by its number (e.g., "1.2", "2")
+    - Useful for re-testing failed tests after fixes
+
 ### Utility Skills
 
-9. **`utils:changelog [period]`** → Generates human-readable changelog
+13. **`utils:changelog [period]`** → Generates human-readable changelog
    - Analyzes git history for a specified time period
    - Creates changelog suitable for non-technical teams (product, marketing, support)
    - Transforms technical commits into user-facing benefit descriptions
@@ -100,24 +128,24 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Git Skills
 
-10. **`git:commit`** → Creates a conventional commit
+14. **`git:commit`** → Creates a conventional commit
    - Analyzes staged changes to auto-detect commit type
    - Asks user to choose type when ambiguous
    - Follows Conventional Commits specification
 
-11. **`git:amend`** → Modifies the last commit
+15. **`git:amend`** → Modifies the last commit
    - Adds staged changes to the previous commit
    - Updates commit message while keeping format
    - Warns if commit was already pushed
 
 ### Review Skills
 
-12. **`review:local [scope]`** → Performs local code review
+16. **`review:local [scope]`** → Performs local code review
     - Analyzes changes for bugs, security issues, and code quality
     - Auto-detects scope (staged, unstaged, last commit)
     - Generates structured summary report with severity levels
 
-13. **`review:ux [spec-name|path|branch]`** → Performs UX review
+17. **`review:ux [spec-name|path|branch]`** → Performs UX review
     - Analyzes user flows for efficiency and unnecessary navigation hops
     - Checks UI consistency with existing app patterns
     - Validates edge case handling (empty states, errors, loading)
@@ -125,7 +153,7 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Development Skills
 
-14. **`dev:skill [category/name]`** → Creates a new skill definition
+18. **`dev:skill [category/name]`** → Creates a new skill definition
    - Scaffolds a SKILL.md with proper structure and conventions
    - Ensures consistency across all skills in the repository
    - Updates CLAUDE.md with the new skill entry
@@ -136,7 +164,7 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 - **Codebase awareness**: Skills analyze existing patterns before generating content
 - **Traceability**: Each task references the requirements it fulfills (`_Requirements: X.X_`)
 - **Verification checkpoints**: Tasks include milestone verification steps
-- **Checkbox format**: Tasks use `[ ]` (pending), `[-]` (partial), `[x]` (complete)
+- **Checkbox format**: Tasks use `[ ]` (pending), `[-]` (in progress), `[x]` (complete). Test plans extend this with `[!]` (failed) and `[s]` (skipped)
 
 ## Creating & Modifying Skills
 
