@@ -5,7 +5,7 @@
 ## Quick Start
 
 ```bash
-npx add-skill ikatsuba/skills
+npx skills add ikatsuba/skills
 ```
 
 That's it! You're ready to go.
@@ -19,19 +19,19 @@ That's it! You're ready to go.
 Pick only what you need:
 
 ```bash
-npx add-skill ikatsuba/skills --skill spec:plan
-npx add-skill ikatsuba/skills --skill spec:research
-npx add-skill ikatsuba/skills --skill spec:design
-npx add-skill ikatsuba/skills --skill spec:breakdown
-npx add-skill ikatsuba/skills --skill spec:implement
-npx add-skill ikatsuba/skills --skill spec:test-plan
-npx add-skill ikatsuba/skills --skill spec:test
-npx add-skill ikatsuba/skills --skill git:commit
-npx add-skill ikatsuba/skills --skill git:amend
-npx add-skill ikatsuba/skills --skill git:changelog
-npx add-skill ikatsuba/skills --skill review:diff
-npx add-skill ikatsuba/skills --skill review:ux
-npx add-skill ikatsuba/skills --skill dev:create-skill
+npx skills add ikatsuba/skills --skill spec:plan
+npx skills add ikatsuba/skills --skill spec:research
+npx skills add ikatsuba/skills --skill spec:design
+npx skills add ikatsuba/skills --skill spec:breakdown
+npx skills add ikatsuba/skills --skill spec:implement
+npx skills add ikatsuba/skills --skill spec:test-plan
+npx skills add ikatsuba/skills --skill spec:test
+npx skills add ikatsuba/skills --skill git:commit
+npx skills add ikatsuba/skills --skill git:amend
+npx skills add ikatsuba/skills --skill git:changelog
+npx skills add ikatsuba/skills --skill review:diff
+npx skills add ikatsuba/skills --skill review:ux
+npx skills add ikatsuba/skills --skill dev:create-skill
 ```
 
 ### Global installation
@@ -39,13 +39,13 @@ npx add-skill ikatsuba/skills --skill dev:create-skill
 Want skills everywhere? Go global:
 
 ```bash
-npx add-skill ikatsuba/skills -g
+npx skills add ikatsuba/skills -g
 ```
 
 ### Browse available skills
 
 ```bash
-npx add-skill ikatsuba/skills --list
+npx skills add ikatsuba/skills --list
 ```
 
 ---

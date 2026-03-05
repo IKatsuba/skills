@@ -57,15 +57,15 @@ Skills for specification-driven development workflow.
 
 ```bash
 # All spec skills
-npx add-skill ikatsuba/skills/spec
+npx skills add ikatsuba/skills/spec
 
 # Individual skills
-npx add-skill ikatsuba/skills --skill spec:plan
-npx add-skill ikatsuba/skills --skill spec:research
-npx add-skill ikatsuba/skills --skill spec:design
-npx add-skill ikatsuba/skills --skill spec:breakdown
-npx add-skill ikatsuba/skills --skill spec:implement
-npx add-skill ikatsuba/skills --skill spec:review
-npx add-skill ikatsuba/skills --skill spec:test-plan
-npx add-skill ikatsuba/skills --skill spec:test
+npx skills add ikatsuba/skills --skill spec:plan
+npx skills add ikatsuba/skills --skill spec:research
+npx skills add ikatsuba/skills --skill spec:design
+npx skills add ikatsuba/skills --skill spec:breakdown
+npx skills add ikatsuba/skills --skill spec:implement
+npx skills add ikatsuba/skills --skill spec:review
+npx skills add ikatsuba/skills --skill spec:test-plan
+npx skills add ikatsuba/skills --skill spec:test
 ```

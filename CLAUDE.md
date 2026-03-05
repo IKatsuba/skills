@@ -8,9 +8,9 @@ This is a Claude Code skills repository providing specification-driven developme
 
 ## Installation
 
-Skills are installed via the `npx add-skill` command:
-- All skills: `npx add-skill ikatsuba/skills`
-- Individual: `npx add-skill ikatsuba/skills/spec:plan`
+Skills are installed via the `npx skills add` command:
+- All skills: `npx skills add ikatsuba/skills`
+- Individual: `npx skills add ikatsuba/skills/spec:plan`
 
 ## Repository Structure
 

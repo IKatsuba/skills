@@ -44,9 +44,9 @@ Review features from the end-user perspective: flow efficiency, edge case handli
 
 ```bash
 # All review skills
-npx add-skill ikatsuba/skills/review
+npx skills add ikatsuba/skills/review
 
 # Individual skills
-npx add-skill ikatsuba/skills --skill review:diff
-npx add-skill ikatsuba/skills --skill review:ux
+npx skills add ikatsuba/skills --skill review:diff
+npx skills add ikatsuba/skills --skill review:ux
 ```
