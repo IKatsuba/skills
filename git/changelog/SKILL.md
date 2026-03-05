@@ -1,11 +1,11 @@
 ---
-name: utils:changelog
+name: git:changelog
 description: Generate Changelog - analyzes git history and creates a human-readable changelog for non-technical teams
 ---
 
 # Generate Changelog
 
-Analyzes git history for a specified time period and generates a vibrant, human-readable changelog that non-technical teams will actually enjoy reading. Perfect for product managers, marketing, support teams, and external release notes.
+Analyzes git history for a specified time period and generates a human-readable changelog for non-technical teams. Perfect for product managers, marketing, support teams, and external release notes.
 
 ## When to use
 
@@ -49,15 +49,15 @@ git log v1.0.0..v1.1.0 --pretty=format:"%h|%s|%b|%an|%ad" --date=short
 
 Group commits into business-friendly categories:
 
-| Category | Emoji | Keywords to detect |
-|----------|-------|-------------------|
-| New Features | 🚀 | feat, add, implement, introduce |
-| Improvements | 💪 | improve, enhance, update, optimize |
-| Bug Fixes | 🐛 | fix, resolve, repair, correct |
-| Security | 🔒 | security, vulnerability, CVE |
-| Performance | ⚡ | perf, performance, speed, optimize |
-| Breaking Changes | ⚠️ | breaking, BREAKING CHANGE |
-| Deprecations | 📦 | deprecate, deprecated |
+| Category | Keywords to detect |
+|----------|-------------------|
+| New Features | feat, add, implement, introduce |
+| Improvements | improve, enhance, update, optimize |
+| Bug Fixes | fix, resolve, repair, correct |
+| Security | security, vulnerability, CVE |
+| Performance | perf, performance, speed, optimize |
+| Breaking Changes | breaking, BREAKING CHANGE |
+| Deprecations | deprecate, deprecated |
 
 **Transformation rules:**
 1. Remove technical jargon (PR numbers, file paths, function names)
@@ -70,46 +70,46 @@ Group commits into business-friendly categories:
 Create output in this format:
 
 ```markdown
-# 📋 Changelog
+# Changelog
 
-**Period:** [Start Date] → [End Date]
-
----
-
-## ✨ Highlights
-
-> [2-3 sentence summary of the most important changes. Make it sound exciting and valuable!]
+**Period:** [Start Date] - [End Date]
 
 ---
 
-## 🚀 New Features
+## Highlights
+
+> [2-3 sentence summary of the most important changes]
+
+---
+
+## New Features
 
 - **[Feature Name]** — [Brief description of what users can now do]
 - **[Feature Name]** — [Brief description of what users can now do]
 
-## 💪 Improvements
+## Improvements
 
 - **[Area]** — [What got better and why it matters]
 - **[Area]** — [What got better and why it matters]
 
-## 🐛 Bug Fixes
+## Bug Fixes
 
 - Fixed an issue where [user-facing problem description]
 - Resolved a problem with [user-facing problem description]
 
-## 🔒 Security
+## Security
 
 - [Description without exposing vulnerability details]
 
-## ⚡ Performance
+## Performance
 
 - [Description of what is now faster/more efficient]
 
 ---
 
-📊 **Stats:** [X] changes by [Y] contributors
+**Stats:** [X] changes by [Y] contributors
 
-🙏 **Contributors:** @name1, @name2, @name3
+**Contributors:** @name1, @name2, @name3
 ```
 
 ### Tone Guidelines
@@ -145,29 +145,29 @@ Ask user their preferred output:
 ## Writing Guidelines
 
 1. **User perspective** - Write from the user's point of view
-   - ❌ "Refactored auth module to use JWT tokens"
-   - ✅ "Your login is now more secure"
+   - Bad:"Refactored auth module to use JWT tokens"
+   - Good:"Your login is now more secure"
 
 2. **Benefit-focused** - Emphasize the benefit, not the implementation
-   - ❌ "Added Redis caching layer"
-   - ✅ "Pages load up to 3x faster"
+   - Bad:"Added Redis caching layer"
+   - Good:"Pages load up to 3x faster"
 
 3. **Plain language** - Avoid technical terms
-   - ❌ "Fixed race condition in async handler"
-   - ✅ "Fixed a rare issue where data could appear incorrect"
+   - Bad:"Fixed race condition in async handler"
+   - Good:"Fixed a rare issue where data could appear incorrect"
 
 4. **Concise** - Keep entries to 1-2 sentences max
 
 5. **Positive framing** - Frame fixes as improvements
-   - ❌ "Fixed broken search"
-   - ✅ "Search now works reliably"
+   - Bad:"Fixed broken search"
+   - Good:"Search now works reliably"
 
 6. **Celebrate big wins** - Make important features feel special
-   - ❌ "Added dark mode"
-   - ✅ "🌙 Dark mode is finally here! Easy on the eyes, day or night"
+   - Bad:"Added dark mode"
+   - "Dark mode is finally here! Easy on the eyes, day or night"
 
 7. **Acknowledge feedback** - Show users they're heard
-   - ✅ "You asked, we listened — bulk export is now available"
+   - Good:"You asked, we listened — bulk export is now available"
 
 ## Arguments
 
@@ -178,6 +178,6 @@ Ask user their preferred output:
   - Tags: `v1.0.0..v1.1.0`
 
 Examples:
-- `changelog last week` - Changes from the past 7 days
-- `changelog since 2024-01-01` - All changes since January 1st
-- `changelog v2.0.0..v2.1.0` - Changes between two releases
+- `git:changelog last week` - Changes from the past 7 days
+- `git:changelog since 2024-01-01` - All changes since January 1st
+- `git:changelog v2.0.0..v2.1.0` - Changes between two releases

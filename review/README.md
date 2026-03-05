@@ -1,28 +1,28 @@
-# 🔍 Review Skills
+# Review Skills
 
 Code and UX review skills for quality assurance before committing or releasing.
 
-## ✨ Available Skills
+## Available Skills
 
 | Skill | Description |
 |-------|-------------|
-| `review:local` | 🔎 Perform local code review with structured feedback before committing |
-| `review:ux` | 🧑‍💻 Detailed UX review — user flows, edge cases, and UI consistency |
+| `review:diff` | Diff review with structured feedback before committing |
+| `review:ux` | Detailed UX review — user flows, edge cases, and UI consistency |
 
-## 🔎 Local Code Review
+## Diff Review
 
 Analyze code changes for bugs, security issues, and code quality.
 
 ### Usage
 
 ```bash
-/review:local                # Auto-detect changes to review
-/review:local staged         # Review staged changes only
-/review:local branch         # Review all branch changes vs main
-/review:local src/auth/      # Review specific directory
+/review:diff                # Auto-detect changes to review
+/review:diff staged         # Review staged changes only
+/review:diff branch         # Review all branch changes vs main
+/review:diff src/auth/      # Review specific directory
 ```
 
-## 🧑‍💻 UX Review
+## UX Review
 
 Review features from the end-user perspective: flow efficiency, edge case handling, and UI consistency.
 
@@ -40,13 +40,13 @@ Review features from the end-user perspective: flow efficiency, edge case handli
 - **Edge cases** — empty states, loading states, error messages, validation, boundary conditions
 - **UI consistency** — component reuse, layout patterns, interaction patterns, terminology
 
-## 📦 Installation
+## Installation
 
 ```bash
 # All review skills
 npx add-skill ikatsuba/skills/review
 
 # Individual skills
-npx add-skill ikatsuba/skills --skill review:local
+npx add-skill ikatsuba/skills --skill review:diff
 npx add-skill ikatsuba/skills --skill review:ux
 ```

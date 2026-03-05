@@ -1,5 +1,5 @@
 ---
-name: dev:skill
+name: dev:create-skill
 description: Create New Skill - generates a new skill definition for this repository
 ---
 
@@ -22,7 +22,8 @@ Ask the user for the following information:
 
 1. **Category** - Which category folder should contain this skill?
    - `spec/` - Specification-driven development skills
-   - `utils/` - Utility skills
+   - `git/` - Git workflow skills
+   - `review/` - Code review skills
    - `dev/` - Development and meta skills
    - Or suggest a new category if none fit
 
@@ -114,12 +115,12 @@ Present to the user:
 ## Arguments
 
 - `<args>` - Can include the category and/or skill name
-  - `utils/format-code` - Full path with category
-  - `format-code` - Just the skill name (will ask for category)
+  - `git/format-log` - Full path with category
+  - `format-log` - Just the skill name (will ask for category)
 
 Examples:
-- `dev:skill utils/format-code` - Create a skill in the utils category
-- `dev:skill code-review` - Create a skill (will prompt for category)
+- `dev:create-skill git/format-log` - Create a skill in the git category
+- `dev:create-skill code-review` - Create a skill (will prompt for category)
 
 ## Skill Structure Reference
 
@@ -140,4 +141,4 @@ A well-structured skill typically includes:
 
 - **Category names**: lowercase, single word preferred (e.g., `spec`, `utils`, `dev`)
 - **Skill names**: kebab-case (e.g., `do-next`, `changelog`, `skill`)
-- **Full skill name**: `category:skill-name` (e.g., `dev:skill`, `utils:changelog`)
+- **Full skill name**: `category:skill-name` (e.g., `git:commit`, `review:diff`)

@@ -27,16 +27,15 @@ spec/                       - Specification-driven development skills
 git/                        - Git workflow skills
   commit/SKILL.md           - Smart commit with Conventional Commits
   amend/SKILL.md            - Amend last commit
-utils/                      - Utility skills
   changelog/SKILL.md        - Human-readable changelog generation
 review/                     - Code review skills
-  local/SKILL.md            - Local code review before commit
+  diff/SKILL.md             - Diff review before commit
   ux/SKILL.md               - UX review for user experience quality
 dev/                        - Development and meta skills
-  skill/SKILL.md            - Skill creation helper (meta-skill)
+  create-skill/SKILL.md     - Skill creation helper (meta-skill)
 ```
 
-**Important**: All skills MUST be placed in a category folder (e.g., `spec/`, `utils/`), never in the repository root. When creating new skills, either add them to an existing category or create a new category folder.
+**Important**: All skills MUST be placed in a category folder (e.g., `spec/`, `git/`), never in the repository root. When creating new skills, either add them to an existing category or create a new category folder.
 
 ## Workflow Architecture
 
@@ -93,29 +92,27 @@ Can be invoked at **any stage** of the pipeline to validate quality of existing 
 
 All specification documents are stored in `.specs/<spec-name>/` directories using kebab-case naming.
 
-### Utility Skills
-
-8. **`utils:changelog [period]`** → Generates human-readable changelog
-   - Analyzes git history for a specified time period
-   - Creates changelog suitable for non-technical teams (product, marketing, support)
-   - Transforms technical commits into user-facing benefit descriptions
-   - Supports relative periods (`last week`), dates (`since 2024-01-01`), and tags (`v1.0.0..v1.1.0`)
-
 ### Git Skills
 
-9. **`git:commit`** → Creates a conventional commit
+8. **`git:commit`** → Creates a conventional commit
    - Analyzes staged changes to auto-detect commit type
    - Asks user to choose type when ambiguous
    - Follows Conventional Commits specification
 
-10. **`git:amend`** → Modifies the last commit
+9. **`git:amend`** → Modifies the last commit
    - Adds staged changes to the previous commit
    - Updates commit message while keeping format
    - Warns if commit was already pushed
 
+10. **`git:changelog [period]`** → Generates human-readable changelog
+    - Analyzes git history for a specified time period
+    - Creates changelog suitable for non-technical teams (product, marketing, support)
+    - Transforms technical commits into user-facing benefit descriptions
+    - Supports relative periods (`last week`), dates (`since 2024-01-01`), and tags (`v1.0.0..v1.1.0`)
+
 ### Review Skills
 
-11. **`review:local [scope]`** → Performs local code review
+11. **`review:diff [scope]`** → Performs diff review
     - Analyzes changes for bugs, security issues, and code quality
     - Auto-detects scope (staged, unstaged, last commit)
     - Generates structured summary report with severity levels
@@ -128,10 +125,10 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Development Skills
 
-13. **`dev:skill [category/name]`** → Creates a new skill definition
-   - Scaffolds a SKILL.md with proper structure and conventions
-   - Ensures consistency across all skills in the repository
-   - Updates CLAUDE.md with the new skill entry
+13. **`dev:create-skill [category/name]`** → Creates a new skill definition
+    - Scaffolds a SKILL.md with proper structure and conventions
+    - Ensures consistency across all skills in the repository
+    - Updates CLAUDE.md with the new skill entry
 
 ## Key Patterns
 
@@ -163,6 +160,6 @@ description: Short description of the skill
 Examples:
 - `spec:plan` (not `plan`)
 - `spec:implement` (not `implement`)
-- `utils:changelog` (not `changelog`)
+- `git:changelog` (not `changelog`)
 
 This ensures skills are properly namespaced and avoids naming conflicts.

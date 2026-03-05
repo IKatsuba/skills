@@ -1,9 +1,9 @@
 ---
-name: review:local
-description: Local Code Review - analyzes code changes and provides structured feedback before commit
+name: review:diff
+description: Diff Review - analyzes code changes and provides structured feedback before commit
 ---
 
-# Local Code Review
+# Diff Review
 
 Performs a thorough code review of local changes before they are committed or pushed. Identifies potential issues, suggests improvements, and ensures code quality standards are met.
 
@@ -232,8 +232,8 @@ Always check for:
   - `abc123` - Review specific commit
 
 Examples:
-- `review:local` - Auto-detect and review available changes
-- `review:local staged` - Review only staged changes
-- `review:local src/auth/` - Review changes in auth directory
-- `review:local last` - Review the last commit
-- `review:local branch` - Review all branch changes vs main
+- `review:diff` - Auto-detect and review available changes
+- `review:diff staged` - Review only staged changes
+- `review:diff src/auth/` - Review changes in auth directory
+- `review:diff last` - Review the last commit
+- `review:diff branch` - Review all branch changes vs main

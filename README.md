@@ -26,9 +26,12 @@ npx add-skill ikatsuba/skills --skill spec:breakdown
 npx add-skill ikatsuba/skills --skill spec:implement
 npx add-skill ikatsuba/skills --skill spec:test-plan
 npx add-skill ikatsuba/skills --skill spec:test
-npx add-skill ikatsuba/skills --skill utils:changelog
-npx add-skill ikatsuba/skills --skill review:local
+npx add-skill ikatsuba/skills --skill git:commit
+npx add-skill ikatsuba/skills --skill git:amend
+npx add-skill ikatsuba/skills --skill git:changelog
+npx add-skill ikatsuba/skills --skill review:diff
 npx add-skill ikatsuba/skills --skill review:ux
+npx add-skill ikatsuba/skills --skill dev:create-skill
 ```
 
 ### Global installation
@@ -62,17 +65,19 @@ npx add-skill ikatsuba/skills --list
 | `spec:test-plan` | Test plan — generate manual test scenarios |
 | `spec:test` | Execute tests — walk through all, next, or specific test |
 
-### Utility
+### Git
 
 | Skill | Description |
 |-------|-------------|
-| `utils:changelog` | Generate human-readable changelogs for product, marketing, and support teams |
+| `git:commit` | Smart commit with Conventional Commits |
+| `git:amend` | Amend last commit |
+| `git:changelog` | Generate human-readable changelogs for product, marketing, and support teams |
 
 ### Code Review
 
 | Skill | Description |
 |-------|-------------|
-| `review:local` | Perform local code review with structured feedback before committing |
+| `review:diff` | Diff review with structured feedback before committing |
 | `review:ux` | Detailed UX review — user flows, edge cases, and UI consistency |
 
 ---
@@ -112,10 +117,10 @@ Verify your implementation:
 Review your code before committing:
 
 ```bash
-/review:local                # Auto-detect changes to review
-/review:local staged         # Review staged changes only
-/review:local branch         # Review all branch changes vs main
-/review:local src/auth/      # Review specific directory
+/review:diff                # Auto-detect changes to review
+/review:diff staged         # Review staged changes only
+/review:diff branch         # Review all branch changes vs main
+/review:diff src/auth/      # Review specific directory
 ```
 
 ### UX Review
@@ -133,9 +138,9 @@ Review the user experience of a feature:
 Keep your stakeholders in the loop:
 
 ```bash
-/utils:changelog last week           # Changes from the past 7 days
-/utils:changelog since 2024-01-01    # All changes since a date
-/utils:changelog v1.0.0..v1.1.0      # Changes between releases
+/git:changelog last week           # Changes from the past 7 days
+/git:changelog since 2024-01-01    # All changes since a date
+/git:changelog v1.0.0..v1.1.0      # Changes between releases
 ```
 
 ---
