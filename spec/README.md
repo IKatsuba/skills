@@ -1,58 +1,71 @@
-# 📐 Specification Skills
+# Specification Skills
 
 Skills for specification-driven development workflow.
 
-## 📝 Specification Creation
-
-| Skill | Description |
-|-------|-------------|
-| `spec:requirements` | 📋 Generate structured requirements documents with user stories and acceptance criteria |
-| `spec:design` | 🏗️ Create technical design documents with architecture diagrams and interfaces |
-| `spec:tasks` | ✅ Build implementation plans with tracked tasks and checkboxes |
-
-## ⚡ Task Execution
-
-| Skill | Description |
-|-------|-------------|
-| `spec:do-all` | 🔄 Execute all pending tasks sequentially |
-| `spec:do-next` | ▶️ Run the next pending task |
-| `spec:do-task` | 🎯 Run a specific task by number (e.g., `spec:do-task 1.2`) |
-
-## 🎯 Workflow
+## Workflow
 
 ### Phase 1: Specification
 
-1. **`/spec:requirements <name>`** → Creates `.specs/<name>/requirements.md`
-2. **`/spec:design <name>`** → Creates `.specs/<name>/design.md`
-3. **`/spec:tasks <name>`** → Creates `.specs/<name>/tasks.md`
+1. **`/spec:plan <name>`** — Creates `.specs/<name>/requirements.md`
+2. **`/spec:research <name>`** — Creates `.specs/<name>/research.md`
+3. **`/spec:design <name>`** — Creates `.specs/<name>/design.md`
+4. **`/spec:breakdown <name>`** — Creates `.specs/<name>/tasks.md`
 
 ### Phase 2: Implementation
 
-4. **`/spec:do-all <name>`** — Execute all tasks automatically
-5. **`/spec:do-next <name>`** — Execute tasks one at a time with review
-6. **`/spec:do-task <name> <number>`** — Execute a specific task
+5. **`/spec:implement <name>`** — Execute all tasks automatically
+6. **`/spec:implement <name> next`** — Execute tasks one at a time with review
+7. **`/spec:implement <name> <N>`** — Execute a specific task by number
 
-## 📁 Output Structure
+### Phase 3: Testing
+
+8. **`/spec:test-plan <name>`** — Creates `.specs/<name>/test-plan.md`
+9. **`/spec:test <name>`** — Walk through all pending tests
+10. **`/spec:test <name> next`** — Execute one test at a time
+11. **`/spec:test <name> <N>`** — Execute a specific test by number
+
+### Review (any stage)
+
+**`/spec:review <name>`** — Validate spec documents for quality and consistency
+
+## Available Skills
+
+| Skill | Description |
+|-------|-------------|
+| `spec:plan` | Plan requirements — user stories, acceptance criteria |
+| `spec:research` | Technical research — solution alternatives with pros/cons |
+| `spec:design` | Technical design — architecture diagrams, interfaces |
+| `spec:breakdown` | Task breakdown — implementation plan with checkboxes |
+| `spec:implement` | Implement tasks — execute all, next, or specific task |
+| `spec:review` | Review — validate documents for quality and consistency |
+| `spec:test-plan` | Test plan — generate manual test scenarios |
+| `spec:test` | Execute tests — walk through all, next, or specific test |
+
+## Output Structure
 
 ```
 .specs/
 └── <spec-name>/
-    ├── requirements.md   # 📋 User stories and acceptance criteria
-    ├── design.md         # 🏗️ Architecture, components, interfaces
-    └── tasks.md          # ✅ Implementation plan with checkboxes
+    ├── requirements.md   # User stories and acceptance criteria
+    ├── research.md       # Research findings and chosen solutions
+    ├── design.md         # Architecture, components, interfaces
+    ├── tasks.md          # Implementation plan with checkboxes
+    └── test-plan.md      # Manual test plan with test cases
 ```
 
-## 📦 Installation
+## Installation
 
 ```bash
 # All spec skills
 npx add-skill ikatsuba/skills/spec
 
 # Individual skills
-npx add-skill ikatsuba/skills --skill spec:requirements
+npx add-skill ikatsuba/skills --skill spec:plan
+npx add-skill ikatsuba/skills --skill spec:research
 npx add-skill ikatsuba/skills --skill spec:design
-npx add-skill ikatsuba/skills --skill spec:tasks
-npx add-skill ikatsuba/skills --skill spec:do-all
-npx add-skill ikatsuba/skills --skill spec:do-next
-npx add-skill ikatsuba/skills --skill spec:do-task
+npx add-skill ikatsuba/skills --skill spec:breakdown
+npx add-skill ikatsuba/skills --skill spec:implement
+npx add-skill ikatsuba/skills --skill spec:review
+npx add-skill ikatsuba/skills --skill spec:test-plan
+npx add-skill ikatsuba/skills --skill spec:test
 ```

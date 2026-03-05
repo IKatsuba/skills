@@ -223,7 +223,7 @@ describe('ComponentName', () => {
 After creating the document, show the user:
 1. The location of the created file
 2. A summary of the design decisions
-3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to tasks", "I want to make changes", "Review design first"
+3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to breakdown", "I want to make changes", "Review design first"
 
 ## Arguments
 

@@ -1,9 +1,9 @@
 ---
-name: spec:tasks
-description: Create Tasks Document - generates an implementation plan with tracked tasks based on requirements and design documents
+name: spec:breakdown
+description: Create Task Breakdown - generates an implementation plan with tracked tasks based on requirements and design documents
 ---
 
-# Create Tasks Document
+# Create Task Breakdown
 
 Creates a tasks document based on the requirements and design documents. This command reads both documents and generates an implementation plan with tracked tasks.
 
@@ -131,7 +131,7 @@ Every checkpoint task MUST include:
 ### Checkbox States
 
 - `[ ]` - Pending (not started)
-- `[-]` - Pending tasks
+- `[-]` - In progress
 - `[x]` - Completed
 
 ### Step 5: Confirm with User
@@ -140,7 +140,7 @@ After creating the document, show the user:
 1. The location of the created file
 2. A summary of the task breakdown
 3. Total number of tasks and estimated checkpoints
-4. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, start execution", "I want to make changes", "Review tasks first"
+4. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, start implementation", "I want to make changes", "Review tasks first"
 
 ## Arguments
 

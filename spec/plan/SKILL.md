@@ -1,9 +1,9 @@
 ---
-name: spec:requirements
-description: Create Requirements Document - generates a structured requirements document, asking clarifying questions about ambiguities before proceeding
+name: spec:plan
+description: Plan Requirements - generates a structured requirements document, asking clarifying questions about ambiguities before proceeding
 ---
 
-# Create Requirements Document
+# Plan Requirements
 
 This is the first step in the specification pipeline. Creates a requirements document based on the task context and project. The user provides a spec name and task description, and this command gathers context, asks targeted clarifying questions, and generates a structured requirements document.
 

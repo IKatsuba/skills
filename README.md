@@ -1,8 +1,8 @@
-# 🛠️ Skills
+# Skills
 
 > A collection of skills for Claude Code, Codex, Cursor and OpenCode to supercharge your specification-driven development workflow!
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 npx add-skill ikatsuba/skills
@@ -12,19 +12,20 @@ That's it! You're ready to go.
 
 ---
 
-## 📦 Installation Options
+## Installation Options
 
 ### Install specific skills
 
 Pick only what you need:
 
 ```bash
-npx add-skill ikatsuba/skills --skill spec:requirements
+npx add-skill ikatsuba/skills --skill spec:plan
+npx add-skill ikatsuba/skills --skill spec:research
 npx add-skill ikatsuba/skills --skill spec:design
-npx add-skill ikatsuba/skills --skill spec:tasks
-npx add-skill ikatsuba/skills --skill spec:do-all
-npx add-skill ikatsuba/skills --skill spec:do-next
-npx add-skill ikatsuba/skills --skill spec:do-task
+npx add-skill ikatsuba/skills --skill spec:breakdown
+npx add-skill ikatsuba/skills --skill spec:implement
+npx add-skill ikatsuba/skills --skill spec:test-plan
+npx add-skill ikatsuba/skills --skill spec:test
 npx add-skill ikatsuba/skills --skill utils:changelog
 npx add-skill ikatsuba/skills --skill review:local
 npx add-skill ikatsuba/skills --skill review:ux
@@ -46,60 +47,67 @@ npx add-skill ikatsuba/skills --list
 
 ---
 
-## ✨ Available Skills
+## Available Skills
 
-### 📝 Specification Creation
-
-| Skill | Description |
-|-------|-------------|
-| `spec:requirements` | 📋 Generate structured requirements documents with user stories and acceptance criteria |
-| `spec:design` | 🏗️ Create technical design documents with architecture diagrams and interfaces |
-| `spec:tasks` | ✅ Build implementation plans with tracked tasks and checkboxes |
-
-### ⚡ Task Execution
+### Specification Pipeline
 
 | Skill | Description |
 |-------|-------------|
-| `spec:do-all` | 🔄 Execute all pending tasks sequentially — sit back and relax! |
-| `spec:do-next` | ▶️ Run the next pending task — perfect for incremental progress |
-| `spec:do-task` | 🎯 Run a specific task by number (e.g., `spec:do-task 1.2`) |
+| `spec:plan` | Plan requirements — user stories, acceptance criteria |
+| `spec:research` | Technical research — solution alternatives with pros/cons |
+| `spec:design` | Technical design — architecture diagrams, interfaces |
+| `spec:breakdown` | Task breakdown — implementation plan with checkboxes |
+| `spec:implement` | Implement tasks — execute all, next, or specific task |
+| `spec:review` | Review — validate documents for quality and consistency |
+| `spec:test-plan` | Test plan — generate manual test scenarios |
+| `spec:test` | Execute tests — walk through all, next, or specific test |
 
-### 🧰 Utility
+### Utility
 
 | Skill | Description |
 |-------|-------------|
-| `utils:changelog` | 📰 Generate beautiful, human-readable changelogs for product, marketing, and support teams |
+| `utils:changelog` | Generate human-readable changelogs for product, marketing, and support teams |
 
-### 🔍 Code Review
+### Code Review
 
 | Skill | Description |
 |-------|-------------|
-| `review:local` | 🔎 Perform local code review with structured feedback before committing |
-| `review:ux` | 🧑‍💻 Detailed UX review — user flows, edge cases, and UI consistency |
+| `review:local` | Perform local code review with structured feedback before committing |
+| `review:ux` | Detailed UX review — user flows, edge cases, and UI consistency |
 
 ---
 
-## 🎯 Workflow
+## Workflow
 
 These skills support a complete specification-driven development workflow:
 
-### Phase 1: Specification 📐
+### Phase 1: Specification
 
 Build your blueprint:
 
-1. **`/spec:requirements <name>`** → Creates `.specs/<name>/requirements.md`
-2. **`/spec:design <name>`** → Creates `.specs/<name>/design.md`
-3. **`/spec:tasks <name>`** → Creates `.specs/<name>/tasks.md`
+1. **`/spec:plan <name>`** — Creates `.specs/<name>/requirements.md`
+2. **`/spec:research <name>`** — Creates `.specs/<name>/research.md`
+3. **`/spec:design <name>`** — Creates `.specs/<name>/design.md`
+4. **`/spec:breakdown <name>`** — Creates `.specs/<name>/tasks.md`
 
-### Phase 2: Implementation 🔨
+### Phase 2: Implementation
 
 Let the magic happen:
 
-4. **`/spec:do-all <name>`** — Execute all tasks automatically
-5. **`/spec:do-next <name>`** — Execute tasks one at a time with review
-6. **`/spec:do-task <name> <number>`** — Execute a specific task
+5. **`/spec:implement <name>`** — Execute all tasks automatically
+6. **`/spec:implement <name> next`** — Execute tasks one at a time with review
+7. **`/spec:implement <name> <N>`** — Execute a specific task by number
 
-### Code Review 🔍
+### Phase 3: Testing
+
+Verify your implementation:
+
+8. **`/spec:test-plan <name>`** — Generate manual test plan
+9. **`/spec:test <name>`** — Walk through all pending tests
+10. **`/spec:test <name> next`** — Execute one test at a time
+11. **`/spec:test <name> <N>`** — Execute a specific test by number
+
+### Code Review
 
 Review your code before committing:
 
@@ -110,7 +118,7 @@ Review your code before committing:
 /review:local src/auth/      # Review specific directory
 ```
 
-### UX Review 🧑‍💻
+### UX Review
 
 Review the user experience of a feature:
 
@@ -120,7 +128,7 @@ Review the user experience of a feature:
 /review:ux branch            # UX review of all UI changes on branch
 ```
 
-### Changelog Generation 📰
+### Changelog Generation
 
 Keep your stakeholders in the loop:
 
@@ -132,18 +140,20 @@ Keep your stakeholders in the loop:
 
 ---
 
-## 📁 Documents Structure
+## Documents Structure
 
 ```
 .specs/
 └── <spec-name>/
-    ├── requirements.md   # 📋 User stories and acceptance criteria
-    ├── design.md         # 🏗️ Architecture, components, interfaces
-    └── tasks.md          # ✅ Implementation plan with checkboxes
+    ├── requirements.md   # User stories and acceptance criteria
+    ├── research.md       # Research findings and chosen solutions
+    ├── design.md         # Architecture, components, interfaces
+    ├── tasks.md          # Implementation plan with checkboxes
+    └── test-plan.md      # Manual test plan with test cases
 ```
 
 ---
 
-## 📄 License
+## License
 
-MIT — Use it, share it, love it! ❤️
+MIT
