@@ -31,6 +31,12 @@ git/                        - Git workflow skills
 review/                     - Code review skills
   diff/SKILL.md             - Diff review before commit
   ux/SKILL.md               - UX review for user experience quality
+agent/                      - AI agent design and review skills
+  design/SKILL.md           - Agent architecture design (patterns 1-4)
+  context/SKILL.md          - Context engineering strategy (patterns 5-9)
+  eval/SKILL.md             - Evaluation system design (patterns 10-17)
+  secure/SKILL.md           - Security audit (patterns 18-21)
+  review/SKILL.md           - Full 22-pattern review checklist
 dev/                        - Development and meta skills
   create-skill/SKILL.md     - Skill creation helper (meta-skill)
 ```
@@ -123,9 +129,50 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
     - Validates edge case handling (empty states, errors, loading)
     - Generates structured report with UX-specific severity levels
 
+### Agent Skills
+
+Based on "Patterns for Building AI Agents" (Bhagwat & Gienow, 2025) — 22 patterns across 4 domains.
+
+13. **`agent:design [spec-name]`** → Designs an AI agent system
+    - Whiteboard capability mapping (Pattern 1)
+    - Evolutionary architecture selection (Pattern 2)
+    - Dynamic runtime configuration (Pattern 3)
+    - Human-in-the-loop checkpoint design (Pattern 4)
+    - Outputs `.specs/<name>/agent-design.md`
+
+14. **`agent:context [spec-name]`** → Designs context engineering strategy
+    - Parallelization analysis (Pattern 5)
+    - Context sharing between subagents (Pattern 6)
+    - Context failure mode prevention (Pattern 7)
+    - Compression strategy (Pattern 8)
+    - Error feedback loops (Pattern 9)
+    - Outputs `.specs/<name>/context-engineering.md`
+
+15. **`agent:eval [spec-name]`** → Builds evaluation system
+    - Failure mode taxonomy (Pattern 10)
+    - Business metrics definition (Pattern 11)
+    - Failure mode / metric cross-referencing (Pattern 12)
+    - Eval test suite with CI integration (Patterns 13-14)
+    - SME labeling workflow (Pattern 15)
+    - Production data pipeline (Patterns 16-17)
+    - Outputs `.specs/<name>/agent-eval.md`
+
+16. **`agent:secure [spec-name|path]`** → Security audit
+    - Lethal trifecta analysis (Pattern 18)
+    - Code execution sandbox assessment (Pattern 19)
+    - Granular access control review (Pattern 20)
+    - Input/output guardrails design (Pattern 21)
+    - Outputs `.specs/<name>/agent-security.md`
+
+17. **`agent:review [spec-name|path]`** → Full pattern review
+    - Scores all 22 patterns on a 0-3 scale (max 66 points)
+    - Maturity assessment (Prototype → Best-in-Class)
+    - Top 5 prioritized recommendations
+    - Points to specific `agent:*` skills for weak areas
+
 ### Development Skills
 
-13. **`dev:create-skill [category/name]`** → Creates a new skill definition
+18. **`dev:create-skill [category/name]`** → Creates a new skill definition
     - Scaffolds a SKILL.md with proper structure and conventions
     - Ensures consistency across all skills in the repository
     - Updates CLAUDE.md with the new skill entry
