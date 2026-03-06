@@ -167,13 +167,35 @@ Two tiers: **spec skills** produce design documents in `.specs/`, **action skill
 
 #### Action Skills (work directly, no `.specs/` output)
 
-17. **`agent:prompt`** → Prompt engineering — model selection, system prompt, few-shot examples
-18. **`agent:tools`** → Tool design — decomposition, schemas, MCP strategy, integrations
-19. **`agent:memory`** → Memory architecture — working memory, semantic recall, processors
-20. **`agent:workflow`** → Workflow design — graph primitives, suspend/resume, streaming, observability
-21. **`agent:rag`** → RAG pipeline — decision tree, chunking, embedding, retrieval tuning
-22. **`agent:multi`** → Multi-agent systems — org design, supervision, control flow, composition
-23. **`agent:context`** → Context engineering — parallelization, sharing, failure modes, compression
+Used standalone for focused work or invoked by `agent:design` as research phases.
+
+17. **`agent:prompt`** → Prompt engineering
+    - Model selection (start expensive, optimize later), system prompt architecture
+    - Few-shot example design, production checklist (quality, cost, latency)
+
+18. **`agent:tools`** → Tool design
+    - Decompose into atomic operations (think like an analyst)
+    - Tool schemas with "when to call," MCP client/server strategy, third-party integrations
+
+19. **`agent:memory`** → Memory architecture
+    - Three-layer model: conversation window, working memory, semantic recall
+    - Memory processors (TokenLimiter, ToolCallFilter), dynamic configuration per user tier
+
+20. **`agent:workflow`** → Workflow design
+    - Four primitives: branching, chaining, merging, conditions
+    - Suspend/resume for HITL, streaming strategy, OpenTelemetry observability
+
+21. **`agent:rag`** → RAG pipeline
+    - Decision tree: full context → agentic tools → RAG pipeline
+    - Chunking, embedding, vector DB selection, retrieval tuning, reranking
+
+22. **`agent:multi`** → Multi-agent systems
+    - Organizational design (roles as job titles), supervision patterns
+    - Control flow, agent-as-tool and workflow-as-tool composition, A2A protocol
+
+23. **`agent:context`** → Context engineering
+    - Parallelization analysis, context sharing between subagents
+    - Five failure modes (poisoning, distraction, confusion, clash, rot), compression, error feedback
 
 ### Development Skills
 
