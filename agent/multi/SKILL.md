@@ -211,46 +211,20 @@ Use `AskUserQuestion` — most systems do NOT need A2A. Skip if agents are all w
 - If the whole system is degraded, what is the minimal viable response?
 ```
 
-### Step 8: Generate Multi-Agent Document
+### Step 8: Summarize and Offer Next Steps
 
-Compile into `.specs/<spec-name>/agent-multi.md`:
-
-```markdown
-# Multi-Agent Design: [System Name]
-
-## Agent Organization
-[From Step 2]
-
-## Supervision Pattern
-[From Step 3]
-
-## Control Flow
-[From Step 4]
-
-## Composition
-[From Step 5]
-
-## Inter-Agent Standards
-[From Step 6]
-
-## Failure Handling
-[From Step 7]
-```
-
-### Step 9: Offer Next Steps
+Present all findings to the user as a structured summary in the conversation (including the org chart diagram). Do NOT write to `.specs/` — this skill works directly.
 
 Use `AskUserQuestion` to offer:
-1. **Implement agents** — scaffold agent definitions and tools
+1. **Implement agents** — scaffold agent definitions, tools, and supervisor
 2. **Design workflows** — run `agent:workflow` for each workflow identified
-3. **Set up evals** — run `agent:eval` for multi-agent quality
-4. **Security audit** — run `agent:secure` (multi-agent systems have larger attack surface)
-5. **Full review** — run `agent:review`
+3. **Comprehensive design** — run `agent:design` to cover all areas with a spec
 
 ## Arguments
 
-- `<args>` - Optional spec name
-  - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
+- `<args>` - Optional description of the system or path to existing agent code
 
 Examples:
-- `agent:multi content-pipeline` — design multi-agent content pipeline
+- `agent:multi content pipeline with writer and editor` — design a content pipeline
+- `agent:multi src/agents/` — review existing multi-agent setup
 - `agent:multi` — start fresh

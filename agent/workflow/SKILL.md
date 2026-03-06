@@ -208,45 +208,20 @@ Agent calls can be individual steps in a larger workflow.
 | [Code Review Workflow] | Step in Deploy Pipeline | [CI/CD Workflow] |
 ```
 
-### Step 8: Generate Workflow Document
+### Step 8: Summarize and Offer Next Steps
 
-Compile into `.specs/<spec-name>/agent-workflow.md`:
-
-```markdown
-# Workflow Design: [System Name]
-
-## Workflow Graph
-[Mermaid diagram from Step 3]
-
-## Steps
-[Step table from Step 3]
-
-## Suspend/Resume
-[From Step 4]
-
-## Streaming
-[From Step 5]
-
-## Observability
-[From Step 6]
-
-## Composition
-[From Step 7]
-```
-
-### Step 9: Offer Next Steps
+Present all findings to the user as a structured summary in the conversation (including the Mermaid diagram). Do NOT write to `.specs/` — this skill works directly.
 
 Use `AskUserQuestion` to offer:
-1. **Implement the workflow** — scaffold workflow code
-2. **Proceed to RAG design** — run `agent:rag` (if workflow uses retrieval)
-3. **Proceed to multi-agent design** — run `agent:multi`
-4. **Full review** — run `agent:review`
+1. **Implement workflow** — scaffold workflow code based on the graph designed above
+2. **Add observability** — set up OpenTelemetry tracing in existing code
+3. **Comprehensive design** — run `agent:design` to cover all areas with a spec
 
 ## Arguments
 
-- `<args>` - Optional spec name
-  - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
+- `<args>` - Optional description of the process or path to existing workflow code
 
 Examples:
-- `agent:workflow customer-support` — design workflow for the customer-support agent
+- `agent:workflow order-processing pipeline` — design workflow for order processing
+- `agent:workflow src/workflows/` — review existing workflow implementations
 - `agent:workflow` — start fresh

@@ -1,71 +1,52 @@
 ---
 name: agent:design
-description: Design AI Agent - guides through agent architecture design using whiteboard capabilities, evolutionary architecture, dynamic configuration, and human-in-the-loop patterns
+description: Design AI Agent - comprehensive agent system design that orchestrates research sub-agents across all areas and produces a unified design document
 ---
 
 # Design AI Agent
 
-Guides the user through designing an AI agent system from scratch, applying patterns from "Patterns for Building AI Agents" (Bhagwat & Gienow, 2025). Covers agent capability mapping, architecture evolution, dynamic configuration, and human-in-the-loop design.
+The main orchestrator skill for designing AI agent systems. Gathers requirements, launches parallel research sub-agents to investigate each area (prompts, tools, memory, workflows, RAG, multi-agent, context engineering), and compiles findings into a unified design document.
+
+Based on "Patterns for Building AI Agents" and "Principles of Building AI Agents" (Bhagwat & Gienow, 2025).
 
 ## When to use
 
 Use this skill when the user needs to:
 - Design a new AI agent or multi-agent system from scratch
-- Break down a complex automation into agent capabilities
-- Decide on agent architecture (single vs. multi-agent, router, coordinator)
-- Plan human-in-the-loop checkpoints
-- Configure dynamic agent behavior based on user context
+- Create a comprehensive design covering all aspects of an agent system
+- Get a structured design document for implementation planning
+
+For focused work on a single area, use the standalone skills directly:
+`agent:prompt`, `agent:tools`, `agent:memory`, `agent:workflow`, `agent:rag`, `agent:multi`, `agent:context`
 
 ## Instructions
 
 ### Step 1: Understand the Domain
 
 Use the `AskUserQuestion` tool to gather context:
-1. What problem domain will the agent operate in? (e.g., customer support, code generation, data analysis)
-2. Who are the end users? (developers, business users, customers)
+1. What problem domain will the agent operate in?
+2. Who are the end users?
 3. What systems/APIs/data sources will the agent interact with?
-4. What is the risk tolerance? (low = needs heavy HITL, high = can be autonomous)
+4. What is the risk tolerance? (low = heavy HITL, high = autonomous)
+5. What is the scale? (prototype, internal tool, production SaaS)
 
 Do not proceed until the domain is clear.
 
-### Step 2: Whiteboard Agent Capabilities (Pattern 1)
+### Step 2: Whiteboard Agent Capabilities
 
 Guide the user through a capability mapping exercise:
 
-1. **Brainstorm** — Ask the user to list everything they want the agent to do. Use `AskUserQuestion` to prompt for capabilities in batches. Be comprehensive.
-2. **Group** — Cluster similar capabilities by:
-   - Same data sources or APIs
-   - Same "job title" (if a human did this, what role would they have?)
-   - Same step in a business process
-3. **Divide** — Identify natural boundaries:
-   - Different departments or teams
-   - Different task types (research vs. execution vs. review)
-   - Different data access needs
+1. **Brainstorm** — Use `AskUserQuestion` to list everything the agent should do
+2. **Group** — Cluster by data sources, "job title," or business process step
+3. **Divide** — Identify natural boundaries (departments, task types, data access)
 4. **Assign** — Map capability groups to distinct agent roles
-5. **Prioritize** — Rank agents by business impact. Ask the user to pick the top priority.
+5. **Prioritize** — Rank by business impact
 
-Output a capability map:
+### Step 3: Choose Architecture
 
-```markdown
-## Agent Capability Map
+Apply the evolutionary principle: **start simple, split when needed.**
 
-### Agent 1: [Name] (Priority: HIGH)
-- **Role:** [What this agent does]
-- **Capabilities:**
-  - [ ] [Capability 1]
-  - [ ] [Capability 2]
-- **Tools/APIs:** [What it needs access to]
-- **Data sources:** [What data it reads/writes]
-
-### Agent 2: [Name] (Priority: MEDIUM)
-...
-```
-
-### Step 3: Evolve Architecture (Pattern 2)
-
-Based on the capability map, recommend an architecture. Apply the evolutionary principle: **start simple, split when needed**.
-
-Use `AskUserQuestion` to present architecture options:
+Use `AskUserQuestion` to select:
 
 | Architecture | When to use |
 |---|---|
@@ -74,85 +55,113 @@ Use `AskUserQuestion` to present architecture options:
 | **Coordinator + Workers** | Multi-step workflows, tasks depend on each other |
 | **Pipeline** | Sequential processing stages |
 
-**Key rules:**
-- Start with ONE agent solving the highest-priority problem
-- Only add agents when the single agent becomes unwieldy
-- Performance degrades as tool count increases — split at ~10-15 tools
-- Add routing logic only when you have multiple specialists
+Generate a Mermaid architecture diagram.
 
-Generate an architecture diagram in Mermaid:
+### Step 4: Determine Research Scope
 
-```mermaid
-graph TD
-    User --> Router
-    Router --> Agent1[Specialist: Domain A]
-    Router --> Agent2[Specialist: Domain B]
-    Agent1 --> Tools1[Tools: API X, DB Y]
-    Agent2 --> Tools2[Tools: API Z, Search]
-```
+Use `AskUserQuestion` to ask which areas need investigation. Present as multi-select:
 
-### Step 4: Dynamic Configuration (Pattern 3)
+| Area | Skill | When relevant |
+|------|-------|---------------|
+| Prompt engineering | `agent:prompt` | Always — every agent needs prompts |
+| Tool design | `agent:tools` | Agent calls APIs, databases, or external services |
+| Memory architecture | `agent:memory` | Agent needs to remember across turns or sessions |
+| Workflow design | `agent:workflow` | Complex multi-step processes with branching |
+| RAG pipeline | `agent:rag` | Agent needs to search documents or knowledge bases |
+| Multi-agent | `agent:multi` | System has multiple collaborating agents |
+| Context engineering | `agent:context` | Long tasks, large context, or multi-agent context sharing |
 
-Identify runtime signals that should change agent behavior. Use `AskUserQuestion` to explore:
+### Step 5: Launch Research Sub-Agents
 
-1. **User tiers** — Do free/pro/enterprise users get different behavior?
-2. **User roles** — Does an admin vs. viewer change available actions?
-3. **Session state** — Should the agent adapt based on conversation history?
-4. **Environment** — Dev vs. staging vs. production differences?
+For each selected area, launch a parallel `Agent` sub-agent. Use a **single message with multiple Agent tool calls** to run them in parallel.
 
-For each signal, define what changes:
-- Model selection (faster/cheaper vs. more capable)
-- Tool availability (restricted vs. full access)
-- Retrieval settings (topK, data sources)
-- Response style (concise vs. detailed)
+Each sub-agent should:
+- Analyze the codebase (if there is existing code)
+- Apply the frameworks from the corresponding skill
+- Return a structured summary of findings and recommendations
 
-Output a configuration matrix:
+**Sub-agent prompts should include:**
 
-```markdown
-## Dynamic Configuration Matrix
+#### Prompt Research Agent
+> Analyze what this agent system needs for prompts. Apply frameworks from agent:prompt methodology:
+> - Recommend model and provider (start expensive, optimize later)
+> - Draft system prompt architecture (identity, context, instructions, examples)
+> - Suggest few-shot example strategy (zero/single/few-shot)
+> - Production checklist (quality, cost, latency)
+> Return a structured section for the design document.
 
-| Signal | Value | Model | Tools | Retrieval | Style |
-|--------|-------|-------|-------|-----------|-------|
-| User tier | Free | haiku | basic | topK=3 | concise |
-| User tier | Pro | sonnet | full | topK=10 | detailed |
-| User tier | Enterprise | opus | full + custom | topK=20 | detailed |
-```
+#### Tool Research Agent
+> Analyze what tools this agent needs. Apply frameworks from agent:tools methodology:
+> - Decompose operations (think like an analyst — one tool per operation)
+> - Design tool schemas with descriptions and "when to call"
+> - Identify third-party integrations needed
+> - Recommend MCP strategy (client/server/skip)
+> Return a structured section for the design document.
 
-### Step 5: Human-in-the-Loop Design (Pattern 4)
+#### Memory Research Agent
+> Analyze memory requirements. Apply frameworks from agent:memory methodology:
+> - Determine which layers needed: conversation window, working memory, semantic recall
+> - Design working memory schema if needed
+> - Configure semantic recall settings (topK, embedding model, vector DB)
+> - Recommend memory processors (TokenLimiter, ToolCallFilter)
+> Return a structured section for the design document.
 
-For each agent, determine where humans should be involved. Use `AskUserQuestion` to assess risk:
+#### Workflow Research Agent
+> Analyze workflow requirements. Apply frameworks from agent:workflow methodology:
+> - Map process to workflow primitives (branch, chain, merge, condition)
+> - Identify suspend/resume points for HITL
+> - Design streaming strategy for UX
+> - Plan observability (OpenTelemetry spans)
+> Return a structured section for the design document.
+
+#### RAG Research Agent
+> Analyze RAG requirements. Apply frameworks from agent:rag methodology:
+> - Apply RAG decision tree: is RAG even needed? (full context → tools → RAG)
+> - If yes: recommend chunking strategy, embedding model, vector DB
+> - Configure retrieval (topK, reranking, hybrid queries)
+> Return a structured section for the design document.
+
+#### Multi-Agent Research Agent
+> Analyze multi-agent requirements. Apply frameworks from agent:multi methodology:
+> - Design agent organization (roles, expertise, supervision)
+> - Choose supervision pattern (agent supervisor, workflow orchestrator, hybrid)
+> - Define control flow and communication patterns
+> - Plan composition (agents as tools, workflows as tools)
+> Return a structured section for the design document.
+
+#### Context Research Agent
+> Analyze context engineering needs. Apply frameworks from agent:context methodology:
+> - Assess parallelization: sequential vs. parallel workflow
+> - Design context sharing between agents
+> - Identify context failure mode risks (poisoning, distraction, rot, clash, confusion)
+> - Plan compression strategy and error feedback loops
+> Return a structured section for the design document.
+
+### Step 6: Human-in-the-Loop Design
+
+After research completes, determine HITL checkpoints:
 
 **Three HITL modes:**
-
-1. **In-the-loop** — Agent pauses mid-execution for human approval before proceeding
-   - Use for: irreversible actions, financial transactions, external communications
-2. **Post-processing** — Agent produces a draft; human reviews before finalization
-   - Use for: content generation, report creation, code changes
-3. **Deferred tool execution** — Agent continues working while collecting human feedback asynchronously
-   - Use for: long-running workflows where blocking is expensive
+1. **In-the-loop** — Agent pauses for human approval (irreversible actions)
+2. **Post-processing** — Human reviews draft before finalization (content, code)
+3. **Deferred** — Agent continues, collects feedback asynchronously (long workflows)
 
 **Decision framework:**
-- Is the action reversible? No → HITL required
-- Is there legal/regulatory risk? Yes → HITL required
-- Is the domain well-defined with clear rules? Yes → can be autonomous
-- Is the cost of error high? Yes → HITL required
+- Action irreversible? → HITL required
+- Legal/regulatory risk? → HITL required
+- Cost of error high? → HITL required
+- Domain well-defined with clear rules? → Can be autonomous
 
-Output a HITL map:
+### Step 7: Dynamic Configuration
 
-```markdown
-## Human-in-the-Loop Map
+Identify runtime signals that change agent behavior:
+- User tiers (free/pro/enterprise) → model, tools, retrieval depth
+- User roles (admin/viewer) → available actions
+- Environment (dev/staging/production) → safety constraints
 
-| Agent | Action | HITL Mode | Trigger |
-|-------|--------|-----------|---------|
-| Support Agent | Send email to customer | In-the-loop | Always |
-| Code Agent | Commit to main | In-the-loop | Always |
-| Research Agent | Generate report | Post-processing | Always |
-| Data Agent | Update records | Deferred | Batch > 100 |
-```
+### Step 8: Compile Design Document
 
-### Step 6: Generate Design Document
-
-Compile all outputs into a single document at `.specs/<spec-name>/agent-design.md`:
+Compile all research findings and decisions into `.specs/<spec-name>/agent-design.md`:
 
 ```markdown
 # Agent Design: [System Name]
@@ -161,39 +170,60 @@ Compile all outputs into a single document at `.specs/<spec-name>/agent-design.m
 [Brief description of the agent system and its purpose]
 
 ## Agent Capability Map
-[From Step 2]
+[From Step 2 — agents, capabilities, tools, data sources]
 
 ## Architecture
-[From Step 3, including Mermaid diagram]
+[From Step 3 — architecture type, Mermaid diagram]
 
-## Dynamic Configuration
-[From Step 4]
+## Prompt Strategy
+[From prompt research agent — model selection, system prompt, few-shot]
+
+## Tool Design
+[From tool research agent — tool inventory, schemas, integrations, MCP]
+
+## Memory Architecture
+[From memory research agent — layers, working memory, semantic recall]
+
+## Workflow Design
+[From workflow research agent — graph, suspend/resume, streaming, observability]
+
+## RAG Pipeline
+[From RAG research agent — decision, chunking, embedding, retrieval]
+
+## Multi-Agent Design
+[From multi-agent research agent — org, supervision, control flow, composition]
+
+## Context Engineering
+[From context research agent — parallelization, sharing, failure modes, compression]
 
 ## Human-in-the-Loop
-[From Step 5]
+[From Step 6 — HITL map with modes and triggers]
+
+## Dynamic Configuration
+[From Step 7 — configuration matrix]
 
 ## Implementation Priority
-1. [First agent to build — highest priority from capability map]
+1. [First agent to build — highest priority]
 2. [Second agent — add when first is stable]
 3. [Additional agents — split when needed]
 
 ## Evolution Plan
-- **Phase 1:** Single agent with [X] capabilities
-- **Phase 2:** Split into [Y] specialists when [trigger]
-- **Phase 3:** Add router/coordinator when [trigger]
+- **Phase 1:** [Starting point]
+- **Phase 2:** [Growth trigger and expansion]
+- **Phase 3:** [Maturity target]
 ```
 
-### Step 7: Offer Next Steps
+### Step 9: Offer Next Steps
 
 Use `AskUserQuestion` to offer:
-1. **Proceed to context engineering** — run `agent:context` to design context strategy
-2. **Proceed to eval design** — run `agent:eval` to set up evaluation
-3. **Proceed to security audit** — run `agent:secure` to review security posture
-4. **Full review** — run `agent:review` to validate against all 22 patterns
+1. **Deep dive** — run a standalone skill for any area that needs more detail (e.g., `agent:tools` for detailed schema design)
+2. **Security audit** — run `agent:secure` to check for vulnerabilities
+3. **Eval system** — run `agent:eval` to set up evaluation
+4. **Full review** — run `agent:review` to validate against all patterns
 
 ## Arguments
 
-- `<args>` - Optional spec name and/or description of the agent system to design
+- `<args>` - Optional spec name and/or description of the agent system
   - `<spec-name>` — name for the specification (kebab-case)
   - Free text — description of the agent's purpose
 

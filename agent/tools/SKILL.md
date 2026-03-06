@@ -199,42 +199,20 @@ Use `AskUserQuestion`:
 - Summarize verbose API responses before returning to agent
 ```
 
-### Step 7: Generate Tool Design Document
+### Step 7: Summarize and Offer Next Steps
 
-Compile into `.specs/<spec-name>/agent-tools.md`:
-
-```markdown
-# Tool Design: [Agent Name]
-
-## Tool Inventory
-[From Step 2]
-
-## Tool Schemas
-[From Step 3]
-
-## Third-Party Integrations
-[From Step 4]
-
-## MCP Strategy
-[From Step 5]
-
-## Performance Guidelines
-[From Step 6]
-```
-
-### Step 8: Offer Next Steps
+Present all findings to the user as a structured summary in the conversation. Do NOT write to `.specs/` — this skill works directly.
 
 Use `AskUserQuestion` to offer:
-1. **Implement tools** — scaffold tool code based on schemas
-2. **Proceed to memory design** — run `agent:memory`
-3. **Proceed to workflow design** — run `agent:workflow`
-4. **Full review** — run `agent:review`
+1. **Implement tools** — scaffold tool code based on the schemas designed above
+2. **Build MCP server** — generate MCP server code if recommended
+3. **Comprehensive design** — run `agent:design` to cover all areas with a spec
 
 ## Arguments
 
-- `<args>` - Optional spec name
-  - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
+- `<args>` - Optional description of the agent or path to existing tool code
 
 Examples:
-- `agent:tools customer-support` — design tools for the customer-support agent
+- `agent:tools customer-support chatbot` — design tools for a support chatbot
+- `agent:tools src/agents/tools/` — review and improve existing tool implementations
 - `agent:tools` — start fresh

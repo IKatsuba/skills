@@ -196,44 +196,20 @@ Add to system prompt:
 3. 3rd failure: Escalate to human / log for review
 ```
 
-### Step 7: Generate Context Engineering Document
+### Step 7: Summarize and Offer Next Steps
 
-Compile all outputs into `.specs/<spec-name>/context-engineering.md`:
-
-```markdown
-# Context Engineering: [System Name]
-
-## Overview
-[Brief description of context strategy goals]
-
-## Workflow & Parallelization
-[From Step 2]
-
-## Context Sharing
-[From Step 3]
-
-## Failure Mode Prevention
-[From Step 4]
-
-## Compression Strategy
-[From Step 5]
-
-## Error Feedback
-[From Step 6]
-```
-
-### Step 8: Offer Next Steps
+Present all findings to the user as a structured summary in the conversation. Do NOT write to `.specs/` — this skill works directly.
 
 Use `AskUserQuestion` to offer:
-1. **Proceed to eval design** — run `agent:eval`
-2. **Proceed to security audit** — run `agent:secure`
-3. **Full review** — run `agent:review`
+1. **Implement changes** — apply context optimizations to existing agent code
+2. **Fix failure modes** — address the highest-risk context issues found
+3. **Comprehensive design** — run `agent:design` to cover all areas with a spec
 
 ## Arguments
 
-- `<args>` - Optional spec name
-  - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
+- `<args>` - Optional description of the agent or path to existing code
 
 Examples:
-- `agent:context customer-support` — design context strategy for the customer-support agent
-- `agent:context` — start fresh, will ask for details
+- `agent:context support chatbot with long conversations` — optimize context for a chatbot
+- `agent:context src/agents/researcher.ts` — review context strategy in existing agent
+- `agent:context` — start fresh

@@ -178,45 +178,20 @@ If the agent adapts based on user context (Pattern 3 from Patterns book):
 | Returning user | Load working memory, enable semantic recall |
 ```
 
-### Step 7: Generate Memory Document
+### Step 7: Summarize and Offer Next Steps
 
-Compile into `.specs/<spec-name>/agent-memory.md`:
-
-```markdown
-# Memory Architecture: [Agent Name]
-
-## Overview
-[Which layers are used and why]
-
-## Memory Architecture
-[From Step 2]
-
-## Working Memory
-[From Step 3]
-
-## Semantic Recall
-[From Step 4]
-
-## Memory Processors
-[From Step 5]
-
-## Dynamic Configuration
-[From Step 6]
-```
-
-### Step 8: Offer Next Steps
+Present all findings to the user as a structured summary in the conversation. Do NOT write to `.specs/` — this skill works directly.
 
 Use `AskUserQuestion` to offer:
-1. **Proceed to workflow design** — run `agent:workflow`
-2. **Proceed to RAG pipeline** — run `agent:rag` (if using semantic recall)
-3. **Proceed to context engineering** — run `agent:context`
-4. **Full review** — run `agent:review`
+1. **Implement memory** — scaffold memory configuration and processors in code
+2. **Set up RAG** — run `agent:rag` if semantic recall was selected
+3. **Comprehensive design** — run `agent:design` to cover all areas with a spec
 
 ## Arguments
 
-- `<args>` - Optional spec name
-  - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
+- `<args>` - Optional description of the agent or path to existing code
 
 Examples:
-- `agent:memory customer-support` — design memory for the customer-support agent
+- `agent:memory personal-assistant` — design memory for a personal assistant
+- `agent:memory src/agents/support.ts` — review memory in existing agent
 - `agent:memory` — start fresh

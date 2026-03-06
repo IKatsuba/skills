@@ -234,23 +234,20 @@ graph LR
 - [ ] Embedding costs within budget
 ```
 
-### Step 8: Generate RAG Document
+### Step 8: Summarize and Offer Next Steps
 
-Compile into `.specs/<spec-name>/agent-rag.md`.
-
-### Step 9: Offer Next Steps
+Present all findings to the user as a structured summary in the conversation (including the pipeline diagram). Do NOT write to `.specs/` — this skill works directly.
 
 Use `AskUserQuestion` to offer:
-1. **Implement the pipeline** — scaffold ingestion and query code
-2. **Tune retrieval** — experiment with topK, chunk size, reranking
-3. **Set up evals** — run `agent:eval` to measure retrieval quality
-4. **Full review** — run `agent:review`
+1. **Implement pipeline** — scaffold ingestion and query code
+2. **Skip RAG** — if the decision tree said RAG isn't needed, help with the alternative (full context or agentic tools)
+3. **Comprehensive design** — run `agent:design` to cover all areas with a spec
 
 ## Arguments
 
-- `<args>` - Optional spec name
-  - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
+- `<args>` - Optional description of the knowledge domain or path to existing RAG code
 
 Examples:
-- `agent:rag knowledge-base` — design RAG for a knowledge base agent
+- `agent:rag documentation search` — design RAG for a docs search agent
+- `agent:rag src/rag/` — review and tune existing RAG pipeline
 - `agent:rag` — start fresh

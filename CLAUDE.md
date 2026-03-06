@@ -137,86 +137,43 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Agent Skills
 
-Based on "Patterns for Building AI Agents" (Bhagwat & Gienow, 2025) — 22 patterns across 4 domains.
+Based on "Patterns for Building AI Agents" and "Principles of Building AI Agents" (Bhagwat & Gienow, 2025).
 
-13. **`agent:design [spec-name]`** → Designs an AI agent system
-    - Whiteboard capability mapping (Pattern 1)
-    - Evolutionary architecture selection (Pattern 2)
-    - Dynamic runtime configuration (Pattern 3)
-    - Human-in-the-loop checkpoint design (Pattern 4)
-    - Outputs `.specs/<name>/agent-design.md`
+Two tiers: **spec skills** produce design documents in `.specs/`, **action skills** work directly without files.
 
-14. **`agent:context [spec-name]`** → Designs context engineering strategy
-    - Parallelization analysis (Pattern 5)
-    - Context sharing between subagents (Pattern 6)
-    - Context failure mode prevention (Pattern 7)
-    - Compression strategy (Pattern 8)
-    - Error feedback loops (Pattern 9)
-    - Outputs `.specs/<name>/context-engineering.md`
+#### Spec Skills (produce `.specs/` documents)
 
-15. **`agent:eval [spec-name]`** → Builds evaluation system
-    - Failure mode taxonomy (Pattern 10)
-    - Business metrics definition (Pattern 11)
-    - Failure mode / metric cross-referencing (Pattern 12)
-    - Eval test suite with CI integration (Patterns 13-14)
-    - SME labeling workflow (Pattern 15)
-    - Production data pipeline (Patterns 16-17)
+13. **`agent:design [spec-name]`** → Comprehensive agent system design (orchestrator)
+    - Gathers requirements, launches parallel research sub-agents
+    - Each sub-agent applies methodology from the action skills below
+    - Compiles all findings into a unified `.specs/<name>/agent-design.md`
+    - Covers: architecture, prompts, tools, memory, workflows, RAG, multi-agent, context
+
+14. **`agent:eval [spec-name]`** → Evaluation system design
+    - Failure mode taxonomy, business metrics, cross-referencing
+    - Eval test suite with CI integration, SME labeling workflow
+    - Production data pipeline with LLM-as-judge
     - Outputs `.specs/<name>/agent-eval.md`
 
-16. **`agent:secure [spec-name|path]`** → Security audit
-    - Lethal trifecta analysis (Pattern 18)
-    - Code execution sandbox assessment (Pattern 19)
-    - Granular access control review (Pattern 20)
-    - Input/output guardrails design (Pattern 21)
+15. **`agent:secure [spec-name|path]`** → Security audit
+    - Lethal trifecta analysis, sandbox assessment
+    - Granular access control review, input/output guardrails
     - Outputs `.specs/<name>/agent-security.md`
 
-17. **`agent:review [spec-name|path]`** → Full pattern review
-    - Scores all 22 patterns on a 0-3 scale (max 66 points)
-    - Maturity assessment (Prototype → Best-in-Class)
+16. **`agent:review [spec-name|path]`** → Full pattern review
+    - Scores all patterns on a 0-3 scale, maturity assessment
     - Top 5 prioritized recommendations
-    - Points to specific `agent:*` skills for weak areas
+    - Points to specific action skills for weak areas
 
-18. **`agent:prompt [spec-name]`** → Prompt engineering
-    - Model selection (hosted → optimize later)
-    - System prompt architecture (identity, context, instructions, examples)
-    - Few-shot example design
-    - Production optimization checklist (quality, cost, latency)
-    - Outputs `.specs/<name>/agent-prompt.md`
+#### Action Skills (work directly, no `.specs/` output)
 
-19. **`agent:tools [spec-name]`** → Tool design
-    - Decompose operations (think like an analyst)
-    - Tool schema design with descriptions and when-to-call
-    - Third-party integration mapping
-    - MCP client/server strategy
-    - Outputs `.specs/<name>/agent-tools.md`
-
-20. **`agent:memory [spec-name]`** → Memory architecture
-    - Three-layer model: conversation window, working memory, semantic recall
-    - Working memory schema design
-    - Semantic recall configuration (topK, embedding, vector DB)
-    - Memory processors (TokenLimiter, ToolCallFilter, Summary)
-    - Outputs `.specs/<name>/agent-memory.md`
-
-21. **`agent:workflow [spec-name]`** → Workflow design
-    - Four primitives: branching, chaining, merging, conditions
-    - Mermaid diagram generation
-    - Suspend/resume points for HITL
-    - Streaming strategy and observability (OpenTelemetry)
-    - Outputs `.specs/<name>/agent-workflow.md`
-
-22. **`agent:rag [spec-name]`** → RAG pipeline design
-    - RAG decision tree (do you even need RAG?)
-    - Chunking, embedding, vector DB selection
-    - Retrieval tuning (topK, reranking, hybrid queries)
-    - Full pipeline architecture with Mermaid diagram
-    - Outputs `.specs/<name>/agent-rag.md`
-
-23. **`agent:multi [spec-name]`** → Multi-agent system design
-    - Organizational design (roles, expertise, supervision)
-    - Supervision patterns (agent supervisor, workflow orchestrator, hybrid)
-    - Control flow and communication patterns
-    - Agent-as-tool and workflow-as-tool composition
-    - Outputs `.specs/<name>/agent-multi.md`
+17. **`agent:prompt`** → Prompt engineering — model selection, system prompt, few-shot examples
+18. **`agent:tools`** → Tool design — decomposition, schemas, MCP strategy, integrations
+19. **`agent:memory`** → Memory architecture — working memory, semantic recall, processors
+20. **`agent:workflow`** → Workflow design — graph primitives, suspend/resume, streaming, observability
+21. **`agent:rag`** → RAG pipeline — decision tree, chunking, embedding, retrieval tuning
+22. **`agent:multi`** → Multi-agent systems — org design, supervision, control flow, composition
+23. **`agent:context`** → Context engineering — parallelization, sharing, failure modes, compression
 
 ### Development Skills
 

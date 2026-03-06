@@ -197,42 +197,20 @@ Review the prompt for production readiness:
 - [ ] Output format holds across model temperature settings
 ```
 
-### Step 7: Generate Prompt Document
+### Step 7: Summarize and Offer Next Steps
 
-Compile into `.specs/<spec-name>/agent-prompt.md`:
-
-```markdown
-# Prompt Engineering: [Agent Name]
-
-## Model Selection
-[From Step 2]
-
-## Prompt Architecture
-[From Step 3]
-
-## System Prompt
-[From Step 4]
-
-## Few-Shot Examples
-[From Step 5]
-
-## Production Checklist
-[From Step 6]
-```
-
-### Step 8: Offer Next Steps
+Present all findings to the user as a structured summary in the conversation. Do NOT write to `.specs/` — this skill works directly.
 
 Use `AskUserQuestion` to offer:
-1. **Test the prompt** — try it with sample inputs
-2. **Proceed to tool design** — run `agent:tools`
-3. **Proceed to memory design** — run `agent:memory`
-4. **Full review** — run `agent:review`
+1. **Test the prompt** — try it with sample inputs right now
+2. **Write the prompt to a file** — if the user wants to save it to their codebase
+3. **Comprehensive design** — run `agent:design` to cover all areas with a spec
 
 ## Arguments
 
-- `<args>` - Optional spec name and/or agent description
-  - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
+- `<args>` - Optional description of the agent or path to existing prompt file
 
 Examples:
-- `agent:prompt customer-support` — design prompts for the customer-support agent
+- `agent:prompt customer-support chatbot` — design prompts for a support chatbot
+- `agent:prompt src/agents/writer.ts` — improve prompts in an existing agent file
 - `agent:prompt` — start fresh
