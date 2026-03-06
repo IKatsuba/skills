@@ -36,7 +36,13 @@ agent/                      - AI agent design and review skills
   context/SKILL.md          - Context engineering strategy (patterns 5-9)
   eval/SKILL.md             - Evaluation system design (patterns 10-17)
   secure/SKILL.md           - Security audit (patterns 18-21)
-  review/SKILL.md           - Full 22-pattern review checklist
+  review/SKILL.md           - Full review checklist across all agent skills
+  prompt/SKILL.md           - Prompt engineering and model selection
+  tools/SKILL.md            - Tool design, MCP integration
+  memory/SKILL.md           - Memory architecture (working, semantic, processors)
+  workflow/SKILL.md         - Graph-based workflow design
+  rag/SKILL.md              - RAG pipeline design
+  multi/SKILL.md            - Multi-agent system design
 dev/                        - Development and meta skills
   create-skill/SKILL.md     - Skill creation helper (meta-skill)
 ```
@@ -170,9 +176,51 @@ Based on "Patterns for Building AI Agents" (Bhagwat & Gienow, 2025) — 22 patte
     - Top 5 prioritized recommendations
     - Points to specific `agent:*` skills for weak areas
 
+18. **`agent:prompt [spec-name]`** → Prompt engineering
+    - Model selection (hosted → optimize later)
+    - System prompt architecture (identity, context, instructions, examples)
+    - Few-shot example design
+    - Production optimization checklist (quality, cost, latency)
+    - Outputs `.specs/<name>/agent-prompt.md`
+
+19. **`agent:tools [spec-name]`** → Tool design
+    - Decompose operations (think like an analyst)
+    - Tool schema design with descriptions and when-to-call
+    - Third-party integration mapping
+    - MCP client/server strategy
+    - Outputs `.specs/<name>/agent-tools.md`
+
+20. **`agent:memory [spec-name]`** → Memory architecture
+    - Three-layer model: conversation window, working memory, semantic recall
+    - Working memory schema design
+    - Semantic recall configuration (topK, embedding, vector DB)
+    - Memory processors (TokenLimiter, ToolCallFilter, Summary)
+    - Outputs `.specs/<name>/agent-memory.md`
+
+21. **`agent:workflow [spec-name]`** → Workflow design
+    - Four primitives: branching, chaining, merging, conditions
+    - Mermaid diagram generation
+    - Suspend/resume points for HITL
+    - Streaming strategy and observability (OpenTelemetry)
+    - Outputs `.specs/<name>/agent-workflow.md`
+
+22. **`agent:rag [spec-name]`** → RAG pipeline design
+    - RAG decision tree (do you even need RAG?)
+    - Chunking, embedding, vector DB selection
+    - Retrieval tuning (topK, reranking, hybrid queries)
+    - Full pipeline architecture with Mermaid diagram
+    - Outputs `.specs/<name>/agent-rag.md`
+
+23. **`agent:multi [spec-name]`** → Multi-agent system design
+    - Organizational design (roles, expertise, supervision)
+    - Supervision patterns (agent supervisor, workflow orchestrator, hybrid)
+    - Control flow and communication patterns
+    - Agent-as-tool and workflow-as-tool composition
+    - Outputs `.specs/<name>/agent-multi.md`
+
 ### Development Skills
 
-18. **`dev:create-skill [category/name]`** → Creates a new skill definition
+24. **`dev:create-skill [category/name]`** → Creates a new skill definition
     - Scaffolds a SKILL.md with proper structure and conventions
     - Ensures consistency across all skills in the repository
     - Updates CLAUDE.md with the new skill entry
