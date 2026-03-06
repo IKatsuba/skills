@@ -42,6 +42,9 @@ npx skills add ikatsuba/skills --skill agent:workflow
 npx skills add ikatsuba/skills --skill agent:rag
 npx skills add ikatsuba/skills --skill agent:multi
 npx skills add ikatsuba/skills --skill agent:context
+npx skills add ikatsuba/skills --skill project:vision
+npx skills add ikatsuba/skills --skill project:decompose
+npx skills add ikatsuba/skills --skill project:status
 npx skills add ikatsuba/skills --skill dev:create-skill
 ```
 
@@ -62,6 +65,14 @@ npx skills add ikatsuba/skills --list
 ---
 
 ## Available Skills
+
+### Project Orchestration
+
+| Skill | Description |
+|-------|-------------|
+| `project:vision` | Define system goals, stakeholders, constraints, shared decisions |
+| `project:decompose` | Break into specs with dependency graph and execution order |
+| `project:status` | Dashboard showing progress across all specs |
 
 ### Specification Pipeline
 
@@ -112,6 +123,14 @@ npx skills add ikatsuba/skills --list
 ## Workflow
 
 These skills support a complete specification-driven development workflow:
+
+### Phase 0: Project Planning
+
+For large systems with multiple specs:
+
+1. **`/project:vision <name>`** — Creates `.projects/<name>/vision.md`
+2. **`/project:decompose <name>`** — Creates `.projects/<name>/specs.md`
+3. **`/project:status <name>`** — Dashboard across all specs (use anytime)
 
 ### Phase 1: Specification
 
@@ -198,6 +217,11 @@ Or dive into a single area:
 ## Documents Structure
 
 ```
+.projects/
+└── <project-name>/
+    ├── vision.md           # System goals, constraints, shared decisions
+    └── specs.md            # Spec list, dependency graph, execution order
+
 .specs/
 └── <spec-name>/
     ├── requirements.md     # User stories and acceptance criteria

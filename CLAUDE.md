@@ -31,6 +31,10 @@ git/                        - Git workflow skills
 review/                     - Code review skills
   diff/SKILL.md             - Diff review before commit
   ux/SKILL.md               - UX review for user experience quality
+project/                    - Project-level orchestration skills
+  vision/SKILL.md           - Define system goals, stakeholders, shared decisions
+  decompose/SKILL.md        - Break into specs with dependencies and execution order
+  status/SKILL.md           - Dashboard showing progress across all specs
 agent/                      - AI agent design and review skills
   design/SKILL.md           - Agent architecture design (patterns 1-4)
   context/SKILL.md          - Context engineering strategy (patterns 5-9)
@@ -50,6 +54,32 @@ dev/                        - Development and meta skills
 **Important**: All skills MUST be placed in a category folder (e.g., `spec/`, `git/`), never in the repository root. When creating new skills, either add them to an existing category or create a new category folder.
 
 ## Workflow Architecture
+
+### Project Orchestration
+
+For large systems composed of multiple specs, the project skills provide a higher-level orchestration layer:
+
+1. **`project:vision [name]`** → Creates `.projects/<name>/vision.md`
+   - Defines system goals, stakeholders, technical constraints
+   - Establishes shared architectural decisions that apply to all specs
+   - Produces a system boundary diagram (Mermaid)
+
+2. **`project:decompose [name]`** → Creates `.projects/<name>/specs.md`
+   - Breaks the vision into individual specs with clear boundaries
+   - Defines dependencies between specs and execution order
+   - Identifies shared interfaces consumed by multiple specs
+   - Produces a dependency graph (Mermaid) and phased execution plan
+
+3. **`project:status [name]`** → Displays progress dashboard (no file output)
+   - Scans all spec directories to detect stage and completion
+   - Shows blocked specs and ready-to-start specs
+   - Suggests the next action based on current state
+
+Project documents are stored in `.projects/<project-name>/` directories using kebab-case naming.
+
+When a project exists, `spec:plan` automatically reads the project context (vision, spec boundaries, shared decisions) to pre-seed requirements gathering.
+
+### Specification Pipeline
 
 The skills implement a seven-step specification pipeline where each step builds on the previous:
 
