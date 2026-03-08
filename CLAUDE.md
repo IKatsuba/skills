@@ -31,6 +31,7 @@ git/                        - Git workflow skills
 review/                     - Code review skills
   diff/SKILL.md             - Diff review before commit
   ux/SKILL.md               - UX review for user experience quality
+  investigate/SKILL.md      - Analyze a problem and propose actionable solutions
 project/                    - Project-level orchestration skills
   vision/SKILL.md           - Define system goals, stakeholders, shared decisions
   decompose/SKILL.md        - Break into specs with dependencies and execution order
