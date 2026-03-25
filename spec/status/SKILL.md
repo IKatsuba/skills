@@ -1,6 +1,9 @@
 ---
 name: spec:status
-description: Spec Status - displays pipeline progress dashboard for a single specification
+description: Spec Status - displays pipeline progress dashboard for a single specification showing document statuses, blockers, and next action.
+argument-hint: <spec-name>
+context: fork
+agent: Explore
 ---
 
 # Spec Status

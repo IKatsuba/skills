@@ -1,7 +1,9 @@
 ---
 name: spec:test
-description: Execute Tests - walks through test cases from the test plan (all, next, or specific test by number)
+description: Execute Tests - walks through test cases from the test plan, collects results, and updates the plan. Use when verifying a feature implementation.
 role: QA Engineer
+argument-hint: <spec-name> [all|next|N]
+disable-model-invocation: true
 ---
 
 # Execute Tests

@@ -1,6 +1,7 @@
 ---
 name: project:init
-description: Project Init - defines the overall system goals, stakeholders, constraints, and shared architectural decisions
+description: Project Init - defines the overall system goals, stakeholders, constraints, and shared architectural decisions. Use when starting a new multi-spec project.
+argument-hint: <project-name> ["description"]
 ---
 
 # Project Init

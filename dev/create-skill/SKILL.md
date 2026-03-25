@@ -1,6 +1,7 @@
 ---
 name: dev:create-skill
-description: Create New Skill - generates a new skill definition for this repository
+description: Create New Skill - generates a new skill definition following repository conventions. Use when adding a new skill to this repo.
+argument-hint: <category/skill-name>
 ---
 
 # Create New Skill

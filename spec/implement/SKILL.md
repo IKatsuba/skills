@@ -1,7 +1,9 @@
 ---
 name: spec:implement
-description: Implement Tasks - executes tasks from the tasks document (all, next, or specific task by number)
+description: Implement Tasks - executes tasks from the tasks document using subagents. Use when ready to start coding a feature.
 role: Senior Engineer
+argument-hint: <spec-name> [all|next|N]
+disable-model-invocation: true
 ---
 
 # Implement Tasks
@@ -183,67 +185,11 @@ For each major task:
 4. Commit the major task completion using the `git:commit` skill
 5. **Only then** proceed to the next major task
 
-### Analyze Subtask Dependencies
+### Analyze Subtask Dependencies and Execute
 
-Before executing a major task's subtasks, analyze whether they can run in parallel. Check each subtask pair for conflicts:
+Analyze subtask dependencies and choose parallel or sequential execution. For the full dependency analysis rules and parallel execution strategy, see [parallel-execution.md](parallel-execution.md).
 
-**Subtasks are DEPENDENT (must run sequentially) when ANY of the following is true:**
-- They modify the same file
-- One creates a file/module/export that another imports or uses
-- One generates types, schemas, or configs consumed by another
-- They have an explicit ordering requirement in the task description
-- One subtask's output is another's input (e.g., "create API" → "write tests for API")
-- They modify related parts of the same system (e.g., both touch the same database table schema)
-
-**Subtasks are INDEPENDENT (can run in parallel) when ALL of the following are true:**
-- They touch completely different files
-- No data or import dependencies between them
-- No shared state (database tables, config files, global state)
-- Each is self-contained and can be verified independently
-
-**When in doubt, choose sequential execution.** The quality of the implementation is more important than speed.
-
-Produce a short dependency verdict for the major task before proceeding:
-
-```
-Major Task 2 — dependency analysis:
-  2.1 Create user model (files: src/models/user.ts)
-  2.2 Create auth middleware (files: src/middleware/auth.ts) — depends on 2.1 (imports User type)
-  2.3 Add login route (files: src/routes/login.ts) — depends on 2.1, 2.2
-  Verdict: SEQUENTIAL — chain of dependencies
-```
-
-or
-
-```
-Major Task 3 — dependency analysis:
-  3.1 Add email validation util (files: src/utils/email.ts)
-  3.2 Add phone validation util (files: src/utils/phone.ts)
-  3.3 Add address validation util (files: src/utils/address.ts)
-  Verdict: PARALLEL — all independent, no shared files or imports
-```
-
-### Parallel Execution with Concurrent Subagents
-
-Use this strategy when the dependency analysis yields **PARALLEL**.
-
-1. **Mark all parallel subtasks as in-progress** — update each checkbox to `[-]` in tasks.md
-2. **Launch all subagents in a single message** — use multiple Task tool calls (one per subtask) in the same response, each with `subagent_type: "general-purpose"`:
-   - Provide the full subtask description, file paths, and requirements
-   - Include relevant context from the spec (requirements.md, design.md)
-   - Instruct each subagent: implement the subtask but do NOT commit
-   - Include the **Subagent Rules** (see above)
-   - Include in the subagent prompt: `You are an **Engineer** implementing a specific subtask. Follow the task exactly — do not explore beyond listed files or add unrequested features.`
-3. **Wait for all subagents to complete**
-4. **Verify results** — run the **Verification Checklist** for each subagent
-5. **Mark all subtasks as `[x]`** in tasks.md
-6. **Commit all changes together** — stage all files from the parallel batch and use `git:commit` skill once for the group
-
-**IMPORTANT constraints for parallel execution:**
-- Maximum 3 parallel subagents at a time to avoid resource contention
-- If a major task has more than 3 independent subtasks, batch them in groups of 3
-- If any subagent fails, stop and fall back to sequential execution for remaining subtasks
-- Subagents must NOT commit — only you commit after verifying all results
+**Quick decision:** If ALL subtasks touch completely different files with no shared dependencies → PARALLEL. Otherwise → SEQUENTIAL. When in doubt, choose sequential.
 
 ### Sequential Execution with Subagents
 
@@ -342,33 +288,9 @@ Commit ALL subtasks from the parallel batch together as a single commit:
 
 ## Design Deviation Protocol
 
-During implementation, a subagent or the implementer may discover that the design is incorrect, incomplete, or impractical. Follow this protocol instead of silently diverging.
+When the design doesn't match reality during implementation, follow the protocol in [deviation-protocol.md](deviation-protocol.md).
 
-### Detection
-
-A design deviation exists when:
-- A file path, API, or interface in the design does not match the actual codebase
-- The designed approach is technically impossible or produces errors
-- A requirement cannot be met with the designed solution
-- A subtask requires changes not described in the design
-
-### Severity Levels
-
-| Severity | Definition | Action |
-|----------|-----------|--------|
-| **Minor** | Detail differs but outcome is identical (e.g., file name) | Log deviation in tasks.md under the subtask, continue |
-| **Moderate** | Approach changes but requirements are still met | Pause. Use `AskUserQuestion`: "Approve deviation and continue" / "Update design first" / "Cancel task" |
-| **Major** | Requirements may not be met or architecture changes significantly | STOP. Mark `design.md` frontmatter as `status: SUPERSEDED`. Use `AskUserQuestion`: "Re-run spec:design" / "Run review:investigate" / "Handle manually" |
-
-### Logging Deviations
-
-For minor and approved moderate deviations, add a note to `tasks.md`:
-```
-- [x] 2.1 Create user model
-  - _Deviation: Used `src/models/user.model.ts` instead of `src/models/user.ts` per project naming convention_
-```
-
-For major deviations, update `design.md` frontmatter to `status: SUPERSEDED` and `updated: <today>`. Do NOT continue implementation until the design is updated and re-approved.
+**Quick summary:** Minor deviations → log and continue. Moderate → pause and ask user. Major → STOP, mark design as SUPERSEDED, escalate.
 
 ## Error Handling
 

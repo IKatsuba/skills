@@ -1,7 +1,8 @@
 ---
 name: spec:requirements
+description: Requirements Analysis - gathers requirements through structured questions and produces a requirements document with testable acceptance criteria. Use when starting a new feature spec or documenting requirements.
 role: Product Analyst
-description: Requirements Analysis - generates a structured requirements document, asking clarifying questions about ambiguities before proceeding
+argument-hint: <spec-name> ["description"]
 ---
 
 # Requirements Analysis

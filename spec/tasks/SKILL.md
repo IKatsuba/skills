@@ -1,7 +1,8 @@
 ---
 name: spec:tasks
+description: Task Breakdown - generates an implementation plan with tracked tasks based on requirements and design documents. Use when breaking down a design into actionable work items.
 role: Technical Lead
-description: Task Breakdown - generates an implementation plan with tracked tasks based on requirements and design documents
+argument-hint: <spec-name>
 ---
 
 # Task Breakdown

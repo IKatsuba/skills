@@ -1,6 +1,7 @@
 ---
 name: project:plan
-description: Project Plan - breaks the vision into individual specs with dependencies, execution order, and shared interfaces
+description: Project Plan - breaks the vision into individual specs with dependencies, execution order, and shared interfaces. Use when decomposing a project into features.
+argument-hint: <project-name>
 ---
 
 # Project Plan

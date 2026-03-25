@@ -253,26 +253,44 @@ Based on "Patterns for Building AI Agents" (Bhagwat & Gienow, 2025). Two tiers: 
 
 ## Creating & Modifying Skills
 
-Each skill is defined entirely in its `SKILL.md` file. These files contain:
-- Skill metadata (frontmatter with `name`, `description`, and `role`)
+Each skill is a directory with `SKILL.md` as the entrypoint. These files contain:
+- Skill metadata (frontmatter with `name`, `description`, `role`, and Claude Code-specific fields)
 - A `## Role` section defining the specialist persona
 - Step-by-step instructions for Claude Code
 - Output format specifications and examples
 - Guidelines for handling edge cases
 
-### Skill Naming Convention
+Large skills can include supporting files (keep `SKILL.md` under 500 lines):
+```
+my-skill/
+├── SKILL.md              # Main instructions (required)
+├── reference.md          # Detailed reference (loaded when needed)
+└── examples.md           # Examples (loaded when needed)
+```
 
-The `name` field in SKILL.md frontmatter MUST include the category prefix:
+### Skill Frontmatter
 
 ```yaml
 ---
 name: category:skill-name
-description: Short description of the skill
+description: What it does. Use when [trigger condition].
 role: Role Title
+argument-hint: <required-arg> [optional-arg]
+disable-model-invocation: true    # user-only (approve, implement, test)
+context: fork                     # run in isolated subagent (status)
+agent: Explore                    # agent type for forked context
 ---
 ```
 
-Examples:
+**Key fields:**
+- `argument-hint` — shown during autocomplete
+- `disable-model-invocation: true` — prevents Claude from auto-invoking (use for action skills)
+- `context: fork` + `agent` — runs skill in an isolated subagent (use for read-only skills)
+- `$ARGUMENTS` / `$0`, `$1` — built-in argument substitution in skill content
+
+### Naming Convention
+
+The `name` field MUST include the category prefix:
 - `spec:requirements` (not `requirements`)
 - `spec:implement` (not `implement`)
 - `git:changelog` (not `changelog`)

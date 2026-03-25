@@ -1,7 +1,8 @@
 ---
 name: spec:research
-description: Technical Research - investigates codebase and explores solution alternatives based on requirements
+description: Technical Research - investigates codebase and explores solution alternatives based on requirements. Use when choosing between implementation approaches.
 role: Technical Researcher
+argument-hint: <spec-name>
 ---
 
 # Technical Research

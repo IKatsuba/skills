@@ -1,7 +1,8 @@
 ---
 name: spec:design
-description: Create Design Document - generates a technical design based on requirements and chosen research solutions
+description: Technical Design - generates architecture diagrams, interfaces, and data flow based on requirements and chosen research solutions. Use when designing how a feature will be built.
 role: Software Architect
+argument-hint: <spec-name>
 ---
 
 # Create Design Document

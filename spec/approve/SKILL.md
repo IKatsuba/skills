@@ -1,6 +1,8 @@
 ---
 name: spec:approve
-description: Approve Document - promotes a spec document to APPROVED status, unblocking downstream pipeline skills
+description: Approve Document - promotes a spec document to APPROVED status, unblocking downstream pipeline skills. Use when ready to advance the pipeline.
+argument-hint: <spec-name> [requirements|research|design|tasks|test-plan|all]
+disable-model-invocation: true
 ---
 
 # Approve Document

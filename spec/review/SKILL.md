@@ -1,7 +1,8 @@
 ---
 name: spec:review
-description: Review Specification - validates requirements, design, and tasks documents for quality and consistency
+description: Review Specification - validates documents for completeness, quality, and consistency against the codebase. Use when checking spec quality at any pipeline stage.
 role: Staff Engineer
+argument-hint: <spec-name> [requirements|research|design|tasks|all]
 ---
 
 # Review Specification

@@ -1,7 +1,8 @@
 ---
 name: spec:test-plan
-description: Generate Test Plan - creates a manual test plan document from specification documents
+description: Test Plan - creates a manual test plan with traceable test cases from specification documents. Use when preparing to verify a feature implementation.
 role: QA Engineer
+argument-hint: <spec-name>
 ---
 
 # Generate Test Plan

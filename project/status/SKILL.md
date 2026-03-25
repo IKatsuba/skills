@@ -1,6 +1,9 @@
 ---
 name: project:status
-description: Project Status - dashboard showing progress across all specs with dependency tracking and next action suggestions
+description: Project Status - dashboard showing progress across all specs with dependency tracking and next action suggestions.
+argument-hint: [project-name]
+context: fork
+agent: Explore
 ---
 
 # Project Status
