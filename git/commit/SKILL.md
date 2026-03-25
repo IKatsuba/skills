@@ -1,6 +1,8 @@
 ---
 name: git:commit
 description: Smart Commit - stages all changes and creates a conventional commit
+argument-hint: ["message or type hint"]
+disable-model-invocation: true
 ---
 
 # Smart Commit
@@ -9,7 +11,7 @@ Stages everything and commits. No questions asked.
 
 ## Arguments
 
-- `<args>` - Optional. Full message (`"docs: update readme"`) or type hint (`fix`, `feat(auth)`)
+- `$ARGUMENTS` - Optional. Full message (`"docs: update readme"`) or type hint (`fix`, `feat(auth)`)
 - If a full message is provided in quotes, use it directly — skip analysis
 
 ## Instructions

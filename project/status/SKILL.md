@@ -25,7 +25,7 @@ Use this skill when the user needs to:
 1. Scan `.projects/` for project directories
 2. If multiple projects exist, use the `AskUserQuestion` tool to ask which one to show
 3. If no projects exist, inform the user and suggest running `project:init` first
-4. If `<args>` specifies a project name, use it directly
+4. If `$0` specifies a project name, use it directly
 
 ### Step 2: Read Project Data
 
@@ -122,9 +122,9 @@ Provide 2-3 options matching the current project state.
 ## Arguments
 
 This skill accepts an optional argument:
-- `<args>` - The project name to show status for
+- `$0` - The project name to show status for
 
-If `<args>` is provided, use it as the project name. If not provided, scan `.projects/` for existing projects.
+If `$0` is provided, use it as the project name. If not provided, scan `.projects/` for existing projects.
 
 Examples:
 - `project:status my-saas` - Show status of the "my-saas" project

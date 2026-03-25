@@ -1,6 +1,7 @@
 ---
 name: agent:multi
 description: Multi-Agent Design - designs multi-agent systems with supervisor patterns, control flow, A2A protocol, and workflow composition
+argument-hint: ["description or path"]
 ---
 
 # Multi-Agent Design
@@ -222,7 +223,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional description of the system or path to existing agent code
+- `$ARGUMENTS` (`$0`) - Optional description of the system or path to existing agent code
 
 Examples:
 - `agent:multi content pipeline with writer and editor` — design a content pipeline

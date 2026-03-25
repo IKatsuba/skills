@@ -36,7 +36,7 @@ Use this skill when the user needs to:
 
 This is optional — if no project exists, proceed normally.
 
-If the user hasn't provided sufficient context, use the `AskUserQuestion` tool to ask them interactively:
+If `$ARGUMENTS` is empty or insufficient (where `$0` is the spec name and `$1` onwards is the description context), use the `AskUserQuestion` tool to ask them interactively:
 1. What is the name for this specification? (used for folder name, e.g., "user-authentication", "payment-integration")
 2. What is the main goal or purpose of this feature/task?
 3. What are the key user stories or use cases?
@@ -136,9 +136,8 @@ After creating the document, show the user:
 
 ## Arguments
 
-This skill accepts an optional argument:
-- `<args>` - Can include the spec name and/or description. Parse it to extract:
-  - Spec name (kebab-case, e.g., "user-auth" or "payment-flow")
-  - Task description or context
+This skill accepts optional arguments via `$ARGUMENTS`:
+- `$0` - Spec name (kebab-case, e.g., "user-auth" or "payment-flow")
+- `$1` onwards - Task description or context
 
-If `<args>` is provided, use it to determine the spec name and context. If not sufficient, ask the user for clarification.
+If `$ARGUMENTS` is provided, use it to determine the spec name and context. If not sufficient, ask the user for clarification.

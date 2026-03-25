@@ -21,8 +21,8 @@ Use this skill when the user needs to:
 
 ### Step 1: Find the Spec
 
-1. If `<args>` contains a spec name, use it directly
-2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
+1. If `$0` contains a spec name, use it directly
+2. If `$0` is not provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. If `.specs/` does not exist or is empty, inform the user: "No specs found. Run `spec:requirements` to create one."
 
 ### Step 2: Read All Documents
@@ -103,7 +103,8 @@ Use the `AskUserQuestion` tool with 2-3 relevant options.
 
 ## Arguments
 
-- `<args>` - The spec name (e.g., "user-auth", "payment-flow")
+- `$ARGUMENTS` - The spec name
+  - `$0` — spec name (e.g., "user-auth", "payment-flow")
 
 Examples:
 - `spec:status user-auth` — show pipeline dashboard for user-auth

@@ -1,6 +1,7 @@
 ---
 name: agent:tools
 description: Tool Design - guides through agent tool architecture, MCP integration, third-party tool selection, and tool schema design
+argument-hint: ["description or path"]
 ---
 
 # Tool Design
@@ -210,7 +211,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional description of the agent or path to existing tool code
+- `$ARGUMENTS` (`$0`) - Optional description of the agent or path to existing tool code
 
 Examples:
 - `agent:tools customer-support chatbot` — design tools for a support chatbot

@@ -1,6 +1,7 @@
 ---
 name: agent:eval
 description: Agent Evaluation System - designs failure modes, metrics, eval test suites, SME labeling, and production data evaluation pipelines
+argument-hint: [spec-name]
 ---
 
 # Agent Evaluation System
@@ -262,7 +263,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional spec name
+- `$ARGUMENTS` (`$0`) - Optional spec name
   - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
 
 Examples:

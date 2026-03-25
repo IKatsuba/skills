@@ -117,9 +117,9 @@ Suggest running `project:plan <project-name>` as the next step.
 
 ## Arguments
 
-This skill accepts an optional argument:
-- `<args>` - Can include the project name and/or description. Parse it to extract:
-  - Project name (kebab-case, e.g., "my-saas" or "trading-platform")
-  - System description or context
+This skill accepts optional arguments:
+- `$ARGUMENTS` - Can include the project name and/or description:
+  - `$0` — project name in kebab-case (e.g., "my-saas" or "trading-platform")
+  - `$1` onwards — system description or context
 
-If `<args>` is provided, use it to determine the project name and context. If not sufficient, ask the user for clarification.
+If `$0` is provided, use it as the project name. If `$1` onwards is provided, use it as context for the system description. If not sufficient, ask the user for clarification.

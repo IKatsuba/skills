@@ -28,21 +28,24 @@ Use this skill when the user needs to:
 
 ## Arguments
 
-Parse `<args>` to determine the execution mode:
+Parse `$ARGUMENTS` to determine the execution mode:
 
 | Format | Mode | Description |
 |--------|------|-------------|
-| `<spec>` | All | Execute all pending tasks |
-| `<spec> next` | Next | Execute the next pending task |
-| `<spec> <N>` | Specific | Execute task N (e.g., "1.2", "3") |
+| `$0` | All | Execute all pending tasks |
+| `$0 next` | Next | Execute the next pending task |
+| `$0 $1` | Specific | Execute task N (e.g., "1.2", "3") |
+
+- `$0` = spec name (e.g., "user-auth")
+- `$1` = mode — `next`, or a task number (e.g., "2.1", "3"). If omitted, defaults to all.
 
 If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose.
 
 Examples:
-- `spec:implement user-auth` — execute all pending tasks for user-auth
-- `spec:implement user-auth next` — execute the next pending task
-- `spec:implement user-auth 2.1` — execute task 2.1
-- `spec:implement user-auth 3` — execute major task 3 and all its subtasks
+- `/spec:implement user-auth` — execute all pending tasks for user-auth
+- `/spec:implement user-auth next` — execute the next pending task
+- `/spec:implement user-auth 2.1` — execute task 2.1
+- `/spec:implement user-auth 3` — execute major task 3 and all its subtasks
 
 ## Specification Files Structure
 
@@ -83,7 +86,7 @@ Read the frontmatter of each prerequisite document. A document's status is in it
 
 ### Step 2: Determine Execution Mode
 
-Based on parsed arguments, follow one of:
+Based on `$0` and `$1`, follow one of:
 - **All mode** → go to "Execute All Tasks"
 - **Next mode** → go to "Execute Next Task"
 - **Specific mode** → go to "Execute Specific Task"

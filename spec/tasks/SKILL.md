@@ -40,7 +40,7 @@ Read the frontmatter of the prerequisite document. A document's status is in its
 
 ### Step 1: Locate Documents
 
-1. If `<args>` contains a spec name, look for:
+1. If `$0` is provided, use it as the spec name and look for:
    - Requirements at `.specs/<spec-name>/requirements.md`
    - Research at `.specs/<spec-name>/research.md` (optional but recommended)
    - Design at `.specs/<spec-name>/design.md`
@@ -178,6 +178,6 @@ After creating the document, show the user:
 
 ## Arguments
 
-- `<args>` - The spec name (e.g., "user-auth", "payment-flow")
+- `$ARGUMENTS` - The spec name via `$0` (e.g., "user-auth", "payment-flow")
 
 If not provided, list available specs and ask the user to choose.

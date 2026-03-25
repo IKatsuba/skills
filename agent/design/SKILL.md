@@ -1,6 +1,7 @@
 ---
 name: agent:design
 description: Design AI Agent - comprehensive agent system design that orchestrates research sub-agents across all areas and produces a unified design document
+argument-hint: [spec-name]
 ---
 
 # Design AI Agent
@@ -223,7 +224,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional spec name and/or description of the agent system
+- `$ARGUMENTS` (`$0`) - Optional spec name and/or description of the agent system
   - `<spec-name>` — name for the specification (kebab-case)
   - Free text — description of the agent's purpose
 

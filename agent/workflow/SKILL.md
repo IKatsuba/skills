@@ -1,6 +1,7 @@
 ---
 name: agent:workflow
 description: Workflow Design - designs graph-based agent workflows with branching, chaining, suspend/resume, streaming, and observability
+argument-hint: ["description or path"]
 ---
 
 # Workflow Design
@@ -219,7 +220,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional description of the process or path to existing workflow code
+- `$ARGUMENTS` (`$0`) - Optional description of the process or path to existing workflow code
 
 Examples:
 - `agent:workflow order-processing pipeline` — design workflow for order processing

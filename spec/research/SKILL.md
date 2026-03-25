@@ -41,7 +41,7 @@ Read the frontmatter of the prerequisite document. A document's status is in its
 
 ### Step 1: Read Requirements
 
-1. If `<args>` contains a spec name, look for requirements at `.specs/<spec-name>/requirements.md`
+1. If `$ARGUMENTS` contains a spec name (via `$0`), look for requirements at `.specs/<spec-name>/requirements.md`
 2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and analyze the requirements document
 4. Identify **distinct problem areas** — groups of related requirements that need separate technical investigation (e.g., "authentication mechanism", "data storage", "notification delivery")
@@ -189,7 +189,7 @@ Present the summary and use the `AskUserQuestion` tool to confirm, with options 
 
 ## Arguments
 
-- `<args>` - Spec name (required — `requirements.md` must already exist)
+- `$ARGUMENTS` - Spec name via `$0` (required — `requirements.md` must already exist)
   - `user-auth` - Research for the user-auth specification
   - `payment-flow` - Research for the payment-flow specification
 

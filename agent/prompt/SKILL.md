@@ -1,6 +1,7 @@
 ---
 name: agent:prompt
 description: Prompt Engineering - guides through model selection, prompt writing, few-shot examples, and production prompt optimization
+argument-hint: ["description or path"]
 ---
 
 # Prompt Engineering
@@ -208,7 +209,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional description of the agent or path to existing prompt file
+- `$ARGUMENTS` (`$0`) - Optional description of the agent or path to existing prompt file
 
 Examples:
 - `agent:prompt customer-support chatbot` — design prompts for a support chatbot

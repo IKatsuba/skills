@@ -141,9 +141,10 @@ Suggest running `spec:requirements <first-spec-name>` for the first spec in Phas
 ## Arguments
 
 This skill accepts an optional argument:
-- `<args>` - The project name to decompose
+- `$ARGUMENTS` - The project name to decompose
+  - `$0` — project name (e.g., "my-saas")
 
-If `<args>` is provided, use it as the project name. If not provided, scan `.projects/` for existing projects and ask the user which one to decompose.
+If `$0` is provided, use it as the project name. If not provided, scan `.projects/` for existing projects and ask the user which one to decompose.
 
 Examples:
 - `project:plan my-saas` - Decompose the "my-saas" project

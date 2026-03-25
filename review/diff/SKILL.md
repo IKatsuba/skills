@@ -1,6 +1,7 @@
 ---
 name: review:diff
 description: Diff Review - analyzes code changes and provides structured feedback before commit
+argument-hint: [scope]
 ---
 
 # Diff Review
@@ -222,7 +223,7 @@ Always check for:
 
 ## Arguments
 
-- `<args>` - Optional scope specification
+- `$ARGUMENTS` - Optional scope specification
   - `staged` - Review staged changes
   - `unstaged` - Review working directory changes
   - `all` - Review all uncommitted changes

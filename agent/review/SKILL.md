@@ -1,6 +1,7 @@
 ---
 name: agent:review
 description: Agent Pattern Review - validates an AI agent against all 22 patterns from "Patterns for Building AI Agents" with a scored checklist and recommendations
+argument-hint: [spec-name|path]
 ---
 
 # Agent Pattern Review
@@ -150,7 +151,7 @@ Use `AskUserQuestion` to offer targeted actions based on the weakest areas:
 
 ## Arguments
 
-- `<args>` - Optional spec name or path to agent code
+- `$ARGUMENTS` (`$0`) - Optional spec name or path to agent code
   - `<spec-name>` — reviews agent from `.specs/<spec-name>/`
   - `<path>` — reviews agent code at the given path
 

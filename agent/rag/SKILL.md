@@ -1,6 +1,7 @@
 ---
 name: agent:rag
 description: RAG Pipeline Design - guides through chunking, embedding, vector store selection, retrieval tuning, and RAG alternatives
+argument-hint: ["description or path"]
 ---
 
 # RAG Pipeline Design
@@ -245,7 +246,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional description of the knowledge domain or path to existing RAG code
+- `$ARGUMENTS` (`$0`) - Optional description of the knowledge domain or path to existing RAG code
 
 Examples:
 - `agent:rag documentation search` — design RAG for a docs search agent

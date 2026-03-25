@@ -250,6 +250,7 @@ Based on "Patterns for Building AI Agents" (Bhagwat & Gienow, 2025). Two tiers: 
 - **Verification checkpoints**: Tasks include milestone verification steps
 - **Checkbox format**: Tasks use `[ ]` (pending), `[-]` (in progress), `[x]` (complete). Test plans extend this with `[!]` (failed) and `[s]` (skipped)
 - **Design Deviation Protocol**: During implementation, deviations from design are classified as minor/moderate/major with escalation rules.
+- **Arguments**: Skills use `$ARGUMENTS` / `$0`, `$1` (Claude Code built-in substitutions) instead of custom `<args>` parsing.
 
 ## Creating & Modifying Skills
 

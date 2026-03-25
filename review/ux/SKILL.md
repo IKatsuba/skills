@@ -1,6 +1,7 @@
 ---
 name: review:ux
 description: UX Review - analyzes feature for efficiency-first UX patterns, keyboard navigation, and pro-tool experience
+argument-hint: <spec-name|path|branch>
 ---
 
 # UX Review
@@ -37,7 +38,7 @@ Use this skill when the user needs to:
 
 ### Step 1: Determine Review Target
 
-Parse `<args>` to determine what to review:
+Parse `$0` to determine what to review:
 
 1. **Spec name** — if provided, read documents from `.specs/<spec-name>/` (requirements, design, tasks)
 2. **File paths** — if provided, review specific files or directories
@@ -262,7 +263,7 @@ After presenting the report, offer actions:
 
 ## Arguments
 
-- `<args>` - Spec name, file paths, or review scope
+- `$ARGUMENTS` - Spec name, file paths, or review scope
   - `<spec-name>` — review UX based on spec documents and related code
   - `<file-path>` — review UX of specific files or directories
   - `branch` — review UX of all changes on current branch vs main

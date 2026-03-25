@@ -1,6 +1,7 @@
 ---
 name: agent:context
 description: Context Engineering - designs agent context strategy covering parallelization, context sharing, failure modes, compression, and error feedback
+argument-hint: ["description or path"]
 ---
 
 # Context Engineering
@@ -207,7 +208,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional description of the agent or path to existing code
+- `$ARGUMENTS` (`$0`) - Optional description of the agent or path to existing code
 
 Examples:
 - `agent:context support chatbot with long conversations` — optimize context for a chatbot

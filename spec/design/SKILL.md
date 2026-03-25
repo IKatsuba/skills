@@ -42,7 +42,7 @@ Read the frontmatter of each prerequisite document. A document's status is in it
 
 ### Step 1: Locate Specification Documents
 
-1. If `<args>` contains a spec name, look in `.specs/<spec-name>/`
+1. If `$0` is provided, use it as the spec name and look in `.specs/<spec-name>/`
 2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and analyze:
    - `requirements.md` — the requirements document (required)
@@ -260,6 +260,6 @@ After creating the document, show the user:
 
 ## Arguments
 
-- `<args>` - The spec name (e.g., "user-auth", "payment-flow")
+- `$ARGUMENTS` - The spec name via `$0` (e.g., "user-auth", "payment-flow")
 
 If not provided, list available specs and ask the user to choose.

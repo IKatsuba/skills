@@ -30,17 +30,17 @@ Use this skill when the user needs to:
 
 ### Step 1: Determine Review Scope
 
-Parse `<args>` to determine:
+Parse `$ARGUMENTS` to determine:
 
-1. **Spec name** — which specification to review
-2. **Document scope** — which documents to review:
+1. **Spec name** (`$0`) — which specification to review
+2. **Document scope** (`$1`) — which documents to review:
    - `requirements` — review only requirements.md
    - `research` — review only research.md
    - `design` — review only design.md
    - `tasks` — review only tasks.md
    - `all` (default if omitted) — review all available documents
 
-If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose.
+If `$0` is not provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose.
 
 Locate documents in `.specs/<spec-name>/`:
 - `requirements.md`
@@ -209,12 +209,9 @@ After presenting the report, use the `AskUserQuestion` tool to offer next steps,
 
 ## Arguments
 
-- `<args>` - Spec name and optionally which document(s) to review
-  - `<spec-name>` — review all documents (default)
-  - `<spec-name> requirements` — review only requirements
-  - `<spec-name> design` — review only design
-  - `<spec-name> tasks` — review only tasks
-  - `<spec-name> all` — review all (explicit)
+- `$ARGUMENTS` - Spec name and optionally which document(s) to review
+  - `$0` — spec name (e.g., "user-auth")
+  - `$1` — document scope: `requirements`, `research`, `design`, `tasks`, or `all` (default: `all`)
 
 Examples:
 - `spec:review user-auth` — review all available documents for user-auth

@@ -1,6 +1,7 @@
 ---
 name: agent:memory
 description: Memory Architecture - designs agent memory strategy with working memory, hierarchical recall, memory processors, and context management
+argument-hint: ["description or path"]
 ---
 
 # Memory Architecture
@@ -189,7 +190,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional description of the agent or path to existing code
+- `$ARGUMENTS` (`$0`) - Optional description of the agent or path to existing code
 
 Examples:
 - `agent:memory personal-assistant` — design memory for a personal assistant

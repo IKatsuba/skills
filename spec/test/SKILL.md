@@ -28,21 +28,24 @@ Use this skill when the user needs to:
 
 ## Arguments
 
-Parse `<args>` to determine the execution mode:
+Parse `$ARGUMENTS` to determine the execution mode:
 
 | Format | Mode | Description |
 |--------|------|-------------|
-| `<spec>` | All | Walk through all pending tests |
-| `<spec> next` | Next | Execute the next pending test |
-| `<spec> <N>` | Specific | Execute test N (e.g., "1.2", "2") |
+| `$0` | All | Walk through all pending tests |
+| `$0 next` | Next | Execute the next pending test |
+| `$0 $1` | Specific | Execute test N (e.g., "1.2", "2") |
+
+- `$0` = spec name (e.g., "user-auth")
+- `$1` = mode — `next`, or a test number (e.g., "2.1", "3"). If omitted, defaults to all.
 
 If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose.
 
 Examples:
-- `spec:test user-auth` — walk through all pending tests for user-auth
-- `spec:test user-auth next` — execute the next pending test
-- `spec:test user-auth 2.1` — execute test 2.1
-- `spec:test user-auth 3` — execute all tests in scenario group 3
+- `/spec:test user-auth` — walk through all pending tests for user-auth
+- `/spec:test user-auth next` — execute the next pending test
+- `/spec:test user-auth 2.1` — execute test 2.1
+- `/spec:test user-auth 3` — execute all tests in scenario group 3
 
 ## Specification Files Structure
 
@@ -76,7 +79,7 @@ Additionally, verify that `.specs/<spec-name>/tasks.md` exists and all implement
 
 ### Step 2: Determine Execution Mode
 
-Based on parsed arguments, follow one of:
+Based on `$0` and `$1`, follow one of:
 - **All mode** → go to "Execute All Tests"
 - **Next mode** → go to "Execute Next Test"
 - **Specific mode** → go to "Execute Specific Test"

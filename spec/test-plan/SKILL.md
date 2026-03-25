@@ -53,7 +53,7 @@ Read the frontmatter of the prerequisite document. If no frontmatter exists, tre
 
 ### Step 1: Locate and Read Specification Documents
 
-1. If `<args>` contains a spec name, look in `.specs/<spec-name>/`
+1. If `$ARGUMENTS` contains a spec name (`$0`), look in `.specs/<spec-name>/`
 2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and parse all specification documents:
    - `requirements.md` - understand what needs to be tested
@@ -158,6 +158,6 @@ After creating the document, show the user:
 
 ## Arguments
 
-- `<args>` - The spec name (e.g., "user-auth", "payment-flow")
+- `$ARGUMENTS` / `$0` - The spec name (e.g., "user-auth", "payment-flow")
 
 If not provided, list available specs and ask the user to choose.

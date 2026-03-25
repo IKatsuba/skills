@@ -20,11 +20,11 @@ Use this skill when the user needs to:
 
 ### Step 1: Determine Target
 
-Parse `<args>` to determine:
-1. **Spec name** — which specification
-2. **Document name** (optional) — `requirements`, `research`, `design`, `tasks`, `test-plan`
+Parse `$ARGUMENTS` to determine:
+1. **Spec name** (`$0`) — which specification
+2. **Document name** (`$1`, optional) — `requirements`, `research`, `design`, `tasks`, `test-plan`
 
-If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose.
+If `$0` is not provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose.
 
 If no document name provided, scan `.specs/<spec-name>/` for all documents, read their frontmatter, and show a status summary:
 
@@ -96,11 +96,9 @@ Stage the modified document and invoke the `git:commit` skill.
 
 ## Arguments
 
-- `<args>` - Spec name and optionally document name
-  - `<spec-name>` — show all documents, ask which to approve
-  - `<spec-name> requirements` — approve requirements.md
-  - `<spec-name> design` — approve design.md
-  - `<spec-name> all` — approve all DRAFT/IN_REVIEW documents (validate each)
+- `$ARGUMENTS` - Spec name and optionally document name
+  - `$0` — spec name (e.g., "user-auth"); if omitted, show list and ask
+  - `$1` — document name: `requirements`, `research`, `design`, `tasks`, `test-plan`, or `all`; if omitted, show documents and ask
 
 Examples:
 - `spec:approve user-auth` — show documents, ask which to approve

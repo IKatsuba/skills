@@ -1,6 +1,7 @@
 ---
 name: git:changelog
 description: Generate Changelog - analyzes git history and creates a human-readable changelog for non-technical teams
+argument-hint: <period>
 ---
 
 # Generate Changelog
@@ -19,7 +20,7 @@ Use this skill when the user needs to:
 
 ### Step 1: Parse Arguments
 
-The `<args>` should specify the time period. Supported formats:
+The `$ARGUMENTS` (`$0`) should specify the time period. Supported formats:
 - `last week`, `last month`, `last 2 weeks`
 - `since 2024-01-01`, `since v1.2.0`
 - `from 2024-01-01 to 2024-01-31`
@@ -171,7 +172,7 @@ Ask user their preferred output:
 
 ## Arguments
 
-- `<args>` - Time period specification
+- `$ARGUMENTS` (`$0`) - Time period specification
   - Relative: `last week`, `last 2 weeks`, `last month`
   - Since: `since 2024-01-01`, `since v1.0.0`
   - Range: `from 2024-01-01 to 2024-01-31`

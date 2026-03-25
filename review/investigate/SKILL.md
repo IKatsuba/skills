@@ -1,6 +1,7 @@
 ---
 name: investigate
 description: Investigate Problem - analyzes a problem in the codebase and proposes actionable solutions
+argument-hint: ["problem description"]
 ---
 
 # Investigate Problem
@@ -19,7 +20,7 @@ Use this skill when the user needs to:
 
 ### Step 1: Understand the Problem
 
-If `<args>` contains a problem description, use it as starting context.
+If `$ARGUMENTS` contains a problem description, use it as starting context.
 
 Use the `AskUserQuestion` tool to clarify:
 1. **What is the problem?** — symptoms, error messages, unexpected behavior
@@ -110,7 +111,7 @@ If the user chooses to implement, apply the chosen solution directly — make th
 
 ## Arguments
 
-- `<args>` - Problem description (optional, free-form text)
+- `$ARGUMENTS` - Problem description (optional, free-form text)
   - Can include error messages, file paths, or symptom descriptions
   - If empty, the skill will ask interactively
 

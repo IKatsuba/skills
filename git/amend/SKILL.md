@@ -1,6 +1,8 @@
 ---
 name: git:amend
 description: Amend Commit - modifies the last commit with staged changes or new message
+argument-hint: ["message"]
+disable-model-invocation: true
 ---
 
 # Amend Commit
@@ -123,7 +125,7 @@ git commit --amend -m "<new message>"
 
 ## Arguments
 
-- `<args>` - Optional. Can include:
+- `$ARGUMENTS` (`$0`) - Optional. Can include:
   - New type: `feat`, `fix`, `docs`, etc.
   - New scope: `(auth)`, `(api)`
   - New message: `"full commit message"`

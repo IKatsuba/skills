@@ -1,6 +1,7 @@
 ---
 name: agent:secure
 description: Agent Security Audit - analyzes agent for lethal trifecta, sandboxing, access control, and guardrails
+argument-hint: [spec-name|path]
 ---
 
 # Agent Security Audit
@@ -224,7 +225,7 @@ Use `AskUserQuestion` to offer:
 
 ## Arguments
 
-- `<args>` - Optional spec name or path to agent code
+- `$ARGUMENTS` (`$0`) - Optional spec name or path to agent code
   - `<spec-name>` — reads existing agent design from `.specs/<spec-name>/`
   - `<path>` — analyzes agent code at the given path
 
