@@ -1,9 +1,9 @@
 ---
-name: project:decompose
-description: Project Decomposition - breaks the vision into individual specs with dependencies, execution order, and shared interfaces
+name: project:plan
+description: Project Plan - breaks the vision into individual specs with dependencies, execution order, and shared interfaces
 ---
 
-# Project Decomposition
+# Project Plan
 
 Breaks a project vision into individual specifications with clear boundaries, dependencies between them, and an optimal execution order. Produces a dependency graph and identifies shared interfaces that multiple specs will consume.
 
@@ -19,7 +19,7 @@ Use this skill when the user needs to:
 ### Step 1: Read Project Vision
 
 1. Look for `.projects/<project-name>/vision.md`
-2. If the vision document does not exist, use the `AskUserQuestion` tool to suggest running `project:vision` first, with options like "Run project:vision first", "I'll provide context manually"
+2. If the vision document does not exist, use the `AskUserQuestion` tool to suggest running `project:init` first, with options like "Run project:init first", "I'll provide context manually"
 3. Extract: goals, stakeholders, technical constraints, shared architectural decisions, system boundary
 
 ### Step 2: Analyze the Codebase
@@ -61,10 +61,10 @@ These interfaces are defined at the project level so individual specs can refere
 
 ### Step 6: Create the Specs Document
 
-Create the document at `.projects/<project-name>/specs.md` with this structure:
+Create the document at `.projects/<project-name>/plan.md` with this structure:
 
 ```markdown
-# Project Decomposition: [Name]
+# Project Plan: [Name]
 
 ## Specs
 
@@ -135,7 +135,7 @@ After creating the document, present:
 3. The dependency graph
 4. Use the `AskUserQuestion` tool to ask if they want to make changes or start working, with options like "Looks good, start with first spec", "I want to adjust boundaries", "Review decomposition first"
 
-Suggest running `spec:plan <first-spec-name>` for the first spec in Phase 1.
+Suggest running `spec:requirements <first-spec-name>` for the first spec in Phase 1.
 
 ## Arguments
 
@@ -145,5 +145,5 @@ This skill accepts an optional argument:
 If `<args>` is provided, use it as the project name. If not provided, scan `.projects/` for existing projects and ask the user which one to decompose.
 
 Examples:
-- `project:decompose my-saas` - Decompose the "my-saas" project
-- `project:decompose` - Will ask which project to decompose
+- `project:plan my-saas` - Decompose the "my-saas" project
+- `project:plan` - Will ask which project to decompose

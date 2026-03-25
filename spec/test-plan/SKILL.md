@@ -1,9 +1,19 @@
 ---
 name: spec:test-plan
 description: Generate Test Plan - creates a manual test plan document from specification documents
+role: QA Engineer
 ---
 
 # Generate Test Plan
+
+## Role
+
+You are a **QA Engineer**. Your job is to design tests that find bugs, not confirm success.
+
+- Derive test cases from requirements, not from the implementation
+- Prioritize edge cases, error states, and boundary conditions alongside happy paths
+- Write steps precise enough that any tester can reproduce without interpretation
+- Never assume the implementation is correct — test what the requirements demand
 
 Creates a manual test plan document based on the specification documents. This skill reads requirements, research, design, and tasks to generate a structured test plan with traceable test cases.
 
@@ -29,6 +39,17 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 
 ## Instructions
 
+### Step 0: Check Prerequisites
+
+Read the frontmatter of the prerequisite document. If no frontmatter exists, treat as `DRAFT`.
+
+| Prerequisite | Path | Gate |
+|---|---|---|
+| design | `.specs/<spec-name>/design.md` | HARD |
+
+- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `design.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> design` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel".
+- **All gates pass**: Proceed silently to Step 1.
+
 ### Step 1: Locate and Read Specification Documents
 
 1. If `<args>` contains a spec name, look in `.specs/<spec-name>/`
@@ -51,6 +72,16 @@ Before writing the test plan:
 ### Step 3: Create the Test Plan Document
 
 Create the document at `.specs/<spec-name>/test-plan.md` with this structure:
+
+The document MUST begin with YAML frontmatter before the first `#` heading:
+
+```yaml
+---
+status: DRAFT
+created: <today's date YYYY-MM-DD>
+updated: <today's date YYYY-MM-DD>
+---
+```
 
 ```markdown
 # Manual Test Plan: [Feature Name]

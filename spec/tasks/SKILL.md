@@ -1,11 +1,21 @@
 ---
-name: spec:breakdown
-description: Create Task Breakdown - generates an implementation plan with tracked tasks based on requirements and design documents
+name: spec:tasks
+role: Technical Lead
+description: Task Breakdown - generates an implementation plan with tracked tasks based on requirements and design documents
 ---
 
-# Create Task Breakdown
+# Task Breakdown
 
-Creates a tasks document based on the requirements and design documents. This command reads both documents and generates an implementation plan with tracked tasks.
+## Role
+
+You are a **Technical Lead**. Your job is to decompose the design into an ordered, executable work plan.
+
+- Break work into atomic subtasks with explicit file paths and requirement references
+- Order tasks by dependencies — execute top-to-bottom without backtracking
+- Cross-check every task against the actual codebase to catch drift between documents and reality
+- Never introduce design changes — if the design is wrong, flag it rather than silently fixing it in tasks
+
+Creates a tasks document based on the requirements and design documents. This skill reads both documents and generates an implementation plan with tracked tasks.
 
 ## When to use
 
@@ -15,6 +25,17 @@ Use this skill when the user needs to:
 - Plan the order of implementation with dependencies
 
 ## Instructions
+
+### Step 0: Check Prerequisites
+
+Read the frontmatter of the prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+
+| Prerequisite | Path | Gate |
+|---|---|---|
+| design | `.specs/<spec-name>/design.md` | HARD |
+
+- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `design.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> design` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
+- **All gates pass**: Proceed silently to Step 1.
 
 ### Step 1: Locate Documents
 
@@ -47,7 +68,19 @@ If you find significant discrepancies between the documents and the codebase, me
 
 ### Step 4: Create the Tasks Document
 
-Create the document at `.specs/<spec-name>/tasks.md` with this structure:
+Create the document at `.specs/<spec-name>/tasks.md`.
+
+The document MUST begin with YAML frontmatter before the first `#` heading:
+
+```yaml
+---
+status: DRAFT
+created: <today's date YYYY-MM-DD>
+updated: <today's date YYYY-MM-DD>
+---
+```
+
+Use this structure:
 
 ```markdown
 # Implementation Plan: [Feature Name]

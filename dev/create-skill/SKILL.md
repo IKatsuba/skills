@@ -24,6 +24,7 @@ Ask the user for the following information:
    - `spec/` - Specification-driven development skills
    - `git/` - Git workflow skills
    - `review/` - Code review skills
+   - `project/` - Project-level orchestration skills
    - `dev/` - Development and meta skills
    - Or suggest a new category if none fit
 
@@ -50,9 +51,18 @@ Create the file at `<category>/<skill-name>/SKILL.md` with this structure:
 ---
 name: <category>:<skill-name>
 description: <Short Title> - <brief description of what the skill does>
+role: <Role Title>
 ---
 
 # <Short Title>
+
+## Role
+
+You are a **<Role Title>**. Your job is to <primary responsibility>.
+
+- <Focus area 1>
+- <Focus area 2>
+- <Anti-pattern to avoid>
 
 <1-2 sentence description of what this skill does and its value.>
 
@@ -97,6 +107,7 @@ Examples:
 4. **Handle edge cases** - Describe what to do when things go wrong
 5. **Keep it focused** - One skill should do one thing well
 6. **Match existing tone** - Read other skills and follow the same style
+7. **Define a clear role** - Each skill should have a role that constrains behavior and prevents common mistakes for that phase. The role should include at least one anti-pattern bullet (what NOT to do).
 
 ### Step 4: Update CLAUDE.md
 
@@ -128,7 +139,8 @@ A well-structured skill typically includes:
 
 | Section | Required | Purpose |
 |---------|----------|---------|
-| Frontmatter | Yes | `name` and `description` for the skill |
+| Frontmatter | Yes | `name`, `description`, and `role` for the skill |
+| Role | Yes | Persona that guides behavior and prevents anti-patterns |
 | Title | Yes | H1 heading matching the description title |
 | Description | Yes | Brief explanation of the skill's purpose |
 | When to use | Yes | Bullet points of use cases |

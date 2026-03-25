@@ -21,31 +21,36 @@ Use this skill when the user needs to:
 
 1. Scan `.projects/` for project directories
 2. If multiple projects exist, use the `AskUserQuestion` tool to ask which one to show
-3. If no projects exist, inform the user and suggest running `project:vision` first
+3. If no projects exist, inform the user and suggest running `project:init` first
 4. If `<args>` specifies a project name, use it directly
 
 ### Step 2: Read Project Data
 
-1. Read `.projects/<project-name>/specs.md` to get the list of specs with dependencies
+1. Read `.projects/<project-name>/plan.md` to get the list of specs with dependencies
 2. Read `.projects/<project-name>/vision.md` for project name and goals context
 
 ### Step 3: Scan Spec Progress
 
-For each spec listed in `specs.md`, scan `.specs/<spec-name>/` to determine:
+For each spec listed in `plan.md`, scan `.specs/<spec-name>/` to determine:
 
-**Stage detection** (based on which files exist):
+**Stage detection** (based on files and their frontmatter status):
 
-| Files present | Stage |
-|---------------|-------|
-| None | Not started |
-| `requirements.md` | Requirements |
-| `requirements.md` + `research.md` | Research |
-| `requirements.md` + `design.md` | Design |
-| `requirements.md` + `tasks.md` | Breakdown |
-| `requirements.md` + `tasks.md` (with `[-]` or `[x]`) | Implementing |
-| `requirements.md` + `tasks.md` (all `[x]`) | Implemented |
-| `requirements.md` + `test-plan.md` | Testing |
-| `requirements.md` + `test-plan.md` (all `[x]`) | Complete |
+Read each document's YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+
+| Condition | Stage | Health |
+|---|---|---|
+| No documents exist | Not started | — |
+| `requirements.md` exists, not APPROVED | Requirements (draft) | Needs approval |
+| `requirements.md` APPROVED, no further docs | Requirements (ready) | Ready for research |
+| `research.md` exists, not APPROVED | Research (draft) | Needs approval |
+| `design.md` exists, not APPROVED | Design (draft) | Needs approval |
+| `design.md` APPROVED, no `tasks.md` | Design (ready) | Ready for tasks |
+| `tasks.md` exists, no `[x]` or `[-]` | Tasks | Ready for implementation |
+| `tasks.md` has `[-]` or `[x]` (not all `[x]`) | Implementing | In progress |
+| `tasks.md` all `[x]` | Implemented | Ready for testing |
+| `test-plan.md` has `[-]` or `[x]` | Testing | In progress |
+| `test-plan.md` all `[x]` | Complete | Done |
+| Any document has `SUPERSEDED` | Needs revision | Warning |
 
 **Task progress** (if `tasks.md` exists):
 - Count checkboxes: `[x]` = done, `[-]` = in progress, `[ ]` = pending
@@ -58,7 +63,7 @@ For each spec listed in `specs.md`, scan `.specs/<spec-name>/` to determine:
 ### Step 4: Determine Blocked/Ready Status
 
 For each spec that has not started:
-1. Check its dependencies from `specs.md`
+1. Check its dependencies from `plan.md`
 2. A dependency is "met" if the dependent spec has reached at least the "Implemented" stage
 3. A dependency is "partially met" if the dependent spec is in the "Implementing" stage
 4. **Blocked** — at least one dependency has not reached "Implementing" stage
@@ -73,9 +78,11 @@ Display the following to the user:
 
 ## Progress
 
-| Spec | Stage | Tasks | Tests | Status |
-|------|-------|-------|-------|--------|
-| [name] | [stage] | [N/M done] | [N/M passed] | [Ready/Blocked/In Progress/Complete] |
+| Spec | Stage | Doc Status | Tasks | Tests | Status |
+|------|-------|------------|-------|-------|--------|
+| [name] | [stage] | [R:APPROVED D:DRAFT] | [N/M done] | [N/M passed] | [Ready/Blocked/In Progress/Complete] |
+
+Include a `Doc Status` column showing abbreviations for each document's frontmatter status: `R:APPROVED D:DRAFT T:DRAFT` etc. (R=requirements, D=design, T=tasks).
 
 ## Dependency Graph
 
@@ -101,8 +108,10 @@ graph LR
 Based on the current state, suggest the most useful next action via `AskUserQuestion`:
 
 - If a spec is in progress → "Continue with `spec:implement <name>`"
-- If specs are ready to start → "Start planning with `spec:plan <name>`"
+- If specs are ready to start → "Start planning with `spec:requirements <name>`"
 - If a spec just finished implementation → "Create test plan with `spec:test-plan <name>`"
+- If a spec has DRAFT documents blocking others → suggest `spec:approve`
+- If a spec has SUPERSEDED documents → suggest re-running the generating skill for that document
 - If all specs are complete → "Project is complete!"
 
 Provide 2-3 options matching the current project state.

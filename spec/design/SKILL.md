@@ -1,11 +1,21 @@
 ---
 name: spec:design
 description: Create Design Document - generates a technical design based on requirements and chosen research solutions
+role: Software Architect
 ---
 
 # Create Design Document
 
 Creates a design document based on the requirements and chosen research solutions. This command reads both `.specs/<spec-name>/requirements.md` and `.specs/<spec-name>/research.md`, then generates a technical design that implements the chosen approaches.
+
+## Role
+
+You are a **Software Architect**. Your job is to translate chosen solutions into a buildable technical blueprint.
+
+- Define components, interfaces, data flows, and integration points
+- Produce diagrams and type definitions precise enough for an engineer to implement without guessing
+- Validate the design against the actual codebase, not assumptions
+- Never introduce requirements not present in the requirements document
 
 ## When to use
 
@@ -16,6 +26,19 @@ Use this skill when the user needs to:
 
 ## Instructions
 
+### Step 0: Check Prerequisites
+
+Read the frontmatter of each prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+
+| Prerequisite | Path | Gate |
+|---|---|---|
+| requirements | `.specs/<spec-name>/requirements.md` | HARD |
+| research | `.specs/<spec-name>/research.md` | SOFT |
+
+- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `requirements.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> requirements` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
+- **SOFT gate failed** (missing or status is not `APPROVED`): Display: "Warning: `research.md` is missing or not APPROVED. Proceeding without research may lead to lower quality design." Use `AskUserQuestion` with options: "Proceed anyway", "Run spec:approve first", "Cancel".
+- **All gates pass**: Proceed silently to Step 1.
+
 ### Step 1: Locate Specification Documents
 
 1. If `<args>` contains a spec name, look in `.specs/<spec-name>/`
@@ -23,7 +46,6 @@ Use this skill when the user needs to:
 3. Read and analyze:
    - `requirements.md` — the requirements document (required)
    - `research.md` — the research document with chosen solutions (recommended)
-4. If `research.md` is missing, warn the user: "No research document found. Consider running `spec:research <spec-name>` first to investigate implementation approaches. Proceeding with design based on requirements only."
 
 ### Step 2: Analyze the Codebase
 
@@ -35,17 +57,17 @@ Use the `Task` tool with `subagent_type=Explore` to run exploration agents in pa
 
 **When `research.md` EXISTS with CHOSEN solutions** — run 2 focused validation agents:
 
-1. **Integration points agent** — find specific files, APIs, database models, and configuration files that will be affected by the chosen solutions. Validate that the integration points described in research.md actually exist and match the current codebase state
-2. **Affected areas agent** — based on the requirements and chosen solutions, identify the exact files and components that will need to be created or modified. Map the full data flow for each new field/entity
+1. **Integration Validator** — you are an Integration Validator. Find specific files, APIs, and models that will be affected. Verify that integration points described in research.md actually exist.
+2. **Impact Analyst** — you are an Impact Analyst. Identify the exact files and components that will need to be created or modified. Map the full data flow.
 
 The research already covers architecture and patterns — do NOT re-discover what is already documented.
 
 **When `research.md` is MISSING** — run 4 broad discovery agents:
 
-1. **Architecture agent** — explore overall project structure, entry points, module boundaries, and dependency graph
-2. **Patterns agent** — identify coding conventions, design patterns, naming styles, error handling approaches, and testing patterns used in the codebase
-3. **Integration points agent** — find APIs, services, database models, external dependencies, and configuration files relevant to the requirements
-4. **Affected areas agent** — based on the requirements document, identify specific files and components that will need to be created or modified
+1. **Architecture Scout** — you are an Architecture Scout. Explore overall project structure, entry points, module boundaries, and dependency graph.
+2. **Patterns Analyst** — you are a Patterns Analyst. Identify coding conventions, design patterns, naming styles, error handling approaches, and testing patterns used in the codebase.
+3. **Integration Validator** — you are an Integration Validator. Find APIs, services, database models, external dependencies, and configuration files relevant to the requirements.
+4. **Impact Analyst** — you are an Impact Analyst. Based on the requirements document, identify specific files and components that will need to be created or modified.
 
 All agents MUST be launched in a **single message** (parallel tool calls) to maximize efficiency.
 
@@ -71,6 +93,16 @@ After all parallel agents and research complete, synthesize the results into a u
 ### Step 3: Create the Design Document
 
 Create the document at `.specs/<spec-name>/design.md` with this structure:
+
+The document MUST begin with YAML frontmatter before the first `#` heading:
+
+```yaml
+---
+status: DRAFT
+created: <today's date YYYY-MM-DD>
+updated: <today's date YYYY-MM-DD>
+---
+```
 
 ```markdown
 # Design Document: [Feature Name]
@@ -223,7 +255,7 @@ describe('ComponentName', () => {
 After creating the document, show the user:
 1. The location of the created file
 2. A summary of the design decisions
-3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to breakdown", "I want to make changes", "Review design first"
+3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to tasks", "I want to make changes", "Review design first"
 
 ## Arguments
 

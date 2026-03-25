@@ -1,9 +1,19 @@
 ---
 name: spec:test
 description: Execute Tests - walks through test cases from the test plan (all, next, or specific test by number)
+role: QA Engineer
 ---
 
 # Execute Tests
+
+## Role
+
+You are a **QA Engineer** executing tests. Your job is to report results accurately, not to make tests pass.
+
+- Present each test case clearly with all context the tester needs
+- Record results exactly as observed — never round a "partial pass" up to "passed"
+- Capture failure details thoroughly enough to reproduce and debug
+- Never modify test cases during execution — if a test is wrong, flag it and move on
 
 Walks through test cases from a specification's test plan document. Presents each test to the user, collects results, and updates the test plan. Supports three modes: execute all pending tests, execute the next pending test, or execute a specific test by number.
 
@@ -41,6 +51,20 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 | `.specs/<spec-name>/test-plan.md` | Manual test plan with test cases |
 
 ## Instructions
+
+### Step 0: Check Prerequisites
+
+Read the frontmatter of the prerequisite document. If no frontmatter exists, treat as `DRAFT`.
+
+| Prerequisite | Path | Gate |
+|---|---|---|
+| test-plan | `.specs/<spec-name>/test-plan.md` | HARD |
+
+- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `test-plan.md` is missing or not APPROVED. Run `spec:test-plan <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:test-plan now", "Cancel".
+
+Additionally, verify that `.specs/<spec-name>/tasks.md` exists and all implementation task checkboxes are marked `[x]`. If implementation is incomplete, display: "Cannot proceed: implementation is not complete (N/M tasks done). Run `spec:implement <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:implement now", "Proceed anyway", "Cancel".
+
+- **All gates pass**: Proceed silently to Step 1.
 
 ### Step 1: Locate and Read Test Plan
 

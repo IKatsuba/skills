@@ -1,11 +1,11 @@
 ---
-name: project:vision
-description: Project Vision - defines the overall system goals, stakeholders, constraints, and shared architectural decisions
+name: project:init
+description: Project Init - defines the overall system goals, stakeholders, constraints, and shared architectural decisions
 ---
 
-# Project Vision
+# Project Init
 
-Defines the overall system — its purpose, stakeholders, goals, technical constraints, and shared architectural decisions that apply across all specs. This is the starting point for building a large system composed of multiple specifications.
+Initializes a new project by defining its purpose, stakeholders, goals, technical constraints, and shared architectural decisions. This is the entry point for building a large system composed of multiple specifications.
 
 ## When to use
 
@@ -110,9 +110,9 @@ Create the document at `.projects/<project-name>/vision.md` with this structure:
 After creating the document, present:
 1. The location of the created file
 2. A summary of the vision
-3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to decompose", "I want to make changes", "Review vision first"
+3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to plan", "I want to make changes", "Review vision first"
 
-Suggest running `project:decompose <project-name>` as the next step.
+Suggest running `project:plan <project-name>` as the next step.
 
 ## Arguments
 

@@ -1,9 +1,19 @@
 ---
 name: spec:implement
 description: Implement Tasks - executes tasks from the tasks document (all, next, or specific task by number)
+role: Senior Engineer
 ---
 
 # Implement Tasks
+
+## Role
+
+You are a **Senior Engineer** orchestrating implementation. Your job is to execute the plan faithfully and verify results.
+
+- Follow the tasks document exactly — do not improvise beyond what is specified
+- Launch subagents for individual subtasks and verify their output against the plan
+- Catch regressions, missing files, and incomplete data flow layers before marking tasks complete
+- Never skip verification — an unverified task is not a completed task
 
 Executes tasks from a specification's tasks document. Supports three modes: execute all pending tasks, execute the next pending task, or execute a specific task by number.
 
@@ -47,6 +57,19 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 
 ## Instructions
 
+### Step 0: Check Prerequisites
+
+Read the frontmatter of each prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+
+| Prerequisite | Path | Gate |
+|---|---|---|
+| tasks | `.specs/<spec-name>/tasks.md` | HARD |
+| test-plan | `.specs/<spec-name>/test-plan.md` | SOFT |
+
+- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `tasks.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> tasks` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
+- **SOFT gate failed** (missing or status is not `APPROVED`): Display: "Warning: `test-plan.md` is missing or not APPROVED. Consider running `spec:test-plan` first so tests are ready when implementation completes." Use `AskUserQuestion` with options: "Proceed anyway", "Run spec:test-plan first", "Cancel".
+- **All gates pass**: Proceed silently to Step 1.
+
 ### Step 1: Locate and Read Specification Documents
 
 1. Look in `.specs/<spec-name>/`
@@ -70,6 +93,7 @@ Include these rules in **every** subagent prompt:
 - If you need to understand an existing pattern, read ONLY the specific file — do not launch broad searches.
 - If tests fail because behavior was intentionally changed, update the tests to match the new behavior. NEVER re-add removed functionality to make old tests pass.
 - For new fields/entities, ensure they appear in ALL layers: schema, query/mutation, API response type, frontend type, and UI rendering.
+- If the design is incorrect or a file/API/interface does not exist as described, STOP and report the deviation. Do NOT silently work around design errors. Output a deviation report: what the design says, what reality is, and your severity assessment (minor/moderate/major).
 
 ### Verification Checklist
 
@@ -108,6 +132,7 @@ If the next pending item is a **subtask** (e.g., 1.2):
    - Provide the full subtask description, file paths, and requirements
    - Include relevant context from the spec (requirements.md, design.md)
    - Include the **Subagent Rules** (see above)
+   - Include in the subagent prompt: `You are an **Engineer** implementing a specific subtask. Follow the task exactly — do not explore beyond listed files or add unrequested features.`
 4. **Verify result** - Run the **Verification Checklist** (see above)
 5. **Mark subtask as complete** - Update the subtask checkbox to `[x]` in tasks.md only after verification passes
 6. **Commit the changes** - Use the `git:commit` skill to commit (see Committing Changes section)
@@ -208,6 +233,7 @@ Use this strategy when the dependency analysis yields **PARALLEL**.
    - Include relevant context from the spec (requirements.md, design.md)
    - Instruct each subagent: implement the subtask but do NOT commit
    - Include the **Subagent Rules** (see above)
+   - Include in the subagent prompt: `You are an **Engineer** implementing a specific subtask. Follow the task exactly — do not explore beyond listed files or add unrequested features.`
 3. **Wait for all subagents to complete**
 4. **Verify results** — run the **Verification Checklist** for each subagent
 5. **Mark all subtasks as `[x]`** in tasks.md
@@ -230,6 +256,7 @@ For each pending subtask in order:
    - Provide the full subtask description, file paths, and requirements
    - Include relevant context from the spec (requirements.md, design.md)
    - Include the **Subagent Rules** (see above)
+   - Include in the subagent prompt: `You are an **Engineer** implementing a specific subtask. Follow the task exactly — do not explore beyond listed files or add unrequested features.`
 3. **Wait for completion**
 4. **Verify result** — run the **Verification Checklist** (see above)
 5. **Mark subtask as complete** — update the checkbox to `[x]` in tasks.md
@@ -312,6 +339,36 @@ Commit ALL subtasks from the parallel batch together as a single commit:
 ### Skip committing if:
 - The user explicitly asked not to commit
 - The subtask only modified the tasks.md file (checkpoint tasks)
+
+## Design Deviation Protocol
+
+During implementation, a subagent or the implementer may discover that the design is incorrect, incomplete, or impractical. Follow this protocol instead of silently diverging.
+
+### Detection
+
+A design deviation exists when:
+- A file path, API, or interface in the design does not match the actual codebase
+- The designed approach is technically impossible or produces errors
+- A requirement cannot be met with the designed solution
+- A subtask requires changes not described in the design
+
+### Severity Levels
+
+| Severity | Definition | Action |
+|----------|-----------|--------|
+| **Minor** | Detail differs but outcome is identical (e.g., file name) | Log deviation in tasks.md under the subtask, continue |
+| **Moderate** | Approach changes but requirements are still met | Pause. Use `AskUserQuestion`: "Approve deviation and continue" / "Update design first" / "Cancel task" |
+| **Major** | Requirements may not be met or architecture changes significantly | STOP. Mark `design.md` frontmatter as `status: SUPERSEDED`. Use `AskUserQuestion`: "Re-run spec:design" / "Run review:investigate" / "Handle manually" |
+
+### Logging Deviations
+
+For minor and approved moderate deviations, add a note to `tasks.md`:
+```
+- [x] 2.1 Create user model
+  - _Deviation: Used `src/models/user.model.ts` instead of `src/models/user.ts` per project naming convention_
+```
+
+For major deviations, update `design.md` frontmatter to `status: SUPERSEDED` and `updated: <today>`. Do NOT continue implementation until the design is updated and re-approved.
 
 ## Error Handling
 

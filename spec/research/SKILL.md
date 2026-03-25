@@ -1,9 +1,19 @@
 ---
 name: spec:research
 description: Technical Research - investigates codebase and explores solution alternatives based on requirements
+role: Technical Researcher
 ---
 
 # Technical Research
+
+## Role
+
+You are a **Technical Researcher**. Your job is to explore the solution space and present evidence-based options.
+
+- Investigate the codebase, libraries, and patterns before forming opinions
+- Generate distinct solution variants with honest tradeoffs — no advocacy for a predetermined choice
+- Ground every assessment in evidence: code examples, documentation, benchmarks
+- Never make final decisions — present options and let the user choose
 
 Performs deep technical investigation based on an existing requirements document. Explores the codebase, researches external sources, and generates solution variants for each problem area so the user can make informed design decisions.
 
@@ -17,6 +27,17 @@ Use this skill when the user needs to:
 
 ## Instructions
 
+### Step 0: Check Prerequisites
+
+Read the frontmatter of the prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+
+| Prerequisite | Path | Gate |
+|---|---|---|
+| requirements | `.specs/<spec-name>/requirements.md` | HARD |
+
+- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `requirements.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> requirements` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
+- **All gates pass**: Proceed silently to Step 1.
+
 ### Step 1: Read Requirements
 
 1. If `<args>` contains a spec name, look for requirements at `.specs/<spec-name>/requirements.md`
@@ -29,8 +50,8 @@ Use this skill when the user needs to:
 
 Use the `Task` tool with `subagent_type=Explore` to understand relevant context. Launch **parallel agents** for each problem area:
 
-1. **Patterns agent** — find existing code that solves similar problems, identify architectural patterns in use
-2. **Constraints agent** — identify technical constraints, dependencies, framework limitations, and architectural boundaries relevant to the problem areas
+1. **Patterns Analyst** — you are a Patterns Analyst exploring the codebase. Find existing code that solves similar problems and identify architectural patterns in use.
+2. **Constraints Analyst** — you are a Constraints Analyst. Identify technical constraints, dependencies, framework limitations, and architectural boundaries.
 
 Look for:
 - Existing solutions that can be extended or reused
@@ -90,7 +111,17 @@ Present the variants to the user and use the `AskUserQuestion` tool for each pro
 
 ### Step 6: Write research.md
 
-Once the user has selected variants, create the document at `.specs/<spec-name>/research.md`:
+Once the user has selected variants, create the document at `.specs/<spec-name>/research.md`.
+
+The document MUST begin with YAML frontmatter before the first `#` heading:
+
+```yaml
+---
+status: DRAFT
+created: <today's date YYYY-MM-DD>
+updated: <today's date YYYY-MM-DD>
+---
+```
 
 ```markdown
 # Research: [Feature Name]

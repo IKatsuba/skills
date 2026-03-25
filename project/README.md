@@ -10,21 +10,21 @@ Use project skills when building a system that spans multiple specs — a SaaS p
 
 | Skill | Description |
 |-------|-------------|
-| `project:vision` | Define the system — goals, stakeholders, constraints, shared decisions |
-| `project:decompose` | Break into specs with dependencies and execution order |
+| `project:init` | Initialize the project — goals, stakeholders, constraints, shared decisions |
+| `project:plan` | Break into specs with dependencies and execution order |
 | `project:status` | Dashboard showing progress across all specs |
 
 ## Workflow
 
 ```
-project:vision        Define the overall system
+project:init          Define the overall system
        |
-project:decompose     Break into specs with dependency graph
+project:plan          Break into specs with dependency graph
        |
-  spec:plan           Start planning individual specs
+  spec:requirements   Start planning individual specs
   spec:research       (standard spec pipeline per spec)
   spec:design
-  spec:breakdown
+  spec:tasks
   spec:implement
   spec:test-plan
   spec:test
@@ -38,5 +38,5 @@ project:status        Track progress across all specs
 .projects/
 └── <project-name>/
     ├── vision.md       # System goals, constraints, shared decisions
-    └── specs.md        # Spec list, dependency graph, execution order
+    └── plan.md         # Spec list, dependency graph, execution order
 ```
