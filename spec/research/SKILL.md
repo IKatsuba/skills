@@ -22,33 +22,51 @@ Use this skill when the user needs to:
 1. If `<args>` contains a spec name, look for requirements at `.specs/<spec-name>/requirements.md`
 2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and analyze the requirements document
-4. Identify **distinct problem areas** — groups of related requirements that need separate technical investigation (e.g., "authentication mechanism", "data storage", "notification delivery")
-5. Use the `AskUserQuestion` tool to ask clarifying questions about any ambiguous requirements or priorities before proceeding
+4. Use the `AskUserQuestion` tool to ask clarifying questions about any ambiguous requirements or priorities before proceeding
 
-### Step 2: Explore Codebase
+### Step 2: Create Research Plan
 
-Use the `Task` tool with `subagent_type=Explore` to understand relevant context. Launch **parallel agents** for each problem area:
+Before diving into research, build a structured plan that defines **what** to investigate, **why**, and **how** to evaluate findings.
+
+1. Identify **distinct problem areas** — groups of related requirements that need separate technical investigation (e.g., "authentication mechanism", "data storage", "notification delivery")
+2. For each problem area, define:
+
+   - **Key questions** — specific questions the research must answer (e.g., "Does the current ORM support polymorphic relations?", "What is the latency impact of server-side encryption?")
+   - **Hypotheses** — what you expect to find and why, based on initial understanding (e.g., "The existing event bus likely supports fan-out, so we can reuse it for notifications"). Hypotheses will be confirmed or refuted during research
+   - **Sources to investigate** — concrete list of where to look:
+     - _Codebase_: specific directories, modules, patterns to examine
+     - _Documentation_: library docs, framework guides, API references to consult
+     - _Web_: topics to search, known articles or resources to fetch
+   - **Evaluation criteria** — how solution variants will be compared for this problem area (e.g., "latency under 100ms", "no new dependencies", "compatible with existing auth flow"). These criteria will be used in Step 5 to assess variants
+
+3. Present the research plan to the user using `AskUserQuestion` tool with options like "Plan looks good, start research", "I want to adjust the plan", "Add more problem areas". If the user wants changes, refine the plan before proceeding.
+
+### Step 3: Explore Codebase
+
+Execute the research plan. Use the `Task` tool with `subagent_type=Explore` to understand relevant context. Launch **parallel agents** targeting the codebase sources identified in the plan:
 
 1. **Patterns agent** — find existing code that solves similar problems, identify architectural patterns in use
 2. **Constraints agent** — identify technical constraints, dependencies, framework limitations, and architectural boundaries relevant to the problem areas
 
-Look for:
+Focus on answering the **key questions** and validating or refuting the **hypotheses** from the research plan. Look for:
 - Existing solutions that can be extended or reused
 - Architectural patterns to follow (or consciously deviate from)
 - Integration points and APIs that will be affected
 - Technical debt or limitations that constrain options
 
-### Step 3: Research External Sources
+### Step 4: Research External Sources
 
-For each problem area, gather evidence from external sources. Launch these **in parallel** with each other (and in parallel with Step 2 where possible):
+For each problem area, gather evidence from the external sources identified in the research plan. Launch these **in parallel** with each other (and in parallel with Step 3 where possible):
 
 1. **Context7 MCP server** — use `resolve-library-id` and `query-docs` to fetch up-to-date documentation for relevant libraries and frameworks
 2. **Web search** — use `WebSearch` to find best practices, architectural recommendations, and known pitfalls
 3. **Web fetch** — use `WebFetch` to retrieve specific API docs, specs, or references mentioned in the requirements
 
-### Step 4: Generate Solution Variants
+After gathering evidence, revisit the hypotheses from the research plan and mark each as **Confirmed**, **Refuted**, or **Partially confirmed** with a brief explanation.
 
-For **each problem area**, propose 2-4 solution variants:
+### Step 5: Generate Solution Variants
+
+For **each problem area**, propose 2-4 solution variants. Assess each variant against the **evaluation criteria** defined in the research plan:
 
 ```markdown
 ### Problem Area: [Name]
@@ -70,6 +88,10 @@ _Related requirements: X.X, X.X_
 **Effort:** [Low / Medium / High]
 **Risk:** [Low / Medium / High]
 **Codebase fit:** [How well it aligns with existing patterns]
+
+**Criteria assessment:**
+- [Criterion 1]: [How this variant performs]
+- [Criterion 2]: [How this variant performs]
 ```
 
 For each variant, consider:
@@ -80,7 +102,7 @@ For each variant, consider:
 - Scalability and performance
 - Evidence from documentation and best practices
 
-### Step 5: Discuss and Select
+### Step 6: Discuss and Select
 
 Present the variants to the user and use the `AskUserQuestion` tool for each problem area to let the user **pick one variant**:
 - Explain tradeoffs clearly before asking
@@ -88,7 +110,7 @@ Present the variants to the user and use the `AskUserQuestion` tool for each pro
 - Use the `AskUserQuestion` tool with variant names as options — one question per problem area
 - Note any constraints or dependencies between choices across problem areas
 
-### Step 6: Write research.md
+### Step 7: Write research.md
 
 Once the user has selected variants, create the document at `.specs/<spec-name>/research.md`:
 
@@ -99,11 +121,33 @@ Once the user has selected variants, create the document at `.specs/<spec-name>/
 
 [What problem are we solving and why it matters]
 
+## Research Plan
+
+### Problem Areas Overview
+
+| # | Problem Area | Key Questions | Evaluation Criteria |
+|---|-------------|---------------|-------------------|
+| 1 | [Area name] | [Count] questions | [Criteria list] |
+| 2 | [Area name] | [Count] questions | [Criteria list] |
+
+### Hypotheses & Results
+
+| # | Hypothesis | Result | Evidence |
+|---|-----------|--------|----------|
+| H1 | [What we expected] | ✅ Confirmed / ❌ Refuted / ⚠️ Partial | [Brief evidence] |
+| H2 | [What we expected] | ✅ Confirmed / ❌ Refuted / ⚠️ Partial | [Brief evidence] |
+
 ## Problem Areas
 
 ### 1. [Problem Area Name]
 
 _Related requirements: X.X, X.X_
+
+**Key questions answered:**
+- Q: [Question from plan] → A: [Answer found during research]
+- Q: [Question from plan] → A: [Answer found during research]
+
+**Evaluation criteria:** [criterion 1], [criterion 2], ...
 
 #### Variant A: [Name] — CHOSEN
 
@@ -113,7 +157,11 @@ _Related requirements: X.X, X.X_
 **Cons:** [list]
 **Effort:** [Low/Medium/High] | **Risk:** [Low/Medium/High]
 
-**Why chosen:** [Rationale based on discussion]
+**Criteria assessment:**
+- [Criterion 1]: [Assessment]
+- [Criterion 2]: [Assessment]
+
+**Why chosen:** [Rationale based on discussion and criteria]
 
 #### Variant B: [Name] — Rejected
 
@@ -151,7 +199,7 @@ _Related requirements: X.X, X.X_
 Ready for `spec:design <spec-name>` to create the technical design based on these chosen solutions.
 ```
 
-### Step 7: Confirm with User
+### Step 8: Confirm with User
 
 Present the summary and use the `AskUserQuestion` tool to confirm, with options like "Looks good, proceed to design", "I want to make changes", "Review research first"
 
