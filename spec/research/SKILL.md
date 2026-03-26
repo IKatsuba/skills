@@ -104,15 +104,26 @@ For each variant, consider:
 
 ### Step 5: Discuss and Select
 
-Present the variants to the user and use the `AskUserQuestion` tool for each problem area to let the user **pick one variant**:
-- Explain tradeoffs clearly before asking
-- Highlight which variant best fits the existing codebase (mark it as "(Recommended)" in the options)
-- Use the `AskUserQuestion` tool with variant names as options — one question per problem area
-- Note any constraints or dependencies between choices across problem areas
+**MANDATORY STOP — DO NOT SKIP THIS STEP. DO NOT select variants yourself. You MUST ask the user.**
+
+For **each** problem area, one at a time:
+
+1. Briefly summarize the tradeoffs between variants
+2. Mark the variant that best fits the existing codebase as "(Recommended)"
+3. **Call `AskUserQuestion`** with the variant names as options and wait for the user's response
+4. Record the user's choice before moving to the next problem area
+
+Rules:
+- You MUST use the `AskUserQuestion` tool — never output the question as plain text
+- You MUST wait for the user's answer before proceeding to the next problem area
+- You MUST NOT pre-select variants, assume the user's preference, or write `research.md` without explicit user choices
+- If there are dependencies between problem areas, explain them before asking
 
 ### Step 6: Write research.md
 
-Once the user has selected variants, create the document at `.specs/<spec-name>/research.md`.
+**Prerequisite:** Every problem area MUST have an explicit user choice from Step 5. If any problem area was not presented to the user via `AskUserQuestion`, go back to Step 5 now.
+
+Create the document at `.specs/<spec-name>/research.md`.
 
 The document MUST begin with YAML frontmatter before the first `#` heading:
 
