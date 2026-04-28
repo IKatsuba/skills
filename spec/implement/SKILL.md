@@ -2,7 +2,7 @@
 name: spec:implement
 description: Implement Tasks - executes tasks from the tasks document using subagents. Use when ready to start coding a feature.
 role: Senior Engineer
-argument-hint: <spec-name> [all|next|N]
+argument-hint: <spec-name> [all|next|N|gA]
 disable-model-invocation: true
 ---
 
@@ -32,20 +32,25 @@ Parse `$ARGUMENTS` to determine the execution mode:
 
 | Format | Mode | Description |
 |--------|------|-------------|
-| `$0` | All | Execute all pending tasks |
+| `$0` | All | Execute all pending tasks across all groups |
 | `$0 next` | Next | Execute the next pending task |
-| `$0 $1` | Specific | Execute task N (e.g., "1.2", "3") |
+| `$0 $1` (task number) | Specific | Execute task N (e.g., "1.2", "3") |
+| `$0 gA` / `$0 groupA` / `$0 group A` | Group | Execute every pending task in group A and stop |
 
 - `$0` = spec name (e.g., "user-auth")
-- `$1` = mode — `next`, or a task number (e.g., "2.1", "3"). If omitted, defaults to all.
+- `$1` = mode — `next`, a task number (e.g., "2.1", "3"), or a group identifier (`gA`, `groupB`, or the literal `group` followed by `$2 = A`). If omitted, defaults to all.
 
-If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose.
+A **group** is a `### Group X:` section in `tasks.md`. Groups are designed so each one can land on `main` independently without breaking anything (see `spec:tasks` group strategy). Group mode is the recommended way to ship work one PR at a time.
+
+If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose. If a group identifier is given but the document has no groups (legacy spec), inform the user and offer to fall back to "all" or cancel.
 
 Examples:
 - `/spec:implement user-auth` — execute all pending tasks for user-auth
 - `/spec:implement user-auth next` — execute the next pending task
 - `/spec:implement user-auth 2.1` — execute task 2.1
 - `/spec:implement user-auth 3` — execute major task 3 and all its subtasks
+- `/spec:implement user-auth gA` — execute every pending task in Group A and stop
+- `/spec:implement user-auth group B` — same as `gB`
 
 ## Specification Files Structure
 
@@ -86,10 +91,24 @@ Read the frontmatter of each prerequisite document. A document's status is in it
 
 ### Step 2: Determine Execution Mode
 
-Based on `$0` and `$1`, follow one of:
+Based on `$0`, `$1`, and `$2`, follow one of:
 - **All mode** → go to "Execute All Tasks"
 - **Next mode** → go to "Execute Next Task"
-- **Specific mode** → go to "Execute Specific Task"
+- **Specific mode** (numeric `$1`) → go to "Execute Specific Task"
+- **Group mode** (`$1` matches `g<letter>` / `group<letter>` / `group` + `$2`) → go to "Execute Group"
+
+### Task Kinds
+
+`tasks.md` may tag tasks with kinds. Handle each appropriately — never silently execute a task whose kind says a human must do it.
+
+| Kind (title prefix) | Behaviour |
+|---|---|
+| _(no tag)_ | Implementation task. Run via subagent as normal. |
+| `Infra — …` | Implementation task that touches Terraform / cloud configs. Run via subagent, but the subagent does NOT run `terraform apply` or any cloud-mutating CLI — it only writes the config files and prints the exact apply command for the user. |
+| `External — …` | Action a human must perform in a third-party console (Google Cloud, Vercel, Stripe, etc.). Do NOT execute. Display the steps to the user, ask via `AskUserQuestion`: "I've done it", "Skip for now", "Cancel". Mark `[x]` only after the user confirms. |
+| `⚠️ Cutover — …` | A production cutover. Do NOT execute autonomously even in `all` mode. Display the change, the validation steps, and the revert procedure; ask via `AskUserQuestion`: "Apply now (I'll do the env flip / merge in another window)", "Skip for now", "Cancel". Mark `[x]` only after the user confirms it has shipped and validation passed. |
+| `Soak` (italic paragraph between groups) | Not a task. When you encounter it during `all` mode, stop and tell the user the soak window has begun, list the metrics to monitor, and exit. The user re-invokes `spec:implement` once the soak completes. |
+| `Checkpoint` | Run verification commands, report results, mark `[x]` only if all pass. |
 
 ### Subagent Rules
 
@@ -226,7 +245,9 @@ After completing all tasks:
 1. Summarize what was implemented
 2. List any issues encountered
 3. Note which major tasks used parallel vs sequential execution
-4. Suggest next steps (e.g., `spec:test-plan` to create a test plan, `spec:review` to review)
+4. If `tasks.md` defines groups, list the groups in order and the commit hashes that fall inside each — this gives the user a ready-made map for splitting the work into PRs.
+5. Remind the user that no PR was opened.
+6. Suggest next steps (e.g., `spec:test-plan` to create a test plan, `spec:review` to review)
 
 ---
 
@@ -267,7 +288,49 @@ After completing the task:
 
 ---
 
+## Execute Group
+
+Group mode runs every pending task inside a single `### Group X:` section, then stops — even if later groups have pending work. The intent is "produce one mergeable changeset, hand it to the user, let them PR it manually".
+
+### Find the Specified Group
+
+1. Parse the group identifier from `$1` / `$2` (strip the `g` or `group` prefix; uppercase the letter).
+2. Locate the matching `### Group <letter>:` heading in `tasks.md`. If no heading matches, list the available group IDs from the document and use `AskUserQuestion` to ask the user to pick one or cancel.
+3. If `tasks.md` has no `### Group` sections at all, the spec was authored before groups existed. Inform the user, then use `AskUserQuestion` with options "Run all tasks instead", "Cancel and regroup with `spec:tasks`".
+
+### Check Group Dependencies
+
+Read the **Shippable Groups** table at the top of `tasks.md`:
+
+1. Identify the groups this group **depends on**.
+2. For each dependency, confirm every task inside it is `[x]`. If any are pending, warn the user — merging this group alone may not be safe.
+3. Use `AskUserQuestion` with options "Run prerequisite groups first", "Proceed anyway (I'll merge them together)", "Cancel".
+
+### Execute the Group's Major Tasks
+
+Walk every pending major task inside the group, in document order:
+
+1. Apply the same flow as "Execute All Tasks → Execute Major Tasks Sequentially" — including the rule that **major tasks always execute sequentially**.
+2. For each major task, run the dependency analysis on its subtasks (parallel vs sequential) per [parallel-execution.md](parallel-execution.md).
+3. Run the group's checkpoint task(s) as part of the walk.
+4. **Do not cross the group boundary.** When the next pending task is the first major task of the *next* group, stop.
+
+### Report Completion (Group Mode)
+
+After the group's last task is `[x]`:
+
+1. State that Group `<letter>` is complete.
+2. List the commits produced during this run (use `git log` to gather hashes since the group started).
+3. Restate the group's blast radius from the table — `safe`, `gated`, or `coupled-to-X`.
+4. Tell the user that no PR was opened (the skill never opens PRs) and that the commits are ready to be pushed/PRed manually when they choose.
+5. Show what remains: how many groups still have pending work, and which group is next.
+6. Use `AskUserQuestion` with options "Continue with next group", "Stop here", "Review changes first".
+
+---
+
 ## Committing Changes
+
+This skill **never** runs `git push`, `gh pr create`, or any other remote/PR command — even in group mode. Producing one PR per group is the user's job; this skill only produces commits. If the user explicitly asks for a PR, point them at `git:commit` plus their normal PR workflow.
 
 ### After sequential subtask execution
 
