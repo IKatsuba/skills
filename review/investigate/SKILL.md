@@ -1,5 +1,5 @@
 ---
-name: investigate
+name: review:investigate
 description: Investigate Problem - analyzes a problem in the codebase and proposes actionable solutions
 argument-hint: ["problem description"]
 ---

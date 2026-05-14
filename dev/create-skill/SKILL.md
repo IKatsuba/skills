@@ -158,13 +158,56 @@ Claude loads supporting files on demand, keeping the main skill focused.
 2. Add to the Available Skills table in `README.md`
 3. Update the category `README.md` if it exists
 
-### Step 9: Validate and Confirm
+### Step 9: Validate Frontmatter
+
+Before confirming, validate the new SKILL.md to catch malformed YAML, mismatched names, or `argument-hint` shapes that silently break `npx skills` and other tooling.
+
+If this repository has `.github/scripts/validate-skills.py`, run it:
+
+```bash
+python3 .github/scripts/validate-skills.py
+```
+
+If the script isn't present (the skill is being created in a different repo), run this inline check against the new SKILL.md:
+
+```bash
+python3 - <<'PY'
+import re, sys, pathlib
+try:
+    import yaml
+except ImportError:
+    sys.exit("PyYAML not available; skipping inline check. Install with: pip install pyyaml")
+
+path = pathlib.Path("<category>/<skill-name>/SKILL.md")  # replace with actual path
+text = path.read_text()
+m = re.match(r"^---\n(.*?)\n---", text, re.DOTALL)
+assert m, "no frontmatter block"
+data = yaml.safe_load(m.group(1))
+assert isinstance(data, dict), "frontmatter must be a mapping"
+
+parts = path.parts
+expected = f"{parts[-3]}:{parts[-2]}"
+assert data.get("name") == expected, f"name {data.get('name')!r} must equal {expected!r}"
+assert data.get("description"), "description missing or empty"
+
+hint = data.get("argument-hint")
+assert hint is None or isinstance(hint, (str, list)), \
+    f"argument-hint must be string or list, got {type(hint).__name__}"
+
+print("OK")
+PY
+```
+
+If validation fails, fix the SKILL.md and re-run. The most common failure is `argument-hint: [a] [b]` — YAML parses this as a one-element list with junk after, breaking tooling. Quote it: `argument-hint: "[a] [b]"`.
+
+### Step 10: Confirm
 
 Present to the user:
 1. The path of the created files
 2. A summary of the skill's purpose
 3. Documentation updates made
-4. Use `AskUserQuestion` to ask if changes are needed
+4. Validation result
+5. Use `AskUserQuestion` to ask if changes are needed
 
 ## Skill Anatomy Reference
 
