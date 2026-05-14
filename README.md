@@ -50,6 +50,7 @@ npx skills add ikatsuba/skills --skill project:init
 npx skills add ikatsuba/skills --skill project:plan
 npx skills add ikatsuba/skills --skill project:status
 npx skills add ikatsuba/skills --skill dev:create-skill
+npx skills add ikatsuba/skills --skill dev:claude-audit
 npx skills add ikatsuba/skills --skill journal:capture
 npx skills add ikatsuba/skills --skill journal:search
 npx skills add ikatsuba/skills --skill journal:promote

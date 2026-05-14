@@ -52,6 +52,7 @@ agent/                      - AI agent design and review skills
   multi/SKILL.md            - Multi-agent system design
 dev/                        - Development and meta skills
   create-skill/SKILL.md     - Skill creation helper (meta-skill)
+  claude-audit/SKILL.md     - Audit a repo's Claude Code setup against best practices [Setup Auditor]
 journal/                    - Personal engineering journal skills
   capture/SKILL.md          - Capture a thought, problem, edge case, or decision into ~/journal
   search/SKILL.md           - Search journal entries by query, type, project, topic, tag, or date
@@ -249,6 +250,7 @@ Based on "Patterns for Building AI Agents" (Bhagwat & Gienow, 2025). Two tiers: 
 ### Development Skills
 
 - **`dev:create-skill [category/name]`** → Scaffolds a new skill with proper structure
+- **`dev:claude-audit [path]`** → Audits a repo's Claude Code setup (CLAUDE.md hierarchy, deny-list, per-dir commands, extension layer) against best practices for large codebases
 
 ## Key Patterns
 
