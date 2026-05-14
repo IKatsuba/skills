@@ -50,6 +50,9 @@ npx skills add ikatsuba/skills --skill project:init
 npx skills add ikatsuba/skills --skill project:plan
 npx skills add ikatsuba/skills --skill project:status
 npx skills add ikatsuba/skills --skill dev:create-skill
+npx skills add ikatsuba/skills --skill journal:capture
+npx skills add ikatsuba/skills --skill journal:search
+npx skills add ikatsuba/skills --skill journal:promote
 ```
 
 ### Global installation
@@ -108,6 +111,14 @@ npx skills add ikatsuba/skills --list
 | `review:diff` | Diff review with structured feedback before committing |
 | `review:ux` | Detailed UX review — user flows, edge cases, and UI consistency |
 | `review:investigate` | Analyze a problem and propose actionable solutions |
+
+### Journal
+
+| Skill | Description |
+|-------|-------------|
+| `journal:capture` | Capture a thought, problem, edge case, or decision into `~/journal` with auto-indexed README files |
+| `journal:search` | Search journal entries by query, type, project, topic, tag, or date range |
+| `journal:promote` | Graduate a journal entry into `.specs/<name>/journal-seed.md` to feed the spec pipeline |
 
 ### AI Agent Design
 

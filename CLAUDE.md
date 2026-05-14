@@ -52,6 +52,10 @@ agent/                      - AI agent design and review skills
   multi/SKILL.md            - Multi-agent system design
 dev/                        - Development and meta skills
   create-skill/SKILL.md     - Skill creation helper (meta-skill)
+journal/                    - Personal engineering journal skills
+  capture/SKILL.md          - Capture a thought, problem, edge case, or decision into ~/journal
+  search/SKILL.md           - Search journal entries by query, type, project, topic, tag, or date
+  promote/SKILL.md          - Graduate a journal entry into a .specs/<name>/ seed file
 ```
 
 **Important**: All skills MUST be placed in a category folder (e.g., `spec/`, `git/`), never in the repository root. When creating new skills, either add them to an existing category or create a new category folder.
@@ -214,6 +218,12 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 - **`review:diff [scope]`** → Diff review with structured feedback
 - **`review:ux [spec-name|path|branch]`** → UX review for user flows and consistency
 - **`review:investigate`** → Analyze a problem and propose solutions
+
+### Journal Skills
+
+- **`journal:capture [seed thought]`** → Captures a thought into `~/journal/projects/<slug>/` or `~/journal/topics/<slug>/`, auto-updates README indexes at folder, category, and root levels.
+- **`journal:search [query] [--filters]`** → Searches `~/journal/` by text, type, project, topic, tag, or date range. Returns ranked snippets.
+- **`journal:promote [entry] [spec-name]`** → Graduates a journal entry into `.specs/<spec-name>/journal-seed.md` for `spec:requirements` to consume; backlinks the journal entry with `promoted_to:`.
 
 ### Agent Skills
 
