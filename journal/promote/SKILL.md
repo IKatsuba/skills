@@ -2,7 +2,7 @@
 name: journal:promote
 description: Journal Promote - graduates a journal entry into a new spec by seeding .specs/<name>/ with the entry's content, then linking the journal entry back. Use when the user wants to turn a captured idea, problem, or decision into a full specification.
 role: Pipeline Bridge
-argument-hint: [entry-path-or-search-query] [spec-name]
+argument-hint: "[entry-path-or-search-query] [spec-name]"
 disable-model-invocation: true
 ---
 

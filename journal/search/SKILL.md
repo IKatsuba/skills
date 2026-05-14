@@ -2,7 +2,7 @@
 name: journal:search
 description: Journal Search - searches entries in ~/journal by query, type, project, topic, tags, or date range. Use when the user wants to find past thoughts, decisions, problems, or ideas they captured.
 role: Journal Librarian
-argument-hint: ["query"] [--type=...] [--project=...] [--topic=...] [--tag=...] [--since=...] [--until=...]
+argument-hint: "[query] [--type=...] [--project=...] [--topic=...] [--tag=...] [--since=...] [--until=...]"
 context: fork
 agent: Explore
 ---
