@@ -38,18 +38,9 @@ review/                     - Code review skills
   diff/SKILL.md             - Diff review before commit
   ux/SKILL.md               - UX review for user experience quality
   investigate/SKILL.md      - Analyze a problem and propose actionable solutions
-agent/                      - AI agent design and review skills
-  design/SKILL.md           - Agent architecture design (patterns 1-4)
-  context/SKILL.md          - Context engineering strategy (patterns 5-9)
-  eval/SKILL.md             - Evaluation system design (patterns 10-17)
-  secure/SKILL.md           - Security audit (patterns 18-21)
-  review/SKILL.md           - Full review checklist across all agent skills
-  prompt/SKILL.md           - Prompt engineering and model selection
-  tools/SKILL.md            - Tool design, MCP integration
-  memory/SKILL.md           - Memory architecture (working, semantic, processors)
-  workflow/SKILL.md         - Graph-based workflow design
-  rag/SKILL.md              - RAG pipeline design
-  multi/SKILL.md            - Multi-agent system design
+agent/                      - AI agent design and audit skills
+  developer/SKILL.md        - Reference skill for building AI agents (router + references/)
+  audit/SKILL.md            - Unified agent audit: 22 patterns + 12 factors + security
 dev/                        - Development and meta skills
   create-skill/SKILL.md     - Skill creation helper (meta-skill)
   claude-audit/SKILL.md     - Audit a repo's Claude Code setup against best practices [Setup Auditor]
@@ -228,24 +219,10 @@ All specification documents are stored in `.specs/<spec-name>/` directories usin
 
 ### Agent Skills
 
-Based on "Patterns for Building AI Agents" (Bhagwat & Gienow, 2025). Two tiers: **spec skills** produce documents in `.specs/`, **action skills** work directly.
+Based on "Patterns for Building AI Agents" / "Principles of Building AI Agents" (Bhagwat & Gienow, 2025) and [humanlayer/12-factor-agents](https://github.com/humanlayer/12-factor-agents) (CC BY-SA 4.0). Two skills:
 
-#### Spec Skills
-
-- **`agent:design [spec-name]`** → Comprehensive agent system design (orchestrator)
-- **`agent:eval [spec-name]`** → Evaluation system design
-- **`agent:secure [spec-name|path]`** → Security audit
-- **`agent:review [spec-name|path]`** → Full pattern review (0-66 score)
-
-#### Action Skills
-
-- **`agent:prompt`** → Prompt engineering and model selection
-- **`agent:tools`** → Tool design, MCP integration
-- **`agent:memory`** → Memory architecture
-- **`agent:workflow`** → Graph-based workflow design
-- **`agent:rag`** → RAG pipeline design
-- **`agent:multi`** → Multi-agent systems
-- **`agent:context`** → Context engineering
+- **`agent:developer`** → Reference skill for designing and building AI agents. A thin `SKILL.md` router into ten `references/` knowledge files (architecture, prompting, tools, memory, context, workflows, RAG, multi-agent, evaluation, twelve-factor). Consulted *while* building — produces no documents.
+- **`agent:audit [spec-name|path]`** → Unified audit of an existing agent against a merged framework (22 patterns + 12 factors + security). Fans out 7 parallel dimension subagents, scores 35 criteria, applies a security gate, and writes a maturity report to `.specs/<spec-name>/agent-audit.md`. Rubric content lives in `agent/audit/references/`.
 
 ### Development Skills
 

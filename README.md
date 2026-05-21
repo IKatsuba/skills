@@ -35,17 +35,8 @@ npx skills add ikatsuba/skills --skill git:changelog
 npx skills add ikatsuba/skills --skill review:diff
 npx skills add ikatsuba/skills --skill review:ux
 npx skills add ikatsuba/skills --skill review:investigate
-npx skills add ikatsuba/skills --skill agent:design
-npx skills add ikatsuba/skills --skill agent:eval
-npx skills add ikatsuba/skills --skill agent:secure
-npx skills add ikatsuba/skills --skill agent:review
-npx skills add ikatsuba/skills --skill agent:prompt
-npx skills add ikatsuba/skills --skill agent:tools
-npx skills add ikatsuba/skills --skill agent:memory
-npx skills add ikatsuba/skills --skill agent:workflow
-npx skills add ikatsuba/skills --skill agent:rag
-npx skills add ikatsuba/skills --skill agent:multi
-npx skills add ikatsuba/skills --skill agent:context
+npx skills add ikatsuba/skills --skill agent:developer
+npx skills add ikatsuba/skills --skill agent:audit
 npx skills add ikatsuba/skills --skill project:init
 npx skills add ikatsuba/skills --skill project:plan
 npx skills add ikatsuba/skills --skill project:status
@@ -121,21 +112,12 @@ npx skills add ikatsuba/skills --list
 | `journal:search` | Search journal entries by query, type, project, topic, tag, or date range |
 | `journal:promote` | Graduate a journal entry into `.specs/<name>/journal-seed.md` to feed the spec pipeline |
 
-### AI Agent Design
+### AI Agents
 
 | Skill | Description |
 |-------|-------------|
-| `agent:design` | Comprehensive agent system design — orchestrates research across all areas |
-| `agent:eval` | Evaluation system — failure modes, metrics, eval test suite |
-| `agent:secure` | Security audit — lethal trifecta, sandboxing, access control, guardrails |
-| `agent:review` | Full pattern review — scores all patterns with maturity assessment |
-| `agent:prompt` | Prompt engineering — model selection, system prompt, few-shot examples |
-| `agent:tools` | Tool design — schemas, MCP strategy, third-party integrations |
-| `agent:memory` | Memory architecture — working memory, semantic recall, processors |
-| `agent:workflow` | Workflow design — graph primitives, suspend/resume, streaming |
-| `agent:rag` | RAG pipeline — chunking, embedding, vector DB, retrieval tuning |
-| `agent:multi` | Multi-agent systems — org design, supervision, control flow |
-| `agent:context` | Context engineering — parallelization, failure modes, compression |
+| `agent:developer` | Reference skill for designing and building AI agents — architecture, prompting, tools, memory, context, workflows, RAG, multi-agent, evaluation, twelve-factor reliability |
+| `agent:audit` | Audit an agent against the 22 patterns + 12 factors + security — scored maturity report across 7 dimensions |
 
 ---
 
@@ -215,13 +197,11 @@ Build your blueprint. Each step requires approval before the next:
 /git:changelog v1.0.0..v1.1.0      # Changes between releases
 ```
 
-### Agent Design
+### AI Agents
 
 ```bash
-/agent:design my-agent             # Full design with parallel research sub-agents
-/agent:secure my-agent             # Security audit (lethal trifecta, guardrails)
-/agent:eval my-agent               # Evaluation system (failure modes, test suite)
-/agent:review my-agent             # Score against all patterns (0-66 points)
+/agent:developer                   # Consult reference knowledge while building an agent
+/agent:audit my-agent              # Score an agent against the 22 patterns + 12 factors
 ```
 
 ---
@@ -241,9 +221,7 @@ Build your blueprint. Each step requires approval before the next:
     ├── design.md           # Architecture, components, interfaces
     ├── tasks.md            # Implementation plan with checkboxes
     ├── test-plan.md        # Manual test plan with test cases
-    ├── agent-design.md     # AI agent system design (from agent:design)
-    ├── agent-eval.md       # Agent evaluation system (from agent:eval)
-    └── agent-security.md   # Agent security audit (from agent:secure)
+    └── agent-audit.md      # AI agent audit report (from agent:audit)
 ```
 
 Every spec document includes YAML frontmatter with status tracking:

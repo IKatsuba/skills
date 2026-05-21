@@ -1,116 +1,77 @@
 # Agent Skills
 
-Skills for designing, reviewing, and securing AI agent systems. Based on "Patterns for Building AI Agents" and "Principles of Building AI Agents" (Bhagwat & Gienow, 2025).
+Skills for designing, building, and auditing AI agent systems. Based on "Patterns
+for Building AI Agents" and "Principles of Building AI Agents" (Bhagwat & Gienow,
+2025), plus [humanlayer/12-factor-agents](https://github.com/humanlayer/12-factor-agents)
+(CC BY-SA 4.0).
 
-## Two-Tier Architecture
-
-### Spec Skills (produce `.specs/` documents)
-
-| Skill | Description |
-|-------|-------------|
-| `agent:design` | Comprehensive agent system design — orchestrates research sub-agents, compiles unified design document |
-| `agent:eval` | Evaluation system — failure modes, metrics, eval test suite, SME labeling, production data pipeline |
-| `agent:secure` | Security audit — lethal trifecta, sandboxing, access control, guardrails |
-| `agent:review` | Full pattern review — scores all patterns 0-3, maturity assessment, prioritized recommendations |
-
-### Action Skills (work directly, no files)
+## Two Skills
 
 | Skill | Description |
 |-------|-------------|
-| `agent:prompt` | Prompt engineering — model selection, system prompt architecture, few-shot examples |
-| `agent:tools` | Tool design — operation decomposition, schemas, MCP strategy, third-party integrations |
-| `agent:memory` | Memory architecture — working memory, semantic recall, memory processors |
-| `agent:workflow` | Workflow design — graph primitives, suspend/resume, streaming, observability |
-| `agent:rag` | RAG pipeline — decision tree, chunking, embedding, vector DB, retrieval tuning |
-| `agent:multi` | Multi-agent systems — org design, supervision patterns, control flow, composition |
-| `agent:context` | Context engineering — parallelization, sharing, failure modes, compression, error feedback |
+| `agent:developer` | Reference skill for designing and building AI agents — a thin router into focused knowledge files (architecture, prompting, tools, memory, context, workflows, RAG, multi-agent, evaluation, twelve-factor reliability). |
+| `agent:audit` | Audits an existing agent against a merged framework — the 22 patterns + the 12 factors + security — and emits a scored maturity report across 7 dimensions / 35 criteria. |
 
-## How They Work Together
+## `agent:developer`
 
-`agent:design` is the main orchestrator. It launches parallel research sub-agents, each applying the methodology of the corresponding action skill:
+A reference skill modeled on the angular-developer pattern: the `SKILL.md` carries no
+deep knowledge, it routes you to one of ten `references/` files, each loaded only when
+needed.
 
-```
-/agent:design my-agent
+- **Starting a new agent?** Read `references/architecture.md` first — it covers
+  capability mapping and choosing an architecture (Single Agent, Router + Specialists,
+  Coordinator + Workers, or Pipeline). That decision determines which other references
+  matter.
+- **Working on an existing agent?** Jump to the topic reference for the subsystem you
+  are touching: `prompting`, `tools`, `memory`, `context`, `workflows`, `rag`,
+  `multi-agent`, `evaluation`, or `twelve-factor`.
 
-  agent:design (orchestrator)
-  ├── Gathers requirements, maps capabilities
-  ├── Launches parallel research:
-  │   ├── Prompt research    (agent:prompt methodology)
-  │   ├── Tool research      (agent:tools methodology)
-  │   ├── Memory research    (agent:memory methodology)
-  │   ├── Workflow research   (agent:workflow methodology)
-  │   ├── RAG research       (agent:rag methodology)
-  │   ├── Multi-agent research (agent:multi methodology)
-  │   └── Context research   (agent:context methodology)
-  ├── Compiles findings into unified design
-  └── Outputs .specs/my-agent/agent-design.md
-```
+Each reference is dense, agent-readable knowledge — frameworks, decision trees,
+matrices, and checklists — meant to be consulted *while* building.
 
-Action skills can also be used **standalone** for focused work on a single area:
+## `agent:audit`
 
-```
-/agent:prompt              # Just work on prompts
-/agent:tools               # Just design tools
-/agent:rag                 # Just figure out RAG strategy
-```
+Audits an agent (or an agent design) against **7 dimensions / 35 criteria** that merge
+two frameworks with overlaps deduplicated:
 
-After design, use the validation skills:
+| Dim | Dimension | Sources |
+|-----|-----------|---------|
+| D1 | Architecture & Capability Design | P1–P3 + F10 |
+| D2 | Control Flow & State | F5, F6, F8, F11, F12 |
+| D3 | Context Engineering | P5–P8 + F3 |
+| D4 | Tools & Interface Design | F1, F2, F4 (+ P3) |
+| D5 | Human-in-the-Loop & Reliability | P4, P9 + F7, F9 |
+| D6 | Evaluation & Observability | P10–P17 |
+| D7 | Security | P18–P22 |
 
-```
-/agent:review my-agent     # Score against all patterns
-/agent:secure my-agent     # Security audit
-/agent:eval my-agent       # Set up evaluation system
-```
-
-## Usage Examples
-
-### Full design workflow
+It fans out 7 parallel subagents (one per dimension, so each criterion is scored
+exactly once), rolls the scores into an overall maturity band, applies a security
+override gate, and writes a report.
 
 ```bash
-/agent:design my-chatbot           # Comprehensive design → .specs/my-chatbot/agent-design.md
-/agent:secure my-chatbot           # Security audit → .specs/my-chatbot/agent-security.md
-/agent:eval my-chatbot             # Eval system → .specs/my-chatbot/agent-eval.md
-/agent:review my-chatbot           # Pattern review (scored report)
+/agent:audit my-agent          # audit the agent specced under .specs/my-agent/
+/agent:audit src/agents/       # audit agent code at a path
+/agent:audit                   # ask what to audit
 ```
 
-### Focused single-area work
-
-```bash
-/agent:prompt                      # Improve prompts for current agent
-/agent:tools src/agents/support.ts # Review tool design in existing code
-/agent:memory                      # Design memory architecture
-/agent:rag                         # Decide if RAG is needed, design pipeline
-/agent:workflow                    # Design workflow graph with streaming
-/agent:multi                       # Design multi-agent system
-/agent:context                     # Optimize context strategy
-```
+The report is written to `.specs/<spec-name>/agent-audit.md` when a spec name is
+known, otherwise to stdout, always with a compact stdout digest.
 
 ## Output Structure
 
 ```
 .specs/
 └── <agent-name>/
-    ├── agent-design.md     # Unified design (from agent:design)
-    ├── agent-eval.md       # Evaluation system (from agent:eval)
-    └── agent-security.md   # Security audit (from agent:secure)
+    └── agent-audit.md     # Scored audit report (from agent:audit)
 ```
 
 ## Installation
 
 ```bash
-# All agent skills
+# Both agent skills
 npx skills add ikatsuba/skills/agent
 
 # Individual skills
-npx skills add ikatsuba/skills --skill agent:design
-npx skills add ikatsuba/skills --skill agent:eval
-npx skills add ikatsuba/skills --skill agent:secure
-npx skills add ikatsuba/skills --skill agent:review
-npx skills add ikatsuba/skills --skill agent:prompt
-npx skills add ikatsuba/skills --skill agent:tools
-npx skills add ikatsuba/skills --skill agent:memory
-npx skills add ikatsuba/skills --skill agent:workflow
-npx skills add ikatsuba/skills --skill agent:rag
-npx skills add ikatsuba/skills --skill agent:multi
-npx skills add ikatsuba/skills --skill agent:context
+npx skills add ikatsuba/skills --skill agent:developer
+npx skills add ikatsuba/skills --skill agent:audit
 ```
