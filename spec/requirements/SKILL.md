@@ -29,9 +29,9 @@ Use this skill when the user needs to:
 
 ### Step 1: Gather Information
 
-**Project context (optional):** Before gathering information, check if `.projects/` exists. If it does, scan for a `specs.md` that references the current spec name. If found:
+**Project context (optional):** Before gathering information, check if `.projects/` exists. If it does, scan for a `plan.md` that references the current spec name. If found:
 1. Read the project's `vision.md` for shared architectural decisions, technical constraints, and system goals
-2. Read the relevant spec entry from `specs.md` for pre-defined purpose, boundary, and dependencies
+2. Read the relevant spec entry from `plan.md` for pre-defined purpose, boundary, and dependencies
 3. Present this context to the user as a starting point — "This spec is part of project X. Here's the pre-defined context: [purpose, boundary, dependencies, shared decisions]. I'll use this as a starting point."
 
 This is optional — if no project exists, proceed normally.
