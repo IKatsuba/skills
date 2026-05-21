@@ -32,7 +32,7 @@ Provide meaningful options where possible (e.g., "bug", "performance", "unexpect
 
 ### Step 2: Investigate the Codebase
 
-Launch **parallel** `Agent` tools with `subagent_type=Explore` to investigate:
+Launch **parallel** `Task` tools with `subagent_type=Explore` to investigate:
 
 1. **Root cause agent** — trace the problem through the code, find the source of the issue. Follow the data flow, identify where behavior diverges from expectations.
 2. **Context agent** — find related code, tests, recent changes (git log), and similar patterns elsewhere in the codebase that work correctly.
