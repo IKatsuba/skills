@@ -10,9 +10,9 @@ Use project skills when building a system that spans multiple specs — a SaaS p
 
 | Skill | Description |
 |-------|-------------|
-| `project:init` | Initialize the project — goals, stakeholders, constraints, shared decisions |
-| `project:plan` | Break into specs with dependencies and execution order |
-| `project:status` | Dashboard showing progress across all specs |
+| [`project:init`](init/) | Initialize the project — goals, stakeholders, constraints, shared decisions |
+| [`project:plan`](plan/) | Break into specs with dependencies and execution order |
+| [`project:status`](status/) | Dashboard showing progress across all specs |
 
 ## Workflow
 

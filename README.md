@@ -14,38 +14,21 @@ That's it! You're ready to go.
 
 ## Installation Options
 
-### Install specific skills
+### Install a category
 
-Pick only what you need:
+Install only the group you need — the CLI will prompt to pick skills within it:
 
 ```bash
-npx skills add ikatsuba/skills --skill spec:requirements
-npx skills add ikatsuba/skills --skill spec:research
-npx skills add ikatsuba/skills --skill spec:design
-npx skills add ikatsuba/skills --skill spec:tasks
-npx skills add ikatsuba/skills --skill spec:implement
-npx skills add ikatsuba/skills --skill spec:test-plan
-npx skills add ikatsuba/skills --skill spec:test
-npx skills add ikatsuba/skills --skill spec:approve
-npx skills add ikatsuba/skills --skill spec:status
-npx skills add ikatsuba/skills --skill spec:review
-npx skills add ikatsuba/skills --skill git:commit
-npx skills add ikatsuba/skills --skill git:amend
-npx skills add ikatsuba/skills --skill git:changelog
-npx skills add ikatsuba/skills --skill review:diff
-npx skills add ikatsuba/skills --skill review:ux
-npx skills add ikatsuba/skills --skill review:investigate
-npx skills add ikatsuba/skills --skill agent:developer
-npx skills add ikatsuba/skills --skill agent:audit
-npx skills add ikatsuba/skills --skill project:init
-npx skills add ikatsuba/skills --skill project:plan
-npx skills add ikatsuba/skills --skill project:status
-npx skills add ikatsuba/skills --skill dev:create-skill
-npx skills add ikatsuba/skills --skill dev:claude-audit
-npx skills add ikatsuba/skills --skill journal:capture
-npx skills add ikatsuba/skills --skill journal:search
-npx skills add ikatsuba/skills --skill journal:promote
+npx skills add ikatsuba/skills/spec       # Spec pipeline
+npx skills add ikatsuba/skills/project    # Project orchestration
+npx skills add ikatsuba/skills/git        # Git workflow
+npx skills add ikatsuba/skills/review     # Code & UX review
+npx skills add ikatsuba/skills/journal    # Engineering journal
+npx skills add ikatsuba/skills/agent      # AI agent design & audit
+npx skills add ikatsuba/skills/dev        # Development & meta skills
 ```
+
+For a single skill, use `--skill <name>` (e.g. `--skill spec:requirements`).
 
 ### Global installation
 
@@ -69,55 +52,62 @@ npx skills add ikatsuba/skills --list
 
 | Skill | Role | Description |
 |-------|------|-------------|
-| `spec:requirements` | Product Analyst | Requirements analysis — user stories, acceptance criteria |
-| `spec:research` | Technical Researcher | Solution alternatives with pros/cons and evidence |
-| `spec:design` | Software Architect | Architecture diagrams, interfaces, data flow |
-| `spec:tasks` | Technical Lead | Task breakdown — implementation plan with checkboxes |
-| `spec:implement` | Senior Engineer | Execute tasks — all, next, or specific task |
-| `spec:test-plan` | QA Engineer | Generate manual test scenarios |
-| `spec:test` | QA Engineer | Execute tests — all, next, or specific test |
-| `spec:review` | Staff Engineer | Validate documents for quality and consistency |
-| `spec:approve` | — | Approve phase gate, unblock downstream skills |
-| `spec:status` | — | Per-spec pipeline dashboard |
+| [`spec:requirements`](spec/requirements/) | Product Analyst | Requirements analysis — user stories, acceptance criteria |
+| [`spec:research`](spec/research/) | Technical Researcher | Solution alternatives with pros/cons and evidence |
+| [`spec:design`](spec/design/) | Software Architect | Architecture diagrams, interfaces, data flow |
+| [`spec:tasks`](spec/tasks/) | Technical Lead | Task breakdown — implementation plan with checkboxes |
+| [`spec:implement`](spec/implement/) | Senior Engineer | Execute tasks — all, next, or specific task |
+| [`spec:test-plan`](spec/test-plan/) | QA Engineer | Generate manual test scenarios |
+| [`spec:test`](spec/test/) | QA Engineer | Execute tests — all, next, or specific test |
+| [`spec:review`](spec/review/) | Staff Engineer | Validate documents for quality and consistency |
+| [`spec:approve`](spec/approve/) | — | Approve phase gate, unblock downstream skills |
+| [`spec:status`](spec/status/) | — | Per-spec pipeline dashboard |
 
 ### Project Orchestration
 
 | Skill | Description |
 |-------|-------------|
-| `project:init` | Define system goals, stakeholders, constraints, shared decisions |
-| `project:plan` | Break into specs with dependency graph and execution order |
-| `project:status` | Dashboard showing progress across all specs |
+| [`project:init`](project/init/) | Define system goals, stakeholders, constraints, shared decisions |
+| [`project:plan`](project/plan/) | Break into specs with dependency graph and execution order |
+| [`project:status`](project/status/) | Dashboard showing progress across all specs |
 
 ### Git
 
 | Skill | Description |
 |-------|-------------|
-| `git:commit` | Smart commit with Conventional Commits |
-| `git:amend` | Amend last commit |
-| `git:changelog` | Generate human-readable changelogs for product, marketing, and support teams |
+| [`git:commit`](git/commit/) | Smart commit with Conventional Commits |
+| [`git:amend`](git/amend/) | Amend last commit |
+| [`git:changelog`](git/changelog/) | Generate human-readable changelogs for product, marketing, and support teams |
 
 ### Code Review
 
 | Skill | Description |
 |-------|-------------|
-| `review:diff` | Diff review with structured feedback before committing |
-| `review:ux` | Detailed UX review — user flows, edge cases, and UI consistency |
-| `review:investigate` | Analyze a problem and propose actionable solutions |
+| [`review:diff`](review/diff/) | Diff review with structured feedback before committing |
+| [`review:ux`](review/ux/) | Detailed UX review — user flows, edge cases, and UI consistency |
+| [`review:investigate`](review/investigate/) | Analyze a problem and propose actionable solutions |
 
 ### Journal
 
 | Skill | Description |
 |-------|-------------|
-| `journal:capture` | Capture a thought, problem, edge case, or decision into `~/journal` with auto-indexed README files |
-| `journal:search` | Search journal entries by query, type, project, topic, tag, or date range |
-| `journal:promote` | Graduate a journal entry into `.specs/<name>/journal-seed.md` to feed the spec pipeline |
+| [`journal:capture`](journal/capture/) | Capture a thought, problem, edge case, or decision into `~/journal` with auto-indexed README files |
+| [`journal:search`](journal/search/) | Search journal entries by query, type, project, topic, tag, or date range |
+| [`journal:promote`](journal/promote/) | Graduate a journal entry into `.specs/<name>/journal-seed.md` to feed the spec pipeline |
 
 ### AI Agents
 
 | Skill | Description |
 |-------|-------------|
-| `agent:developer` | Reference skill for designing and building AI agents — architecture, prompting, tools, memory, context, workflows, RAG, multi-agent, evaluation, twelve-factor reliability |
-| `agent:audit` | Audit an agent against the 22 patterns + 12 factors + security — scored maturity report across 7 dimensions |
+| [`agent:developer`](agent/developer/) | Reference skill for designing and building AI agents — architecture, prompting, tools, memory, context, workflows, RAG, multi-agent, evaluation, twelve-factor reliability |
+| [`agent:audit`](agent/audit/) | Audit an agent against the 22 patterns + 12 factors + security — scored maturity report across 7 dimensions |
+
+### Development
+
+| Skill | Description |
+|-------|-------------|
+| [`dev:create-skill`](dev/create-skill/) | Scaffold a new skill with proper structure (meta-skill) |
+| [`dev:claude-audit`](dev/claude-audit/) | Audit a repo's Claude Code setup against best practices |
 
 ---
 
