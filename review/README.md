@@ -6,9 +6,9 @@ Code and UX review skills for quality assurance before committing or releasing.
 
 | Skill | Description |
 |-------|-------------|
-| `review:diff` | Diff review with structured feedback before committing |
-| `review:ux` | Detailed UX review — user flows, edge cases, and UI consistency |
-| `investigate` | Analyze a problem in the codebase and propose actionable solutions |
+| [`review:diff`](diff/) | Diff review with structured feedback before committing |
+| [`review:ux`](ux/) | Detailed UX review — user flows, edge cases, and UI consistency |
+| [`review:investigate`](investigate/) | Analyze a problem in the codebase and propose actionable solutions |
 
 ## Diff Review
 
@@ -48,9 +48,9 @@ Investigate a bug, performance issue, or unexpected behavior — and get concret
 ### Usage
 
 ```bash
-/investigate                              # Start interactive problem gathering
-/investigate login fails after timeout    # Investigate a specific bug
-/investigate slow /users endpoint         # Investigate performance issue
+/review:investigate                            # Start interactive problem gathering
+/review:investigate login fails after timeout  # Investigate a specific bug
+/review:investigate slow /users endpoint       # Investigate performance issue
 ```
 
 ### What it does
@@ -64,11 +64,7 @@ Investigate a bug, performance issue, or unexpected behavior — and get concret
 ## Installation
 
 ```bash
-# All review skills
 npx skills add ikatsuba/skills/review
-
-# Individual skills
-npx skills add ikatsuba/skills --skill review:diff
-npx skills add ikatsuba/skills --skill review:ux
-npx skills add ikatsuba/skills --skill investigate
 ```
+
+The CLI will prompt to pick which review skills to install. For a single skill, use `npx skills add ikatsuba/skills --skill <name>`.

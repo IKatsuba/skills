@@ -41,16 +41,16 @@ spec:requirements → spec:research → spec:design → spec:tasks    → spec:i
 
 | Skill | Role | Description |
 |-------|------|-------------|
-| `spec:requirements` | Product Analyst | Requirements analysis — user stories, acceptance criteria |
-| `spec:research` | Technical Researcher | Solution alternatives with evidence-based tradeoffs |
-| `spec:design` | Software Architect | Architecture diagrams, interfaces, data flow |
-| `spec:tasks` | Technical Lead | Task breakdown — implementation plan with checkboxes |
-| `spec:implement` | Senior Engineer | Execute tasks with subagent orchestration |
-| `spec:test-plan` | QA Engineer | Generate manual test scenarios from requirements |
-| `spec:test` | QA Engineer | Walk through tests, collect results |
-| `spec:review` | Staff Engineer | Validate documents for quality and consistency |
-| `spec:approve` | — | Approve phase gate |
-| `spec:status` | — | Pipeline dashboard |
+| [`spec:requirements`](requirements/) | Product Analyst | Requirements analysis — user stories, acceptance criteria |
+| [`spec:research`](research/) | Technical Researcher | Solution alternatives with evidence-based tradeoffs |
+| [`spec:design`](design/) | Software Architect | Architecture diagrams, interfaces, data flow |
+| [`spec:tasks`](tasks/) | Technical Lead | Task breakdown — implementation plan with checkboxes |
+| [`spec:implement`](implement/) | Senior Engineer | Execute tasks with subagent orchestration |
+| [`spec:test-plan`](test-plan/) | QA Engineer | Generate manual test scenarios from requirements |
+| [`spec:test`](test/) | QA Engineer | Walk through tests, collect results |
+| [`spec:review`](review/) | Staff Engineer | Validate documents for quality and consistency |
+| [`spec:approve`](approve/) | — | Approve phase gate |
+| [`spec:status`](status/) | — | Pipeline dashboard |
 
 ## Output Structure
 
@@ -69,18 +69,7 @@ Every document includes frontmatter: `status: DRAFT | IN_REVIEW | APPROVED | SUP
 ## Installation
 
 ```bash
-# All spec skills
 npx skills add ikatsuba/skills/spec
-
-# Individual skills
-npx skills add ikatsuba/skills --skill spec:requirements
-npx skills add ikatsuba/skills --skill spec:research
-npx skills add ikatsuba/skills --skill spec:design
-npx skills add ikatsuba/skills --skill spec:tasks
-npx skills add ikatsuba/skills --skill spec:implement
-npx skills add ikatsuba/skills --skill spec:review
-npx skills add ikatsuba/skills --skill spec:test-plan
-npx skills add ikatsuba/skills --skill spec:test
-npx skills add ikatsuba/skills --skill spec:approve
-npx skills add ikatsuba/skills --skill spec:status
 ```
+
+The CLI will prompt to pick which spec skills to install. For a single skill, use `npx skills add ikatsuba/skills --skill <name>`.

@@ -9,8 +9,8 @@ for Building AI Agents" and "Principles of Building AI Agents" (Bhagwat & Gienow
 
 | Skill | Description |
 |-------|-------------|
-| `agent:developer` | Reference skill for designing and building AI agents — a thin router into focused knowledge files (architecture, prompting, tools, memory, context, workflows, RAG, multi-agent, evaluation, twelve-factor reliability). |
-| `agent:audit` | Audits an existing agent against a merged framework — the 22 patterns + the 12 factors + security — and emits a scored maturity report across 7 dimensions / 35 criteria. |
+| [`agent:developer`](developer/) | Reference skill for designing and building AI agents — a thin router into focused knowledge files (architecture, prompting, tools, memory, context, workflows, RAG, multi-agent, evaluation, twelve-factor reliability). |
+| [`agent:audit`](audit/) | Audits an existing agent against a merged framework — the 22 patterns + the 12 factors + security — and emits a scored maturity report across 7 dimensions / 35 criteria. |
 
 ## `agent:developer`
 
@@ -68,10 +68,7 @@ known, otherwise to stdout, always with a compact stdout digest.
 ## Installation
 
 ```bash
-# Both agent skills
 npx skills add ikatsuba/skills/agent
-
-# Individual skills
-npx skills add ikatsuba/skills --skill agent:developer
-npx skills add ikatsuba/skills --skill agent:audit
 ```
+
+The CLI will prompt to pick which agent skills to install. For a single skill, use `npx skills add ikatsuba/skills --skill <name>`.
