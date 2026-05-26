@@ -17,6 +17,7 @@ You are a **Technical Lead**. Your job is to decompose the design into an ordere
 - Order tasks within a group by dependencies — execute top-to-bottom without backtracking
 - Cross-check every task against the actual codebase to catch drift between documents and reality
 - Never introduce design changes — if the design is wrong, flag it rather than silently fixing it in tasks
+- **Cutovers are conditional, not mandatory.** A cutover only appears in the plan when a specific task observably changes production behaviour (env-var flip, traffic switch, schema swap, removal of in-use code). If no such moment exists, the plan has no ⚠️ tasks, no "Cutover points" section, and no soak paragraphs — it's just groups in dependency order. Do not invent risk that isn't there.
 
 Creates a tasks document based on the requirements and design documents. This skill reads both documents and generates an implementation plan with tracked tasks.
 
@@ -57,31 +58,46 @@ Before creating tasks:
 3. Identify dependencies between components
 4. Determine the optimal order of implementation
 5. Note checkpoints for verification
-6. Identify natural **shippable groups** — see Step 2.5
 
-### Step 2.5: Plan the Atomic-Changeset Rollout
+### Step 2.5: Slice Into Shippable Groups
 
-A **shippable group** is a set of tasks that, once committed and merged together, leaves `main` in a working state. The whole plan is an **atomic-changeset rollout**: every group before a cutover is a **no-op in production**, and every cutover is an **explicit, revertable flip** with a stated revert procedure.
+A **shippable group** is a set of tasks that, once committed and merged together, leaves `main` in a working state. The whole plan is a sequence of groups in dependency order. Most features ship as a chain of additive groups and stop there. Cutovers only enter the picture when a specific moment observably changes production.
 
-Slice the work using these rules:
+#### Slicing rules (always apply)
 
-1. **No-op-in-prod before cutover.** Every group before the cutover must leave end-user behaviour unchanged. Allowed forms: infra-only (resources that are inert until something consumes them), env-only (new env vars not yet read by code), inert code (new modules with no callers), same-value swaps (server callsites switching between two env vars that resolve to the same URL/value), parallel-rule additions (e.g. new rate-limit rules that match no traffic until the cutover).
-2. **Cutovers are isolated and revertable.** A cutover is a *single* observable change — typically an env-var flip with no code deploy, or a small code change with no env change. Each cutover task MUST state its revert procedure (e.g. "flip env back", "revert commit + redeploy"). Mark cutover tasks with a `⚠️` glyph in the task title.
-3. **Additive first, destructive last.** Group additive changes (new files, new fields, new endpoints, dual-writes, parallel rules) ahead of any group that removes or replaces existing behaviour.
-4. **Expand → migrate → contract for risky refactors.**
-   - **Expand** — introduce the new abstraction next to the old one
-   - **Migrate** — switch consumers one by one; old code path still callable
-   - **Contract** — delete the old abstraction only after a soak period confirms nothing references it
-5. **Each group is independently green.** With only this group's commits applied (and all earlier groups), build, type-check, lint, and tests pass. Old code paths stay alive until consumers are migrated.
-6. **Group by surface area, not by layer.** Cut vertically through the stack (schema + query + API + UI for one slice), not horizontally (all schemas in one group, all UI in another).
-7. **Hard cap on size.** If a group would exceed ~10 subtasks or touch unrelated subsystems, split it. A reviewer must be able to read the whole diff in one sitting.
-8. **Declare blast radius.** For each group, state whether merging it alone is *safe*, *gated* (behind a flag/config — name the flag), or *coupled to group X* (must ship together).
-9. **Soak between high-risk groups.** Insert an italic stabilization paragraph between a cutover group and the next destructive group (e.g. between a browser cutover and an `IP`-trust change). State what to monitor and for how long.
-10. **Non-code tasks are first-class.** Infra (Terraform), external console actions (Google Cloud, Vercel, Stripe), env-only flips, monitoring/soak windows are tasks too — give them a kind tag in the title (e.g. `External — …`, `Infra — …`, `⚠️ Cutover — …`).
+1. **Each group is independently green.** With only this group's commits applied (and all earlier groups), build, type-check, lint, and tests pass.
+2. **Additive first, destructive last.** Group additive changes (new files, new fields, new endpoints, dual-writes) ahead of any group that removes or replaces existing behaviour.
+3. **Group by surface area, not by layer.** Cut vertically through the stack (schema + query + API + UI for one slice), not horizontally (all schemas in one group, all UI in another).
+4. **Hard cap on size.** If a group would exceed ~10 subtasks or touch unrelated subsystems, split it. A reviewer must be able to read the whole diff in one sitting.
+5. **Order by dependencies inside a group.** Prerequisites first; no backtracking.
+6. **Keep old paths alive until consumers move.** Within a group, do not delete or rename anything that earlier groups (or unrelated existing code) still depend on.
 
-Before writing the document, produce a brief group plan listing each group's intent, its blast radius, and **why merging it alone leaves prod behaviour unchanged** (or, for cutover groups, what observably changes and how to revert). If you cannot make a group safe on its own, either reorder, add a feature flag, or merge it with an adjacent group.
+#### Cutover detection (apply only if relevant)
 
-Match the depth of the document to the risk: a small feature may only need a single group with one checkpoint; a multi-cutover infra rollout earns the full Notes section (env-vars table, threat model, codebase verification findings).
+After slicing, scan the plan for **cutover moments** — a single task that observably changes production behaviour. Typical sources:
+
+- An env-var flip that switches traffic, origin, or behaviour (e.g. `NEXT_PUBLIC_API_URL` changes value).
+- A schema swap or destructive DB op on populated state.
+- Removal of an in-use code path / public type / endpoint.
+- DNS / domain / IAM change that affects who can reach what.
+- Flipping a feature flag that exposes the new behaviour to real users.
+
+If — and only if — at least one such moment exists, apply the **cutover-only rules** to those specific tasks (not to the whole plan):
+
+- **C1. Cutovers are isolated and revertable.** Each cutover is a *single* observable change. State its revert procedure on the task itself (e.g. "flip env back", "revert commit + redeploy"). Mark with a `⚠️` glyph.
+- **C2. No-op-in-prod before the cutover.** Groups that ship *before* a cutover must leave end-user behaviour unchanged. Allowed forms: infra-only (inert until consumed), env-only (new vars not yet read), inert code (no callers), same-value swaps, parallel-rule additions.
+- **C3. Expand → migrate → contract for risky refactors.** Expand (new next to old) → Migrate (switch consumers, old still callable) → Contract (delete old after soak).
+- **C4. Soak between high-risk cutovers.** Insert an italic stabilization paragraph between cutover groups stating what to monitor and for how long.
+
+If no cutover moment exists, none of C1–C4 apply: skip ⚠️, skip "no-op before cutover" language, skip soak paragraphs.
+
+#### Blast radius (always state, but stays short when boring)
+
+For each group, declare in one line: *safe* (merge anytime), *gated* (behind a flag/config — name the flag), or *coupled to group X* (must ship together). A pure additive group is just `safe` — no narrative required. A cutover group earns a full revert sentence.
+
+#### Pre-write check
+
+Before writing the document, produce a brief group plan listing each group's intent and blast radius. If any group has a cutover, also note what observably changes and how to revert. Borderline "is this a cutover?" cases default to **no cutover** — if in doubt, the feature doesn't need the ⚠️ machinery.
 
 ### Step 3: Verify Against the Codebase
 
@@ -108,39 +124,42 @@ updated: <today's date YYYY-MM-DD>
 ---
 ```
 
-Use this structure (omit sections that don't apply — for a small feature, the env-vars table or threat-model section may be unnecessary; for a complex rollout, all sections earn their place):
+Use this structure. **Cutover-related sections are conditional** — include them only if the plan actually contains a cutover moment (per Step 2.5). For a plain additive feature, drop the "Cutover points" subsection, the ⚠️ tasks, the soak paragraphs, the env-vars table, the threat model, and the atomic-changeset invariants section.
 
 ```markdown
 # Implementation Plan: [Feature Name]
 
 ## Overview
 
-[2–4 sentences: what is being built, what the rollout strategy is, and the headline rule that keeps it safe.]
+[2–4 sentences: what is being built and how the rollout is sequenced.]
 
-The plan is split into N small groups ordered so each merge is either a **no-op in prod** or an **explicit, revertable cutover**. The principle: every group before a cutover must leave production behavior unchanged. Cutovers are flagged with ⚠️.
+The plan is split into N groups in dependency order. Each group is independently mergeable — build, tests, and prod behaviour stay green with only that group (and earlier ones) applied.
+
+[Add this sentence ONLY if the plan has at least one cutover:]
+Groups before a cutover are no-ops in production; cutover tasks are flagged with ⚠️ and state their revert procedure.
 
 ### Cutover points
 
-[Only include this subsection if the rollout has cutovers. List each cutover, what it observably changes, and the revert procedure.]
+[Include this subsection ONLY if the plan has cutovers. Otherwise omit entirely — do not write "no cutovers" placeholder text.]
 
 - **[Cutover name] (Group X)** — [what changes]. Revert = [procedure].
 - **[Cutover name] (Group Y)** — [what changes]. Revert = [procedure].
 
 ### [Optional: a paragraph naming the central technical decision]
 
-[For non-trivial rollouts, devote a short subsection to the load-bearing decision — the one whose rationale every reviewer needs to internalize before reading individual tasks. Examples: "Why a shared-secret header instead of mTLS", "Why dual-write instead of online migration", "Why we keep the old endpoint for one extra release". Keep it under ~10 lines of prose plus, if it helps, a small request-flow / state matrix.]
+[For non-trivial rollouts, devote a short subsection to the load-bearing decision — the one whose rationale every reviewer needs to internalize before reading individual tasks. Examples: "Why a shared-secret header instead of mTLS", "Why dual-write instead of online migration". Keep it under ~10 lines plus, if it helps, a small request-flow / state matrix.]
 
 ## Tasks
 
-### Group A — [Short name] ([category, e.g. "safe no-ops", "server-side migration", "cutover", "cleanup"])
+### Group A — [Short name] ([category, e.g. "new feature surface", "server-side migration", "cutover", "cleanup"])
 
-[1–2 sentences: why this whole group is safe to land alone. State the invariant it preserves (e.g. "no traffic carries the new header yet, so the new rules are inert" / "both env vars resolve to the same URL, so server callsites are a same-value swap").]
+[1–2 sentences: what this group delivers and its blast radius. For groups preceding a cutover, also state the invariant that keeps prod behaviour unchanged (e.g. "no traffic carries the new header yet, so the new rules are inert"). For pure additive groups, a single sentence is enough.]
 
 - [ ] 1. [Task title — describe what is being changed, not "PR — …"]
   - [What to do, with bullet points for each concrete change]
   - [File to create/modify: `path/to/file.ts:line` where useful]
   - [Sub-bullet for tests: what to assert]
-  - **Why safe**: [one line explaining why this task does not change prod behaviour, OR — for cutover tasks — what observably changes and the revert procedure]
+  - **Why safe**: [REQUIRED only on (a) cutover tasks — state observable change + revert; (b) tasks in pre-cutover groups — state why this task is a no-op in prod. OMIT on plain additive tasks where the safety is self-evident.]
   - _Requirements: X.X_
 
 - [ ] 2. [Next task]
@@ -151,13 +170,16 @@ The plan is split into N small groups ordered so each merge is either a **no-op 
   - Run tests written in this group: `[test command]`
   - Run existing tests for affected files to catch regressions
   - Confirm `main` would still build and pass tests with only Group A's commits applied
-  - [Group-specific observable check — e.g. "Cloud Armor logs show no matches on rules 790-793" / "DevTools shows requests still hitting old origin"]
+  - [Group-specific observable check — only meaningful if the group changed something observable. For a pure additive group, the test-run is the check.]
 
+[OPTIONAL — include the soak paragraph below ONLY between groups separated by a cutover or a destructive step. Omit between plain additive groups.]
 _— Stabilize for [duration] before Group B. Monitor: [metric 1], [metric 2], [error/log signal]. —_
 
 ### Group B — [Short name] ([category])
 
-[1–2 sentences: why this group is safe after Group A. What invariant changes vs. Group A; what is still preserved.]
+[1–2 sentences on what this group delivers. If it follows or contains a cutover, state what changes vs. Group A and what stays preserved.]
+
+[Examples below mix plain implementation, cutover, and external tasks — use only the kinds your plan actually needs.]
 
 - [ ] 4. ⚠️ Cutover — [observable change, e.g. "flip NEXT_PUBLIC_API_URL value"]
   - [Exactly what is changed, where, in what order across environments]
@@ -167,13 +189,13 @@ _— Stabilize for [duration] before Group B. Monitor: [metric 1], [metric 2], [
 
 - [ ] 5. External — [third-party console action, e.g. "add new OAuth callback URL (keep old)"]
   - [Steps in the external system]
-  - **Why safe**: [why this doesn't break anything, e.g. "the external system accepts multiple values"]
+  - **Why safe**: [include only if this precedes a cutover and the safety is non-obvious]
   - _Requirements: X.X_
 
 - [ ] 6. Checkpoint — Group B verification
   - [Group-specific checks]
 
-### Group C — [Cleanup / contract step]
+### Group C — [Cleanup / contract step] ⟵ omit this section entirely if there is nothing to clean up
 
 [1–2 sentences: why this is now safe — typically "old code path has had no traffic for N days" or "all consumers migrated in Group B".]
 
@@ -183,13 +205,15 @@ _— Stabilize for [duration] before Group B. Monitor: [metric 1], [metric 2], [
 - [ ] N. Final checkpoint — everything green
   - Full test suite passes
   - All requirements traceable to a shipped task
-  - [Observable end-state checks — logs, metrics, env state]
+  - [Observable end-state checks — logs, metrics, env state — only when relevant]
 
 ## Notes
 
+[Every subsection below is OPTIONAL — include it only if it earns its place. A plain additive feature may only have "Scope boundaries" and nothing else.]
+
 ### Atomic-changeset invariants
 
-[For non-trivial rollouts, make the safety invariants explicit so future readers can verify them at a glance.]
+[Include ONLY if the plan has at least one cutover. Otherwise omit.]
 
 - **Every task before [first cutover] is a no-op in prod.** [One sentence per category — infra-only / env-only / inert code / same-value swap.]
 - **Every task between [cutover 1] and [cutover 2] preserves the [old contract].** [What stays the same.]
@@ -197,7 +221,7 @@ _— Stabilize for [duration] before Group B. Monitor: [metric 1], [metric 2], [
 
 ### Env vars / state at a glance
 
-[Include only when the rollout shifts env values. Drop otherwise.]
+[Include ONLY when the rollout shifts env values. Drop otherwise.]
 
 | Var | Scope | Before | After cutover 1 | After cutover 2 |
 |---|---|---|---|---|
@@ -205,7 +229,7 @@ _— Stabilize for [duration] before Group B. Monitor: [metric 1], [metric 2], [
 
 ### Safety / threat model
 
-[Include only when the rollout has security-relevant moving parts. Address obvious questions a reviewer will ask: "what if X leaks", "what about spoofing", "what's the blast radius if this is misconfigured".]
+[Include ONLY when the rollout has security-relevant moving parts. Address obvious questions a reviewer will ask: "what if X leaks", "what about spoofing", "what's the blast radius if this is misconfigured".]
 
 - [Concern + mitigation]
 - [Concern + mitigation]
@@ -217,7 +241,7 @@ _— Stabilize for [duration] before Group B. Monitor: [metric 1], [metric 2], [
 
 ### Codebase verification findings
 
-[From Step 3 — record file paths, line numbers, and any drift you found between the design and the actual codebase.]
+[From Step 3 — include ONLY if drift was found. Otherwise drop the section.]
 
 - [Path:line — observation]
 ```
@@ -225,9 +249,18 @@ _— Stabilize for [duration] before Group B. Monitor: [metric 1], [metric 2], [
 **Hard rules for the document:**
 - Every major task and checkpoint lives inside exactly one `### Group X — …` heading. No orphan tasks.
 - A task that does not fit any group means the group plan is wrong — go back to Step 2.5.
-- Do **not** use the term "PR" anywhere in the tasks document. Tasks are commits / changesets; the user decides how to bundle them into PRs externally. Use "group", "changeset", "cutover", "task" instead.
-- Cutover tasks are titled with a leading `⚠️ Cutover — …`.
+- Do **not** use the term "PR" anywhere in the tasks document. Tasks are commits / changesets; the user decides how to bundle them into PRs externally. Use "task", "changeset", "group", "cutover" as appropriate.
 - Non-code tasks are titled with a leading `External — …` (third-party consoles) or `Infra — …` (Terraform / cloud) when that distinction is useful.
+
+**Cutover-conditional rules — apply ONLY if the plan has at least one cutover moment (per Step 2.5):**
+- Cutover tasks are titled with a leading `⚠️ Cutover — …` and MUST include an explicit revert procedure.
+- Groups before the first cutover must be no-ops in production; tasks in those groups carry a `**Why safe**:` line.
+- Soak paragraphs (`_— Stabilize for … —_`) sit between groups separated by a cutover or destructive step.
+- The Overview gets a "Cutover points" subsection listing each cutover with its revert.
+
+**If the plan has no cutover:**
+- No `⚠️` tasks. No "Cutover points" subsection. No soak paragraphs. No "Atomic-changeset invariants" section. No env-vars table. No `**Why safe**:` lines on plain implementation tasks.
+- Plan is just groups in dependency order with their checkpoints. Do not pad with cutover language to make it look more thorough.
 
 ### Task Structure Guidelines
 
@@ -253,15 +286,15 @@ _— Stabilize for [duration] before Group B. Monitor: [metric 1], [metric 2], [
 
 ### Task Kinds
 
-Tag tasks in their title when the kind affects how the implementer (or a future reader) treats them:
+Tag tasks in their title when the kind affects how the implementer (or a future reader) treats them. Tags 4 (cutover) and 7 (soak) only appear when the plan actually has a cutover moment — do not introduce them otherwise.
 
 1. **Implementation** (default, no tag) — Create or modify code
 2. **Infra — …** — Terraform, cloud resources, IAM bindings
 3. **External — …** — Third-party console action (Google Cloud, Vercel, Stripe, etc.) that a human performs outside the repo
-4. **⚠️ Cutover — …** — A single observable production change (env-var flip, code-deploy that switches behaviour). Must include a revert procedure.
+4. **⚠️ Cutover — …** — A single observable production change (env-var flip, code-deploy that switches behaviour). Must include a revert procedure. *Only when an actual cutover exists.*
 5. **Cleanup** — Remove old code or config that earlier groups left dual-running
 6. **Checkpoint** — Verify a milestone (see Checkpoint Guidelines)
-7. **Soak** — A non-task italic paragraph between groups stating what to monitor and for how long before proceeding
+7. **Soak** — A non-task italic paragraph between groups stating what to monitor and for how long before proceeding. *Only between groups separated by a cutover or destructive step.*
 
 ### Checkpoint Guidelines
 
@@ -284,7 +317,7 @@ A **group checkpoint** (the final checkpoint inside each `### Group X:` section)
 
 After creating the document, show the user:
 1. The location of the created file
-2. The **group plan** — list each group (ID, name, blast radius, dependencies) so the user can sanity-check the merge ordering
+2. The **group plan** — list each group (ID, name, blast radius, dependencies) so the user can sanity-check the merge ordering. Flag any cutovers explicitly; if there are none, say so in one line ("no cutovers — plan is purely additive").
 3. A summary of the task breakdown
 4. Total counts: groups, major tasks, subtasks, and checkpoints
 5. Use the `AskUserQuestion` tool to ask how to proceed, with options like "Looks good, start with first group", "I want to regroup", "Review tasks first", "Looks good, run all groups"
