@@ -174,10 +174,12 @@ When a project exists, `spec:requirements` automatically reads the project conte
 
 2. **`spec:research`** → Creates `.specs/<name>/research.md`
    - Investigates codebase and explores 2-4 solution variants per problem area
-   - User selects one variant per area (marked CHOSEN/Rejected)
+   - Produces a *catalogue* of variants — no decisions, no CHOSEN markers
+   - Iterative: re-running on an existing `research.md` extends the catalogue (add variants, open new areas, drop non-starters)
 
 3. **`spec:design`** → Creates `.specs/<name>/design.md`
-   - Produces architecture diagrams (Mermaid), TypeScript interfaces, test strategy
+   - Decision Pass first: picks one variant per problem area from the research catalogue (this is where CHOSEN/Rejected happens)
+   - Then produces architecture diagrams (Mermaid), TypeScript interfaces, test strategy
 
 4. **`spec:tasks`** → Creates `.specs/<name>/tasks.md`
    - Hierarchical task breakdown with file paths and requirement references

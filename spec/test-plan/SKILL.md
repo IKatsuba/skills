@@ -32,7 +32,7 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 | File | Description |
 |------|-------------|
 | `.specs/<spec-name>/requirements.md` | Requirements and acceptance criteria |
-| `.specs/<spec-name>/research.md` | Research findings and chosen solutions |
+| `.specs/<spec-name>/research.md` | Variant catalogue per problem area (no decisions — see design.md) |
 | `.specs/<spec-name>/design.md` | Technical design and architecture |
 | `.specs/<spec-name>/tasks.md` | Implementation tasks with checkboxes |
 
@@ -57,7 +57,7 @@ Read the frontmatter of the prerequisite document. If no frontmatter exists, tre
 2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and parse all specification documents:
    - `requirements.md` - understand what needs to be tested
-   - `research.md` - understand chosen solutions and edge cases
+   - `research.md` - skim the variant catalogue for context on alternatives that were considered (decisions live in design.md)
    - `design.md` - understand architecture and integration points
    - `tasks.md` - understand what was implemented
 

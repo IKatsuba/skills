@@ -90,10 +90,10 @@ For each document in scope, check the criteria below. Use **parallel sub-agents*
 |----------|---------------|
 | **Requirements coverage** | Does the research address all major problem areas from the requirements? Are any significant requirements overlooked? |
 | **Variant quality** | Are there at least 2 distinct variants per problem area? Are they meaningfully different (not minor variations)? |
-| **CHOSEN/Rejected marking** | Is every variant clearly marked as CHOSEN or Rejected? Is there exactly one CHOSEN variant per problem area? |
-| **Evidence basis** | Are variant assessments backed by documentation, codebase examples, or benchmarks? Are pros/cons concrete rather than vague? |
-| **Codebase alignment** | Do the proposed solutions respect existing architectural patterns? Are integration points accurately identified? |
-| **Clarity** | Are chosen solutions described clearly enough for the design phase to implement them without ambiguity? |
+| **No premature decisions** | Research must NOT contain CHOSEN/Rejected markers, "(Recommended)" tags, "Why chosen / Why rejected", or any summary table that names a chosen variant. Selection belongs in `spec:design`. Flag any such language as a critical issue. |
+| **Evidence basis** | Are variant assessments backed by documentation, codebase examples, or benchmarks? Are pros/cons concrete rather than vague? Are unverified claims marked "needs investigation" instead of asserted? |
+| **Codebase fit factual** | Is the `Codebase fit` line for each variant a factual description of which patterns it aligns with or diverges from — not a value judgement that nudges the user toward picking it? |
+| **Clarity** | Is each variant described clearly enough for the design phase to pick from the menu without ambiguity? |
 
 #### 3d. Tasks Review
 
@@ -113,10 +113,10 @@ If two or more documents are available, check cross-document consistency. Only c
 
 1. **Requirements → Research** — every major problem area from requirements is investigated in research; no significant requirements are overlooked
 2. **Requirements → Design** — every requirement has a corresponding design component
-3. **Research → Design** — CHOSEN variants from research are reflected in the design; any deviation has explicit rationale
+3. **Research → Design** — every variant chosen in `design.md`'s Decisions table refers back to a variant that exists in `research.md`; the catalogue is the menu, the design records what was picked
 4. **Design → Tasks** — every design component has implementation tasks
 5. **Requirements → Tasks** — every requirement is traceable through to tasks
-6. **Research → Tasks** — tasks implement the chosen solutions from research, not the rejected ones
+6. **Decisions → Tasks** — tasks implement the variants chosen in the design's Decisions table, not other variants from the research catalogue
 7. **Terminology** — names, terms, and file paths are consistent across all documents
 8. **No orphans** — no tasks reference non-existent requirements; no design components lack a requirements basis
 9. **UX flow coherence** — user flows described in requirements are preserved through design and tasks without introducing unnecessary navigation steps or degrading the user experience. If design or tasks split a single user action into multiple disconnected steps (e.g., requiring the user to visit a separate page to create a related entity before returning), flag it as a critical issue.

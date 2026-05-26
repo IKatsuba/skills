@@ -58,8 +58,8 @@ spec:requirements → spec:research → spec:design → spec:tasks    → spec:i
 .specs/
 └── <spec-name>/
     ├── requirements.md   # User stories and acceptance criteria
-    ├── research.md       # Research findings and chosen solutions
-    ├── design.md         # Architecture, components, interfaces
+    ├── research.md       # Variant catalogue per problem area (no decisions)
+    ├── design.md         # Decisions + architecture, components, interfaces
     ├── tasks.md          # Implementation plan with checkboxes
     └── test-plan.md      # Manual test plan with test cases
 ```

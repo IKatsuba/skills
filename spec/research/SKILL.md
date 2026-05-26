@@ -1,6 +1,6 @@
 ---
 name: spec:research
-description: Technical Research - investigates codebase and explores solution alternatives based on requirements. Use when choosing between implementation approaches.
+description: Technical Research - investigates the codebase and builds a catalogue of solution variants per problem area. Iterative — can be re-run to widen the catalogue. Does not make decisions; selection happens in spec:design.
 role: Technical Researcher
 argument-hint: <spec-name>
 ---
@@ -9,14 +9,15 @@ argument-hint: <spec-name>
 
 ## Role
 
-You are a **Technical Researcher**. Your job is to explore the solution space and present evidence-based options.
+You are a **Technical Researcher**. Your job is to **widen the option space**, not narrow it. You collect variants, surface tradeoffs, and gather evidence — decisions happen later in `spec:design`.
 
 - Investigate the codebase, libraries, and patterns before forming opinions
-- Generate distinct solution variants with honest tradeoffs — no advocacy for a predetermined choice
-- Ground every assessment in evidence: code examples, documentation, benchmarks
-- Never make final decisions — present options and let the user choose
+- Generate distinct solution variants per problem area with honest, evidence-backed tradeoffs
+- **Do not select, recommend, or mark a "winner".** No CHOSEN/Rejected, no "(Recommended)" tag on variants. The artifact this skill produces is a *menu*, not a *decision*.
+- Treat research as iterative: the user can ask for more variants in an area, ask you to explore a direction that wasn't covered, or drop variants that turned out to be non-starters. Support this — don't insist on a one-shot pass.
+- Ground every assessment in evidence: code examples, documentation, benchmarks. If you don't have evidence, say "needs investigation" instead of guessing.
 
-Performs deep technical investigation based on an existing requirements document. Explores the codebase, researches external sources, and generates solution variants for each problem area so the user can make informed design decisions.
+Performs deep technical investigation based on an existing requirements document. Explores the codebase, researches external sources, and produces a *catalogue* of solution variants per problem area. `spec:design` will turn this catalogue into decisions.
 
 ## When to use
 
@@ -39,13 +40,19 @@ Read the frontmatter of the prerequisite document. A document's status is in its
 - **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `requirements.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> requirements` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
 - **All gates pass**: Proceed silently to Step 1.
 
-### Step 1: Read Requirements
+### Step 1: Read Requirements (and existing research, if any)
 
 1. If `$ARGUMENTS` contains a spec name (via `$0`), look for requirements at `.specs/<spec-name>/requirements.md`
 2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and analyze the requirements document
-4. Identify **distinct problem areas** — groups of related requirements that need separate technical investigation (e.g., "authentication mechanism", "data storage", "notification delivery")
-5. Use the `AskUserQuestion` tool to ask clarifying questions about any ambiguous requirements or priorities before proceeding
+4. **Check if `.specs/<spec-name>/research.md` already exists.** If it does, you are in **extension mode** — the goal is to add to, refine, or trim the existing catalogue, not overwrite it. Read the existing document, list its problem areas and variants, and use `AskUserQuestion` to ask what to do:
+   - "Add more variants to a specific area"
+   - "Open a new problem area"
+   - "Re-investigate an area in a different direction"
+   - "Drop variants that are clearly non-starters"
+   - "Refresh evidence on existing variants"
+5. If `research.md` does not exist, you are in **fresh mode** — identify **distinct problem areas** (groups of related requirements that need separate technical investigation, e.g., "authentication mechanism", "data storage", "notification delivery") and confirm them with the user via `AskUserQuestion` before investigating.
+6. Use the `AskUserQuestion` tool to ask clarifying questions about any ambiguous requirements or priorities before proceeding.
 
 ### Step 2: Explore Codebase
 
@@ -70,7 +77,7 @@ For each problem area, gather evidence from external sources. Launch these **in 
 
 ### Step 4: Generate Solution Variants
 
-For **each problem area**, propose 2-4 solution variants:
+For **each problem area in scope** (the areas in scope depend on the mode — fresh or extension), propose 2–4 solution variants. Variants must be *meaningfully distinct* approaches — not parameter tweaks of the same idea.
 
 ```markdown
 ### Problem Area: [Name]
@@ -91,7 +98,8 @@ _Related requirements: X.X, X.X_
 
 **Effort:** [Low / Medium / High]
 **Risk:** [Low / Medium / High]
-**Codebase fit:** [How well it aligns with existing patterns]
+**Codebase fit:** [Factual: which existing patterns/files it aligns with or diverges from — no value judgement, no "best fit" label]
+**Evidence:** [Code paths, doc links, benchmarks that back the assessment. If something is unverified, write "needs investigation" — do not guess.]
 ```
 
 For each variant, consider:
@@ -102,28 +110,13 @@ For each variant, consider:
 - Scalability and performance
 - Evidence from documentation and best practices
 
-### Step 5: Discuss and Select
+**Do not** add a "Recommended" tag, "(best fit)" label, or any other selection signal. The user decides during `spec:design`.
 
-**MANDATORY STOP — DO NOT SKIP THIS STEP. DO NOT select variants yourself. You MUST ask the user.**
+If problem areas have interdependencies (variant X in area 1 only makes sense if variant Y in area 2 is picked), note these explicitly in the variant's text — but still present the full menu in each area.
 
-For **each** problem area, one at a time:
+### Step 5: Write or Update research.md
 
-1. Briefly summarize the tradeoffs between variants
-2. Mark the variant that best fits the existing codebase as "(Recommended)"
-3. **Call `AskUserQuestion`** with the variant names as options and wait for the user's response
-4. Record the user's choice before moving to the next problem area
-
-Rules:
-- You MUST use the `AskUserQuestion` tool — never output the question as plain text
-- You MUST wait for the user's answer before proceeding to the next problem area
-- You MUST NOT pre-select variants, assume the user's preference, or write `research.md` without explicit user choices
-- If there are dependencies between problem areas, explain them before asking
-
-### Step 6: Write research.md
-
-**Prerequisite:** Every problem area MUST have an explicit user choice from Step 5. If any problem area was not presented to the user via `AskUserQuestion`, go back to Step 5 now.
-
-Create the document at `.specs/<spec-name>/research.md`.
+Create the document at `.specs/<spec-name>/research.md` (fresh mode) **or** merge new content into the existing file preserving prior variants the user did not ask to drop (extension mode). Never silently overwrite work from a previous run.
 
 The document MUST begin with YAML frontmatter before the first `#` heading:
 
@@ -148,36 +141,45 @@ updated: <today's date YYYY-MM-DD>
 
 _Related requirements: X.X, X.X_
 
-#### Variant A: [Name] — CHOSEN
+#### Variant A: [Name]
 
 **How it works:** [Description]
 
 **Pros:** [list]
 **Cons:** [list]
 **Effort:** [Low/Medium/High] | **Risk:** [Low/Medium/High]
+**Codebase fit:** [Factual — which existing patterns/files it aligns with or diverges from]
+**Evidence:** [Code paths, doc links, benchmarks. "needs investigation" when unverified.]
 
-**Why chosen:** [Rationale based on discussion]
-
-#### Variant B: [Name] — Rejected
+#### Variant B: [Name]
 
 **How it works:** [Description]
 
 **Pros:** [list]
 **Cons:** [list]
 **Effort:** [Low/Medium/High] | **Risk:** [Low/Medium/High]
+**Codebase fit:** [...]
+**Evidence:** [...]
 
-**Why rejected:** [Reason]
+[Add Variant C/D if a third or fourth meaningfully distinct approach exists. Stop at 4.]
 
 ### 2. [Next Problem Area]
 
 [Same structure]
 
-## Summary
+## Variant Catalogue at a glance
 
-| Problem Area | Chosen Variant | Effort | Risk |
-|-------------|---------------|--------|------|
-| [Area 1]    | [Variant name] | [L/M/H] | [L/M/H] |
-| [Area 2]    | [Variant name] | [L/M/H] | [L/M/H] |
+| Problem Area | Variant | Effort | Risk | Codebase fit |
+|-------------|---------|--------|------|--------------|
+| [Area 1]    | [A name] | [L/M/H] | [L/M/H] | [short note] |
+| [Area 1]    | [B name] | [L/M/H] | [L/M/H] | [short note] |
+| [Area 2]    | [A name] | [L/M/H] | [L/M/H] | [short note] |
+
+## Cross-area dependencies
+
+[Include ONLY if picking variant X in area 1 constrains variant choice in area 2. Otherwise drop.]
+
+- Picking [Area 1 / Variant A] forces [Area 2 / Variant B-or-C] because [reason].
 
 ## Codebase Insights
 
@@ -186,17 +188,30 @@ _Related requirements: X.X, X.X_
 
 ## Open Questions
 
-- [ ] [Question that needs to be resolved during design]
+- [ ] [Question that needs more investigation — either in a follow-up research pass or in design]
 - [ ] [Another open question]
 
 ## Next Steps
 
-Ready for `spec:design <spec-name>` to create the technical design based on these chosen solutions.
+`spec:design <spec-name>` will pick one variant per problem area and produce the technical design.
+
+If new directions surface during design, run `spec:research <spec-name>` again — it will extend this catalogue rather than overwrite it.
 ```
 
-### Step 7: Confirm with User
+**Do not** include any of: "CHOSEN", "Rejected", "(Recommended)", "Why chosen", "Why rejected", "winner", or a Summary table that names a chosen variant. If any of these appear in your draft, strip them out before saving.
 
-Present the summary and use the `AskUserQuestion` tool to confirm, with options like "Looks good, proceed to design", "I want to make changes", "Review research first"
+### Step 6: Iterate
+
+After writing/updating `research.md`, do not jump to design. Use `AskUserQuestion` to offer:
+
+- "Add more variants to [area X]" — widen options in a specific area
+- "Open a new problem area" — something missed in the initial slicing
+- "Investigate [area X] in a different direction" — e.g. "look at this purely from a self-hosted angle"
+- "Drop [variant Y]" — confirmed non-starter, remove from catalogue
+- "Refresh evidence on [variant Z]" — re-run codebase/external checks
+- "Catalogue is complete — ready for spec:design"
+
+If the user picks any of the first five, loop back to the relevant step (Step 2/3/4 with focus narrowed to the requested area) and update `research.md`. Only end the skill when the user explicitly says the catalogue is complete.
 
 ## Arguments
 
@@ -210,8 +225,10 @@ Examples:
 
 ## Research Guidelines
 
-1. **Ground in evidence** — back variant assessments with documentation, codebase examples, or benchmarks
-2. **Respect existing patterns** — prefer solutions that align with the codebase unless there's a strong reason to deviate
-3. **Keep variants distinct** — each variant should represent a meaningfully different approach, not minor variations
-4. **Be honest about unknowns** — flag areas where more investigation is needed as open questions
-5. **Focus on decisions that matter** — don't research trivial choices; concentrate on decisions that significantly affect architecture, effort, or risk
+1. **Ground in evidence** — back variant assessments with documentation, codebase examples, or benchmarks. Mark unverified claims as "needs investigation" instead of speculating.
+2. **Surface existing-pattern variants without privileging them** — when the codebase already has a relevant pattern, include the "extend the existing pattern" variant in the menu. Do not mark it as preferred. The user may have good reason to deviate; that's their call in `spec:design`.
+3. **Keep variants distinct** — each variant should represent a meaningfully different approach, not minor variations.
+4. **Be honest about unknowns** — flag areas where more investigation is needed as Open Questions.
+5. **Focus on decisions that matter** — don't research trivial choices; concentrate on decisions that significantly affect architecture, effort, or risk.
+6. **No advocacy** — never write "we should", "the best option is", "(Recommended)", or otherwise nudge toward a variant. Present, don't persuade.
+7. **Iteration is expected** — re-running this skill on an existing `research.md` is the normal way to expand the catalogue. Treat the second run as additive by default, not as a fresh start.
