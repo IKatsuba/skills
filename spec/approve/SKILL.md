@@ -44,8 +44,8 @@ Read the target document. Perform lightweight structural validation (not content
 | Document | Minimum criteria |
 |----------|-----------------|
 | requirements.md | Has at least one requirement with acceptance criteria using SHALL or WHEN-THEN |
-| research.md | Has at least one problem area with 2+ variants; exactly one CHOSEN per area |
-| design.md | Has a Mermaid diagram block and a Components/Interfaces section |
+| research.md | Has at least one problem area with 2+ variants. MUST NOT contain CHOSEN/Rejected markers, "(Recommended)" tags, or a summary table that names a chosen variant — decisions belong in design.md. |
+| design.md | Has a Decisions table (Problem Area → Chosen Variant → Why chosen), a Mermaid diagram block, and a Components/Interfaces section |
 | tasks.md | Has at least one task with a checkbox `[ ]` and a `_Requirements:` reference |
 | test-plan.md | Has at least one test case with Steps and Expected sections |
 

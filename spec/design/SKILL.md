@@ -1,6 +1,6 @@
 ---
 name: spec:design
-description: Technical Design - generates architecture diagrams, interfaces, and data flow based on requirements and chosen research solutions. Use when designing how a feature will be built.
+description: Technical Design - picks one variant per problem area from the research catalogue, then produces architecture diagrams, interfaces, and data flow. Decisions live here, not in research.
 role: Software Architect
 argument-hint: <spec-name>
 ---
@@ -11,12 +11,15 @@ Creates a design document based on the requirements and chosen research solution
 
 ## Role
 
-You are a **Software Architect**. Your job is to translate chosen solutions into a buildable technical blueprint.
+You are a **Software Architect**. Your job has two parts, in order:
 
-- Define components, interfaces, data flows, and integration points
-- Produce diagrams and type definitions precise enough for an engineer to implement without guessing
-- Validate the design against the actual codebase, not assumptions
-- Never introduce requirements not present in the requirements document
+1. **Decide.** Read the variant catalogue produced by `spec:research` and, *with the user*, pick one variant per problem area. Record the chosen variants and the rationale for each. This is where CHOSEN/Rejected lives — not in research.
+2. **Deepen.** Translate the chosen variants into a buildable technical blueprint: components, interfaces, data flows, integration points, diagrams, and type definitions precise enough for an engineer to implement without guessing.
+
+Other rules:
+- Validate the design against the actual codebase, not assumptions.
+- Never introduce requirements not present in the requirements document.
+- If during design you discover the variant catalogue is incomplete (you'd like an option that isn't in `research.md`), pause and tell the user — they can re-run `spec:research` in extension mode rather than have you invent options here.
 
 ## When to use
 
@@ -37,7 +40,7 @@ Read the frontmatter of each prerequisite document. A document's status is in it
 | research | `.specs/<spec-name>/research.md` | SOFT |
 
 - **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `requirements.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> requirements` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
-- **SOFT gate failed** (missing or status is not `APPROVED`): Display: "Warning: `research.md` is missing or not APPROVED. Proceeding without research may lead to lower quality design." Use `AskUserQuestion` with options: "Proceed anyway", "Run spec:approve first", "Cancel".
+- **SOFT gate failed** (research.md missing or not APPROVED): Decisions are part of this skill's job, but they're much weaker without a variant catalogue. Display: "Warning: `research.md` is missing or not APPROVED. Without a variant catalogue, decisions in this skill will be made from a much narrower option space." Use `AskUserQuestion` with options: "Run spec:research first (recommended)", "Run spec:approve research", "Proceed without a catalogue".
 - **All gates pass**: Proceed silently to Step 1.
 
 ### Step 1: Locate Specification Documents
@@ -46,22 +49,45 @@ Read the frontmatter of each prerequisite document. A document's status is in it
 2. If no spec name provided, list available specs in `.specs/` and use the `AskUserQuestion` tool to let the user choose
 3. Read and analyze:
    - `requirements.md` — the requirements document (required)
-   - `research.md` — the research document with chosen solutions (recommended)
+   - `research.md` — the variant catalogue (strongly recommended; see Step 0)
+
+### Step 1.5: Decision Pass — Pick a Variant per Problem Area
+
+**MANDATORY STOP — DO NOT SKIP. DO NOT choose variants yourself. You MUST ask the user.**
+
+This is the step where CHOSEN/Rejected is decided. `spec:research` deliberately leaves the catalogue undecided; the decision lives here.
+
+For **each** problem area in `research.md`, one at a time:
+
+1. Summarize the variants for that area in 1–2 sentences each, with their Effort/Risk/Codebase-fit lines from the catalogue.
+2. If `research.md` notes a cross-area dependency that constrains this area (because of a choice made for an earlier area), state it before asking.
+3. Call `AskUserQuestion` with the variant names as options. Optionally include "None of these — re-run spec:research to widen the catalogue" as a final option.
+4. Wait for the user's answer.
+5. Ask a brief follow-up via `AskUserQuestion` (or directly inline if the user already explained): "What's the deciding factor in one line?" — this becomes the `Why chosen` rationale.
+6. Record `{ area, chosen variant, why chosen }` in working memory before moving to the next area.
+
+Rules:
+- You MUST use `AskUserQuestion` — never output the question as plain text.
+- You MUST NOT pre-select a variant, mark one as "(Recommended)", or proceed without explicit answers for every area.
+- If the user picks "None of these", **stop the design skill** and tell them to run `spec:research <spec-name>` in extension mode. Do not invent a new variant in the design step.
+- If `research.md` is missing (the user chose "Proceed without a catalogue" at Step 0), conduct the Decision Pass in a degraded form: prompt the user to name the chosen approach per problem area directly. Be vocal that this skips the variant-comparison benefit.
+
+When all decisions are recorded, present a one-screen recap (`Area → Chosen Variant → Why chosen` table) and confirm via `AskUserQuestion` ("Decisions look right, proceed", "Let me revisit area X"). Only proceed to Step 2 after explicit confirmation.
 
 ### Step 2: Analyze the Codebase
 
-Before writing the design, analyze the codebase using **parallel sub-agents**. The depth of exploration depends on whether `research.md` exists:
+Before writing the design, analyze the codebase using **parallel sub-agents** — focused on the variants that were just chosen in Step 1.5.
 
 #### 2a. Codebase Exploration (launch in parallel)
 
 Use the `Task` tool with `subagent_type=Explore` to run exploration agents in parallel.
 
-**When `research.md` EXISTS with CHOSEN solutions** — run 2 focused validation agents:
+**When `research.md` EXISTS** — run 2 focused validation agents scoped to the variants chosen in Step 1.5:
 
-1. **Integration Validator** — you are an Integration Validator. Find specific files, APIs, and models that will be affected. Verify that integration points described in research.md actually exist.
-2. **Impact Analyst** — you are an Impact Analyst. Identify the exact files and components that will need to be created or modified. Map the full data flow.
+1. **Integration Validator** — you are an Integration Validator. Find specific files, APIs, and models that the chosen variants will touch. Verify that the integration points the chosen variants assume actually exist in the codebase as described in `research.md`.
+2. **Impact Analyst** — you are an Impact Analyst. Identify the exact files and components that will need to be created or modified to implement the chosen variants. Map the full data flow.
 
-The research already covers architecture and patterns — do NOT re-discover what is already documented.
+The research catalogue already covers architecture and patterns for each variant — do NOT re-discover what is already documented. Focus narrowly on the chosen variants.
 
 **When `research.md` is MISSING** — run 4 broad discovery agents:
 
@@ -76,7 +102,7 @@ All agents MUST be launched in a **single message** (parallel tool calls) to max
 
 Use external information sources to **complement** the research document — do not repeat investigation already captured in `research.md`. Focus on implementation-level details needed for the design:
 
-1. **Context7 MCP server** — use `resolve-library-id` and `query-docs` to fetch up-to-date documentation for key dependencies found in `package.json`, `go.mod`, `Cargo.toml`, or equivalent manifest files. Query API references and implementation patterns relevant to the chosen solutions
+1. **Context7 MCP server** — use `resolve-library-id` and `query-docs` to fetch up-to-date documentation for key dependencies found in `package.json`, `go.mod`, `Cargo.toml`, or equivalent manifest files. Query API references and implementation patterns relevant to the chosen variants
 2. **Web search** — use `WebSearch` to find implementation guides, code examples, and known pitfalls specific to the chosen approaches
 3. **Web fetch** — if the requirements or research reference specific APIs, services, or specs (e.g., OAuth, OpenAPI schemas, RFC documents), use `WebFetch` to retrieve and analyze them
 
@@ -118,14 +144,16 @@ updated: <today's date YYYY-MM-DD>
 2. [Major change 2]
 3. [Major change 3]
 
-### Chosen Approach
+### Decisions
 
-[If research.md exists, summarize the chosen variants and how they map to this design]
+[Record the variants picked in Step 1.5. This is the canonical home for these choices — `research.md` only lists the menu.]
 
-| Problem Area | Chosen Solution | Reference |
-|-------------|----------------|-----------|
-| [Area 1]    | [Variant name]  | research.md §1 |
-| [Area 2]    | [Variant name]  | research.md §2 |
+| Problem Area | Chosen Variant | Why chosen | Reference |
+|-------------|----------------|------------|-----------|
+| [Area 1]    | [Variant name] | [one-line rationale captured during Step 1.5] | research.md §1 |
+| [Area 2]    | [Variant name] | [one-line rationale]                          | research.md §2 |
+
+[If `research.md` was absent and decisions were made directly in Step 1.5, write the chosen approach in 1–2 sentences per area and note that no variant catalogue existed.]
 
 ## Architecture
 
@@ -248,7 +276,7 @@ describe('ComponentName', () => {
 4. **Map to requirements** - Ensure design covers all requirements
 5. **Consider error cases** - Document error handling strategy
 6. **Include test examples** - Show how components will be tested
-7. **Align with chosen research solutions** - Implement the variants marked CHOSEN in research.md; deviate only with explicit rationale
+7. **Align with the variants chosen in Step 1.5** — The design implements the variants picked during the Decision Pass. If you find yourself wanting to deviate from a chosen variant while writing the design, stop and revisit Step 1.5 (re-decide for that area, possibly after re-running `spec:research` to add a missing option) rather than silently designing something different.
 8. **Design for natural user flows** - Every interaction flow must minimize navigation hops. When related entities are managed on different pages (e.g., categories and subcategories), the design MUST include inline creation mechanisms (modal dialogs, quick-add controls in dropdowns/selects) so the user can create a dependent entity without leaving the current context. Never design flows where the user has to go to page A, create entity X, go back to page B, and then link X — instead, provide in-context creation of X directly on page B.
 
 ### Step 4: Confirm with User

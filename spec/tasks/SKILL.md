@@ -54,7 +54,7 @@ Read the frontmatter of the prerequisite document. A document's status is in its
 
 Before creating tasks:
 1. Review the architecture and components from the design
-2. Review `research.md` chosen solutions to understand the rationale behind design decisions
+2. Review `design.md`'s Decisions table for the variants chosen per problem area, and cross-reference `research.md` for the menu of variants those decisions were picked from
 3. Identify dependencies between components
 4. Determine the optimal order of implementation
 5. Note checkpoints for verification
