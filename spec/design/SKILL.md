@@ -63,7 +63,9 @@ For **each** problem area in `research.md`, one at a time:
 2. If `research.md` notes a cross-area dependency that constrains this area (because of a choice made for an earlier area), state it before asking.
 3. Call `AskUserQuestion` with the variant names as options. Optionally include "None of these — re-run spec:research to widen the catalogue" as a final option.
 4. Wait for the user's answer.
-5. Ask a brief follow-up via `AskUserQuestion` (or directly inline if the user already explained): "What's the deciding factor in one line?" — this becomes the `Why chosen` rationale.
+5. **Draft the `Why chosen` rationale yourself** from the catalogue context (the Effort/Risk/Codebase-fit lines that distinguish the chosen variant from the alternatives). Then decide whether the choice is **obvious** or **non-obvious**:
+   - **Obvious** — the chosen variant is the clear winner on the catalogue's own signals (e.g., lowest Effort + lowest Risk, or strongest codebase-fit, or the only one without a noted blocker). Record your drafted rationale silently and move on. Do **not** ask the user "why".
+   - **Non-obvious** — the user picked a variant that is worse on at least one explicit signal than a rejected alternative (higher Effort, higher Risk, weaker codebase-fit, or contradicts a cross-area dependency). The catalogue doesn't explain this choice, so you must ask. Call `AskUserQuestion` and **name the contradiction in the question** (e.g., "Why B over A? B is Medium Effort vs A's Low — what tips it?"). Use the user's answer as the rationale.
 6. Record `{ area, chosen variant, why chosen }` in working memory before moving to the next area.
 
 Rules:
