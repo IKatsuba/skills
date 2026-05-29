@@ -73,7 +73,6 @@ The document MUST begin with YAML frontmatter before the first `#` heading:
 
 ```yaml
 ---
-status: DRAFT
 created: <today's date YYYY-MM-DD>
 updated: <today's date YYYY-MM-DD>
 ---
@@ -83,7 +82,6 @@ Create the document at `.specs/<spec-name>/requirements.md` with this structure:
 
 ```markdown
 ---
-status: DRAFT
 created: <today's date YYYY-MM-DD>
 updated: <today's date YYYY-MM-DD>
 ---
@@ -161,12 +159,17 @@ Before writing the file, re-read every acceptance criterion and ask:
 
 If a requirement fails any of these, fix it before saving. Note the rewrites in the conversation so the user can see what was reframed.
 
-### Step 3: Confirm with User
+### Step 3: Confirm and Chain
 
 After creating the document, show the user:
 1. The location of the created file
 2. A summary of the requirements
-3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to research", "I want to make changes", "Review requirements first"
+3. Use the `AskUserQuestion` tool to offer the next step. There is no separate approval step — the document is ready to use as soon as it exists. Options:
+   - **"Proceed to research"** — immediately invoke the `spec:research` skill for this spec.
+   - **"Revise requirements"** — gather corrections and update the document in place.
+   - **"Stop here"** — end; the user can resume later with `spec:research <spec-name>`.
+
+If the user picks "Proceed to research", run `spec:research <spec-name>` now — do not wait for any approval command.
 
 ## Arguments
 

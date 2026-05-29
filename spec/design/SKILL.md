@@ -17,7 +17,7 @@ You are a **Software Architect**. Your job has two parts, in order:
 2. **Deepen.** Translate the chosen variants into a buildable technical blueprint: components, interfaces, data flows, integration points, diagrams, and type definitions precise enough for an engineer to implement without guessing.
 
 Other rules:
-- Validate the design against the actual codebase, not assumptions.
+- Validate the design against the actual codebase and live documentation, not assumptions or memory — follow the [evidence rule](references/evidence-rule.md).
 - Never introduce requirements not present in the requirements document.
 - If during design you discover the variant catalogue is incomplete (you'd like an option that isn't in `research.md`), pause and tell the user — they can re-run `spec:research` in extension mode rather than have you invent options here.
 
@@ -32,16 +32,16 @@ Use this skill when the user needs to:
 
 ### Step 0: Check Prerequisites
 
-Read the frontmatter of each prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+Prerequisites are checked by **file existence**, not by an approval status. There is no approval step in this pipeline.
 
-| Prerequisite | Path | Gate |
+| Prerequisite | Path | Requirement |
 |---|---|---|
-| requirements | `.specs/<spec-name>/requirements.md` | HARD |
-| research | `.specs/<spec-name>/research.md` | SOFT |
+| requirements | `.specs/<spec-name>/requirements.md` | required |
+| research | `.specs/<spec-name>/research.md` | recommended |
 
-- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `requirements.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> requirements` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
-- **SOFT gate failed** (research.md missing or not APPROVED): Decisions are part of this skill's job, but they're much weaker without a variant catalogue. Display: "Warning: `research.md` is missing or not APPROVED. Without a variant catalogue, decisions in this skill will be made from a much narrower option space." Use `AskUserQuestion` with options: "Run spec:research first (recommended)", "Run spec:approve research", "Proceed without a catalogue".
-- **All gates pass**: Proceed silently to Step 1.
+- **Required prerequisite missing** (`requirements.md` does not exist): Display: "Cannot proceed: `requirements.md` does not exist. Run `spec:requirements <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:requirements now", "Cancel".
+- **Recommended prerequisite missing** (`research.md` does not exist): Decisions are part of this skill's job, but they're much weaker without a variant catalogue. Display: "Warning: `research.md` does not exist. Without a variant catalogue, decisions in this skill will be made from a much narrower option space." Use `AskUserQuestion` with options: "Run spec:research first (recommended)", "Proceed without a catalogue".
+- **Prerequisites satisfied**: Proceed silently to Step 1.
 
 ### Step 1: Locate Specification Documents
 
@@ -79,6 +79,8 @@ When all decisions are recorded, present a one-screen recap (`Area → Chosen Va
 ### Step 2: Analyze the Codebase
 
 Before writing the design, analyze the codebase using **parallel sub-agents** — focused on the variants that were just chosen in Step 1.5.
+
+**Apply the [evidence rule](references/evidence-rule.md) throughout.** Validate against reality, not memory: confirm every file, API, type, and integration point by reading the actual code, and back every external claim (library behaviour, framework default, API shape, version) with a fetched, cited source (context7 for library docs; `WebSearch`/`WebFetch` otherwise). If something can't be verified, mark it `needs investigation` and surface it — do not design on top of a guess. Paste the rule into every subagent prompt.
 
 #### 2a. Codebase Exploration (launch in parallel)
 
@@ -127,7 +129,6 @@ The document MUST begin with YAML frontmatter before the first `#` heading:
 
 ```yaml
 ---
-status: DRAFT
 created: <today's date YYYY-MM-DD>
 updated: <today's date YYYY-MM-DD>
 ---
@@ -281,12 +282,18 @@ describe('ComponentName', () => {
 7. **Align with the variants chosen in Step 1.5** — The design implements the variants picked during the Decision Pass. If you find yourself wanting to deviate from a chosen variant while writing the design, stop and revisit Step 1.5 (re-decide for that area, possibly after re-running `spec:research` to add a missing option) rather than silently designing something different.
 8. **Design for natural user flows** - Every interaction flow must minimize navigation hops. When related entities are managed on different pages (e.g., categories and subcategories), the design MUST include inline creation mechanisms (modal dialogs, quick-add controls in dropdowns/selects) so the user can create a dependent entity without leaving the current context. Never design flows where the user has to go to page A, create entity X, go back to page B, and then link X — instead, provide in-context creation of X directly on page B.
 
-### Step 4: Confirm with User
+### Step 4: Confirm and Chain
 
 After creating the document, show the user:
 1. The location of the created file
 2. A summary of the design decisions
-3. Use the `AskUserQuestion` tool to ask if they want to make changes or proceed, with options like "Looks good, proceed to tasks", "I want to make changes", "Review design first"
+3. Use the `AskUserQuestion` tool to offer the next step. There is no separate approval step — the document is ready to use as soon as it exists. Options:
+   - **"Proceed to tasks"** — immediately invoke the `spec:tasks` skill for this spec.
+   - **"Proceed to test-plan"** — immediately invoke the `spec:test-plan` skill (tasks and test-plan both branch off design and can be done in either order).
+   - **"Revise design"** — gather corrections and update the document in place.
+   - **"Stop here"** — end; the user can resume later with `spec:tasks <spec-name>` or `spec:test-plan <spec-name>`.
+
+If the user picks a "Proceed to …" option, run that skill now — do not wait for any approval command.
 
 ## Arguments
 

@@ -2,7 +2,7 @@
 name: spec:implement
 description: Implement Tasks - executes tasks from the tasks document using subagents. Use when ready to start coding a feature.
 role: Senior Engineer
-argument-hint: <spec-name> [all|next|N|gA]
+argument-hint: <spec-name> [all|next|N|gA|team]
 disable-model-invocation: true
 ---
 
@@ -17,7 +17,7 @@ You are a **Senior Engineer** orchestrating implementation. Your job is to execu
 - Catch regressions, missing files, and incomplete data flow layers before marking tasks complete
 - Never skip verification — an unverified task is not a completed task
 
-Executes tasks from a specification's tasks document. Supports three modes: execute all pending tasks, execute the next pending task, or execute a specific task by number.
+Executes tasks from a specification's tasks document. Modes: execute all pending tasks, execute the next pending task, execute a specific task by number, execute a single shippable group, or implement groups in parallel with an agent team.
 
 ## When to use
 
@@ -36,9 +36,10 @@ Parse `$ARGUMENTS` to determine the execution mode:
 | `$0 next` | Next | Execute the next pending task |
 | `$0 $1` (task number) | Specific | Execute task N (e.g., "1.2", "3") |
 | `$0 gA` / `$0 groupA` / `$0 group A` | Group | Execute every pending task in group A and stop |
+| `$0 team` | Team | Implement groups in parallel with an agent team (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`). See [team-mode.md](references/team-mode.md) |
 
 - `$0` = spec name (e.g., "user-auth")
-- `$1` = mode — `next`, a task number (e.g., "2.1", "3"), or a group identifier (`gA`, `groupB`, or the literal `group` followed by `$2 = A`). If omitted, defaults to all.
+- `$1` = mode — `next`, a task number (e.g., "2.1", "3"), a group identifier (`gA`, `groupB`, or the literal `group` followed by `$2 = A`), or `team`. If omitted, defaults to all.
 
 A **group** is a `### Group X:` section in `tasks.md`. Groups are designed so each one can land on `main` independently without breaking anything (see `spec:tasks` group strategy). Group mode is the recommended way to ship work one PR at a time.
 
@@ -69,16 +70,16 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 
 ### Step 0: Check Prerequisites
 
-Read the frontmatter of each prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+Prerequisites are checked by **file existence**, not by an approval status. There is no approval step in this pipeline.
 
-| Prerequisite | Path | Gate |
+| Prerequisite | Path | Requirement |
 |---|---|---|
-| tasks | `.specs/<spec-name>/tasks.md` | HARD |
-| test-plan | `.specs/<spec-name>/test-plan.md` | SOFT |
+| tasks | `.specs/<spec-name>/tasks.md` | required |
+| test-plan | `.specs/<spec-name>/test-plan.md` | recommended |
 
-- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `tasks.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> tasks` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
-- **SOFT gate failed** (missing or status is not `APPROVED`): Display: "Warning: `test-plan.md` is missing or not APPROVED. Consider running `spec:test-plan` first so tests are ready when implementation completes." Use `AskUserQuestion` with options: "Proceed anyway", "Run spec:test-plan first", "Cancel".
-- **All gates pass**: Proceed silently to Step 1.
+- **Required prerequisite missing** (`tasks.md` does not exist): Display: "Cannot proceed: `tasks.md` does not exist. Run `spec:tasks <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:tasks now", "Cancel".
+- **Recommended prerequisite missing** (`test-plan.md` does not exist): Display: "Warning: `test-plan.md` does not exist. Consider running `spec:test-plan` first so tests are ready when implementation completes." Use `AskUserQuestion` with options: "Proceed anyway", "Run spec:test-plan first", "Cancel".
+- **Prerequisites satisfied**: Proceed silently to Step 1.
 
 ### Step 1: Locate and Read Specification Documents
 
@@ -92,10 +93,20 @@ Read the frontmatter of each prerequisite document. A document's status is in it
 ### Step 2: Determine Execution Mode
 
 Based on `$0`, `$1`, and `$2`, follow one of:
+- **Team mode** (`$1` is `team`) → go to "Execute with an Agent Team"
 - **All mode** → go to "Execute All Tasks"
 - **Next mode** → go to "Execute Next Task"
 - **Specific mode** (numeric `$1`) → go to "Execute Specific Task"
 - **Group mode** (`$1` matches `g<letter>` / `group<letter>` / `group` + `$2`) → go to "Execute Group"
+
+**Offer team mode proactively** (even when not requested) only if **all** hold: the
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` environment variable is set, `tasks.md` has 2+
+shippable groups, and at least two groups can run in parallel (not strictly chained).
+In that case use `AskUserQuestion` to offer "Parallel with an agent team" vs. the
+standard sequential execution, then route accordingly.
+
+If `team` is requested but `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` is not set, tell the
+user it is unavailable and fall back to All mode (or let them cancel).
 
 ### Task Kinds
 
@@ -209,7 +220,7 @@ For each major task:
 
 ### Analyze Subtask Dependencies and Execute
 
-Analyze subtask dependencies and choose parallel or sequential execution. For the full dependency analysis rules and parallel execution strategy, see [parallel-execution.md](parallel-execution.md).
+Analyze subtask dependencies and choose parallel or sequential execution. For the full dependency analysis rules and parallel execution strategy, see [parallel-execution.md](references/parallel-execution.md).
 
 **Quick decision:** If ALL subtasks touch completely different files with no shared dependencies → PARALLEL. Otherwise → SEQUENTIAL. When in doubt, choose sequential.
 
@@ -311,7 +322,7 @@ Read the **Shippable Groups** table at the top of `tasks.md`:
 Walk every pending major task inside the group, in document order:
 
 1. Apply the same flow as "Execute All Tasks → Execute Major Tasks Sequentially" — including the rule that **major tasks always execute sequentially**.
-2. For each major task, run the dependency analysis on its subtasks (parallel vs sequential) per [parallel-execution.md](parallel-execution.md).
+2. For each major task, run the dependency analysis on its subtasks (parallel vs sequential) per [parallel-execution.md](references/parallel-execution.md).
 3. Run the group's checkpoint task(s) as part of the walk.
 4. **Do not cross the group boundary.** When the next pending task is the first major task of the *next* group, stop.
 
@@ -325,6 +336,25 @@ After the group's last task is `[x]`:
 4. Tell the user that no PR was opened (the skill never opens PRs) and that the commits are ready to be pushed/PRed manually when they choose.
 5. Show what remains: how many groups still have pending work, and which group is next.
 6. Use `AskUserQuestion` with options "Continue with next group", "Stop here", "Review changes first".
+
+---
+
+## Execute with an Agent Team
+
+Implement multiple shippable groups **in parallel** with a Claude Code agent team.
+This mode requires the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` environment variable; if
+it is not set, fall back to All mode.
+
+Follow the full protocol in [team-mode.md](references/team-mode.md). In short: as the
+team lead, build a shared task list from the **Shippable Groups** table (encoding group
+dependencies), spawn named engineer teammates (one per independent group), and have
+them claim and implement groups concurrently. Teammates share one working tree — **no
+git worktrees** — and avoid collisions by announcing the files they edit and
+coordinating over `SendMessage`, serializing any genuine overlap. Teammates follow the
+**Subagent Rules** and **Verification Checklist**, commit per subtask/group, never call
+`AskUserQuestion` (they escalate to the lead), and never push or open PRs. The lead
+verifies each group's checkboxes before closing it, then reports the group → commits
+map and cleans up the team.
 
 ---
 
@@ -354,9 +384,9 @@ Commit ALL subtasks from the parallel batch together as a single commit:
 
 ## Design Deviation Protocol
 
-When the design doesn't match reality during implementation, follow the protocol in [deviation-protocol.md](deviation-protocol.md).
+When the design doesn't match reality during implementation, follow the protocol in [deviation-protocol.md](references/deviation-protocol.md).
 
-**Quick summary:** Minor deviations → log and continue. Moderate → pause and ask user. Major → STOP, mark design as SUPERSEDED, escalate.
+**Quick summary:** Minor deviations → log and continue. Moderate → pause and ask user. Major → STOP, append a `## Deviations` note to `design.md`, escalate.
 
 ## Error Handling
 

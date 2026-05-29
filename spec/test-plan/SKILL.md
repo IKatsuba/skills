@@ -42,14 +42,14 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 
 ### Step 0: Check Prerequisites
 
-Read the frontmatter of the prerequisite document. If no frontmatter exists, treat as `DRAFT`.
+Prerequisites are checked by **file existence**, not by an approval status. There is no approval step in this pipeline.
 
-| Prerequisite | Path | Gate |
+| Prerequisite | Path | Requirement |
 |---|---|---|
-| design | `.specs/<spec-name>/design.md` | HARD |
+| design | `.specs/<spec-name>/design.md` | required |
 
-- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `design.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> design` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel".
-- **All gates pass**: Proceed silently to Step 1.
+- **Required prerequisite missing** (`design.md` does not exist): Display: "Cannot proceed: `design.md` does not exist. Run `spec:design <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:design now", "Cancel".
+- **Prerequisite exists**: Proceed silently to Step 1.
 
 ### Step 1: Locate and Read Specification Documents
 
@@ -78,7 +78,6 @@ The document MUST begin with YAML frontmatter before the first `#` heading:
 
 ```yaml
 ---
-status: DRAFT
 created: <today's date YYYY-MM-DD>
 updated: <today's date YYYY-MM-DD>
 ---
@@ -147,14 +146,19 @@ updated: <today's date YYYY-MM-DD>
 - `[x]` - Passed
 - `[!]` - Failed
 
-### Step 4: Confirm with User
+### Step 4: Confirm and Chain
 
 After creating the document, show the user:
 1. The location of the created file
 2. A summary of the test plan structure
 3. Total number of test scenarios and test cases
 4. Coverage: which requirements are covered
-5. Use the `AskUserQuestion` tool to ask if they want to make changes or start testing, with options like "Looks good, start testing", "I want to make changes", "Review test plan first"
+5. Use the `AskUserQuestion` tool to offer the next step. There is no separate approval step — the test plan is ready to use as soon as it exists. Options:
+   - **"Start testing"** — invoke `spec:test <spec-name>` now (only meaningful once implementation is complete).
+   - **"Revise test plan"** — gather corrections and update the document in place.
+   - **"Stop here"** — end; the user can resume later with `spec:test <spec-name>`.
+
+If the user picks "Start testing", invoke `spec:test` now — do not wait for any approval command.
 
 ## Arguments
 

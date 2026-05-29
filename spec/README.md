@@ -1,10 +1,10 @@
 # Specification Skills
 
-Skills for specification-driven development workflow with phase gating and role-based specialists.
+Skills for specification-driven development workflow with role-based specialists.
 
 ## Pipeline
 
-Each phase must be approved (`spec:approve`) before the next can begin.
+Each phase produces a document the next phase consumes. There is no approval step — a phase can run as soon as its prerequisite document **exists**, and each generating skill ends by offering to chain into the next (revise / proceed / stop).
 
 ```
 spec:requirements → spec:research → spec:design → spec:tasks    → spec:implement
@@ -33,9 +33,8 @@ spec:requirements → spec:research → spec:design → spec:tasks    → spec:i
 
 ### Pipeline Management
 
-- **`/spec:approve <name> <document>`** — Approve phase gate, unblock downstream
 - **`/spec:status <name>`** — Pipeline dashboard with blockers and next action
-- **`/spec:review <name>`** — Quality review at any stage [Staff Engineer]
+- **`/spec:review <name>`** — Optional quality review at any stage [Staff Engineer]
 
 ## Available Skills
 
@@ -48,8 +47,7 @@ spec:requirements → spec:research → spec:design → spec:tasks    → spec:i
 | [`spec:implement`](implement/) | Senior Engineer | Execute tasks with subagent orchestration |
 | [`spec:test-plan`](test-plan/) | QA Engineer | Generate manual test scenarios from requirements |
 | [`spec:test`](test/) | QA Engineer | Walk through tests, collect results |
-| [`spec:review`](review/) | Staff Engineer | Validate documents for quality and consistency |
-| [`spec:approve`](approve/) | — | Approve phase gate |
+| [`spec:review`](review/) | Staff Engineer | Validate documents for quality and consistency (optional, any stage) |
 | [`spec:status`](status/) | — | Pipeline dashboard |
 
 ## Output Structure
@@ -64,7 +62,7 @@ spec:requirements → spec:research → spec:design → spec:tasks    → spec:i
     └── test-plan.md      # Manual test plan with test cases
 ```
 
-Every document includes frontmatter: `status: DRAFT | IN_REVIEW | APPROVED | SUPERSEDED`
+Every document includes lightweight frontmatter (`created` / `updated`). Progress is tracked by which documents exist and by task/test checkbox counts — there is no approval status.
 
 ## Installation
 

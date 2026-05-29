@@ -31,14 +31,14 @@ Use this skill when the user needs to:
 
 ### Step 0: Check Prerequisites
 
-Read the frontmatter of the prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+Prerequisites are checked by **file existence**, not by an approval status. There is no approval step in this pipeline.
 
-| Prerequisite | Path | Gate |
+| Prerequisite | Path | Requirement |
 |---|---|---|
-| requirements | `.specs/<spec-name>/requirements.md` | HARD |
+| requirements | `.specs/<spec-name>/requirements.md` | required |
 
-- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `requirements.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> requirements` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
-- **All gates pass**: Proceed silently to Step 1.
+- **Required prerequisite missing**: Display: "Cannot proceed: `requirements.md` does not exist. Run `spec:requirements <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:requirements now", "Cancel".
+- **Prerequisite exists**: Proceed silently to Step 1.
 
 ### Step 1: Read Requirements (and existing research, if any)
 
@@ -69,11 +69,15 @@ Look for:
 
 ### Step 3: Research External Sources
 
+**Follow the [evidence rule](references/evidence-rule.md) for every external claim — do not write anything about a library, framework, API, version, or "best practice" from memory. Fetch it first, cite it, and date-stamp it. If you can't verify it, write `needs investigation` instead of guessing.**
+
 For each problem area, gather evidence from external sources. Launch these **in parallel** with each other (and in parallel with Step 2 where possible):
 
-1. **Context7 MCP server** — use `resolve-library-id` and `query-docs` to fetch up-to-date documentation for relevant libraries and frameworks
+1. **Context7 MCP server** — use `resolve-library-id` and `query-docs` to fetch up-to-date documentation for relevant libraries and frameworks. This is the primary source for anything with official docs — prefer it over web search even for libraries you think you know.
 2. **Web search** — use `WebSearch` to find best practices, architectural recommendations, and known pitfalls
 3. **Web fetch** — use `WebFetch` to retrieve specific API docs, specs, or references mentioned in the requirements
+
+When you delegate any of this to a subagent, paste the evidence rule into its prompt and reject results that assert external facts without citations (see the "For subagents" section of the rule).
 
 ### Step 4: Generate Solution Variants
 
@@ -122,7 +126,6 @@ The document MUST begin with YAML frontmatter before the first `#` heading:
 
 ```yaml
 ---
-status: DRAFT
 created: <today's date YYYY-MM-DD>
 updated: <today's date YYYY-MM-DD>
 ---
@@ -186,6 +189,13 @@ _Related requirements: X.X, X.X_
 - [Relevant pattern or constraint discovered]
 - [Another insight]
 
+## Sources
+
+[Every external claim in this document must trace to an entry here. Format: `[tag] URL — fetched YYYY-MM-DD (context7: /org/lib if applicable)`. Items marked "needs investigation" do NOT belong here — they are open questions, not findings. See references/evidence-rule.md.]
+
+- [next-caching] https://nextjs.org/docs/app/building-your-application/caching — fetched YYYY-MM-DD (context7: /vercel/next.js)
+- [pg-pool] https://node-postgres.com/apis/pool — fetched YYYY-MM-DD
+
 ## Open Questions
 
 - [ ] [Question that needs more investigation — either in a follow-up research pass or in design]
@@ -209,9 +219,9 @@ After writing/updating `research.md`, do not jump to design. Use `AskUserQuestio
 - "Investigate [area X] in a different direction" — e.g. "look at this purely from a self-hosted angle"
 - "Drop [variant Y]" — confirmed non-starter, remove from catalogue
 - "Refresh evidence on [variant Z]" — re-run codebase/external checks
-- "Catalogue is complete — ready for spec:design"
+- "Catalogue is complete — proceed to design"
 
-If the user picks any of the first five, loop back to the relevant step (Step 2/3/4 with focus narrowed to the requested area) and update `research.md`. Only end the skill when the user explicitly says the catalogue is complete.
+If the user picks any of the first five, loop back to the relevant step (Step 2/3/4 with focus narrowed to the requested area) and update `research.md`. If the user picks "proceed to design", invoke the `spec:design` skill for this spec now — there is no separate approval step.
 
 ## Arguments
 
@@ -225,7 +235,7 @@ Examples:
 
 ## Research Guidelines
 
-1. **Ground in evidence** — back variant assessments with documentation, codebase examples, or benchmarks. Mark unverified claims as "needs investigation" instead of speculating.
+1. **Ground in evidence** — follow the [evidence rule](references/evidence-rule.md): back every external claim with a fetched, cited, date-stamped source (context7 for library docs; `WebSearch`/`WebFetch` otherwise) and a codebase claim with a file you actually read. No source → write "needs investigation", never guess. Each `**Evidence:**` line should carry a `[tag]` that resolves in the `## Sources` section.
 2. **Surface existing-pattern variants without privileging them** — when the codebase already has a relevant pattern, include the "extend the existing pattern" variant in the menu. Do not mark it as preferred. The user may have good reason to deviate; that's their call in `spec:design`.
 3. **Keep variants distinct** — each variant should represent a meaningfully different approach, not minor variations.
 4. **Be honest about unknowns** — flag areas where more investigation is needed as Open Questions.
