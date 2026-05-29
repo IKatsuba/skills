@@ -2,7 +2,7 @@
 name: spec:implement
 description: Implement Tasks - executes tasks from the tasks document using subagents. Use when ready to start coding a feature.
 role: Senior Engineer
-argument-hint: <spec-name> [all|next|N|gA]
+argument-hint: <spec-name> [all|next|N|gA|team]
 disable-model-invocation: true
 ---
 
@@ -17,7 +17,7 @@ You are a **Senior Engineer** orchestrating implementation. Your job is to execu
 - Catch regressions, missing files, and incomplete data flow layers before marking tasks complete
 - Never skip verification — an unverified task is not a completed task
 
-Executes tasks from a specification's tasks document. Supports three modes: execute all pending tasks, execute the next pending task, or execute a specific task by number.
+Executes tasks from a specification's tasks document. Modes: execute all pending tasks, execute the next pending task, execute a specific task by number, execute a single shippable group, or implement groups in parallel with an agent team.
 
 ## When to use
 
@@ -36,7 +36,7 @@ Parse `$ARGUMENTS` to determine the execution mode:
 | `$0 next` | Next | Execute the next pending task |
 | `$0 $1` (task number) | Specific | Execute task N (e.g., "1.2", "3") |
 | `$0 gA` / `$0 groupA` / `$0 group A` | Group | Execute every pending task in group A and stop |
-| `$0 team` | Team | Implement groups in parallel with an agent team (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`). See [team-mode.md](references/team-mode.md) |
+| `$0 team` | Team | Implement groups in parallel with an agent team (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`). See [team-mode.md](team-mode.md) |
 
 - `$0` = spec name (e.g., "user-auth")
 - `$1` = mode — `next`, a task number (e.g., "2.1", "3"), a group identifier (`gA`, `groupB`, or the literal `group` followed by `$2 = A`), or `team`. If omitted, defaults to all.
@@ -345,7 +345,7 @@ Implement multiple shippable groups **in parallel** with a Claude Code agent tea
 This mode requires the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` environment variable; if
 it is not set, fall back to All mode.
 
-Follow the full protocol in [team-mode.md](references/team-mode.md). In short: as the
+Follow the full protocol in [team-mode.md](team-mode.md). In short: as the
 team lead, build a shared task list from the **Shippable Groups** table (encoding group
 dependencies), spawn named engineer teammates (one per independent group), and have
 them claim and implement groups concurrently. Teammates share one working tree — **no

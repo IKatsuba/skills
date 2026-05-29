@@ -167,17 +167,20 @@ When a project exists, `spec:requirements` automatically reads the project conte
    - Investigates codebase and explores 2-4 solution variants per problem area
    - Produces a *catalogue* of variants — no decisions, no CHOSEN markers
    - Iterative: re-running on an existing `research.md` extends the catalogue (add variants, open new areas, drop non-starters)
+   - **Evidence rule**: external claims must be fetched and cited (context7 / web), never recalled from memory; unverifiable claims are marked "needs investigation". See `spec/research/references/evidence-rule.md`.
 
 3. **`spec:design`** → Creates `.specs/<name>/design.md`
    - Decision Pass first: picks one variant per problem area from the research catalogue (this is where CHOSEN/Rejected happens)
    - Then produces architecture diagrams (Mermaid), TypeScript interfaces, test strategy
+   - Same **evidence rule** applies — validate against the real codebase and live docs, not assumptions (`spec/design/references/evidence-rule.md`)
 
 4. **`spec:tasks`** → Creates `.specs/<name>/tasks.md`
    - Hierarchical task breakdown with file paths and requirement references
 
-5. **`spec:implement [spec] [all|next|N]`** → Executes tasks
+5. **`spec:implement [spec] [all|next|N|gA|team]`** → Executes tasks
    - Supports parallel subtask execution when safe
    - Includes Design Deviation Protocol for handling plan divergence
+   - **Team mode** (`team`): implements shippable groups in parallel with a Claude Code agent team, gated behind `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`. No git worktrees — teammates share one tree and coordinate edits over messages. Falls back to standard execution when the env var is unset. See `spec/implement/team-mode.md`.
 
 6. **`spec:test-plan`** → Creates `.specs/<name>/test-plan.md`
    - Test cases traced to requirements via `_Requirements: X.X_`
@@ -227,6 +230,7 @@ Based on "Patterns for Building AI Agents" / "Principles of Building AI Agents" 
 - **Roles**: Each skill has a `role:` in frontmatter and a `## Role` section defining the specialist persona and anti-patterns to avoid.
 - **Timestamps, not status**: Every generated spec document includes lightweight frontmatter with `created` / `updated`. There is no approval status — progress is tracked by which documents exist and by checkbox counts.
 - **Phase gating by existence**: Skills check whether the prerequisite document exists (required → block & offer to create; recommended → warn). No approval step; each generating skill offers to chain into the next phase.
+- **Evidence rule**: `spec:research` and `spec:design` must fetch and cite external facts (context7 MCP for library docs; `WebSearch`/`WebFetch` otherwise) rather than recall them from memory; unverifiable claims become "needs investigation". The rule lives in each skill's `references/evidence-rule.md` (duplicated, because skills install independently).
 - **Traceability**: Each task references the requirements it fulfills (`_Requirements: X.X_`)
 - **Verification checkpoints**: Tasks include milestone verification steps
 - **Checkbox format**: Tasks use `[ ]` (pending), `[-]` (in progress), `[x]` (complete). Test plans extend this with `[!]` (failed) and `[s]` (skipped)
