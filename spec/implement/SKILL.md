@@ -36,9 +36,10 @@ Parse `$ARGUMENTS` to determine the execution mode:
 | `$0 next` | Next | Execute the next pending task |
 | `$0 $1` (task number) | Specific | Execute task N (e.g., "1.2", "3") |
 | `$0 gA` / `$0 groupA` / `$0 group A` | Group | Execute every pending task in group A and stop |
+| `$0 team` | Team | Implement groups in parallel with an agent team (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`). See [team-mode.md](references/team-mode.md) |
 
 - `$0` = spec name (e.g., "user-auth")
-- `$1` = mode — `next`, a task number (e.g., "2.1", "3"), or a group identifier (`gA`, `groupB`, or the literal `group` followed by `$2 = A`). If omitted, defaults to all.
+- `$1` = mode — `next`, a task number (e.g., "2.1", "3"), a group identifier (`gA`, `groupB`, or the literal `group` followed by `$2 = A`), or `team`. If omitted, defaults to all.
 
 A **group** is a `### Group X:` section in `tasks.md`. Groups are designed so each one can land on `main` independently without breaking anything (see `spec:tasks` group strategy). Group mode is the recommended way to ship work one PR at a time.
 
@@ -92,10 +93,20 @@ Prerequisites are checked by **file existence**, not by an approval status. Ther
 ### Step 2: Determine Execution Mode
 
 Based on `$0`, `$1`, and `$2`, follow one of:
+- **Team mode** (`$1` is `team`) → go to "Execute with an Agent Team"
 - **All mode** → go to "Execute All Tasks"
 - **Next mode** → go to "Execute Next Task"
 - **Specific mode** (numeric `$1`) → go to "Execute Specific Task"
 - **Group mode** (`$1` matches `g<letter>` / `group<letter>` / `group` + `$2`) → go to "Execute Group"
+
+**Offer team mode proactively** (even when not requested) only if **all** hold: the
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` environment variable is set, `tasks.md` has 2+
+shippable groups, and at least two groups can run in parallel (not strictly chained).
+In that case use `AskUserQuestion` to offer "Parallel with an agent team" vs. the
+standard sequential execution, then route accordingly.
+
+If `team` is requested but `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` is not set, tell the
+user it is unavailable and fall back to All mode (or let them cancel).
 
 ### Task Kinds
 
@@ -325,6 +336,25 @@ After the group's last task is `[x]`:
 4. Tell the user that no PR was opened (the skill never opens PRs) and that the commits are ready to be pushed/PRed manually when they choose.
 5. Show what remains: how many groups still have pending work, and which group is next.
 6. Use `AskUserQuestion` with options "Continue with next group", "Stop here", "Review changes first".
+
+---
+
+## Execute with an Agent Team
+
+Implement multiple shippable groups **in parallel** with a Claude Code agent team.
+This mode requires the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` environment variable; if
+it is not set, fall back to All mode.
+
+Follow the full protocol in [team-mode.md](references/team-mode.md). In short: as the
+team lead, build a shared task list from the **Shippable Groups** table (encoding group
+dependencies), spawn named engineer teammates (one per independent group), and have
+them claim and implement groups concurrently. Teammates share one working tree — **no
+git worktrees** — and avoid collisions by announcing the files they edit and
+coordinating over `SendMessage`, serializing any genuine overlap. Teammates follow the
+**Subagent Rules** and **Verification Checklist**, commit per subtask/group, never call
+`AskUserQuestion` (they escalate to the lead), and never push or open PRs. The lead
+verifies each group's checkboxes before closing it, then reports the group → commits
+map and cleans up the team.
 
 ---
 
