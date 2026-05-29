@@ -16,7 +16,7 @@ A design deviation exists when:
 |----------|-----------|--------|
 | **Minor** | Detail differs but outcome is identical (e.g., file name) | Log deviation in tasks.md under the subtask, continue |
 | **Moderate** | Approach changes but requirements are still met | Pause. Use `AskUserQuestion`: "Approve deviation and continue" / "Update design first" / "Cancel task" |
-| **Major** | Requirements may not be met or architecture changes significantly | STOP. Mark `design.md` frontmatter as `status: SUPERSEDED`. Use `AskUserQuestion`: "Re-run spec:design" / "Run review:investigate" / "Handle manually" |
+| **Major** | Requirements may not be met or architecture changes significantly | STOP. Append a `## Deviations` note to `design.md` describing what the design says vs. reality. Use `AskUserQuestion`: "Re-run spec:design" / "Run review:investigate" / "Handle manually" |
 
 ## Logging Deviations
 
@@ -26,4 +26,10 @@ For minor and approved moderate deviations, add a note to `tasks.md`:
   - _Deviation: Used `src/models/user.model.ts` instead of `src/models/user.ts` per project naming convention_
 ```
 
-For major deviations, update `design.md` frontmatter to `status: SUPERSEDED` and `updated: <today>`. Do NOT continue implementation until the design is updated and re-approved.
+For major deviations, append a `## Deviations` section to `design.md` recording what the design specified, what reality required, and the date. Bump the `updated` date in frontmatter. Do NOT continue implementation on the affected area until the design is corrected (re-run `spec:design`) and the user confirms.
+
+```markdown
+## Deviations
+
+- 2026-05-29 — Design specified a synchronous `UserService.create()`, but the ORM only exposes an async API. Switched to async; design needs to reflect this before further work on the user module.
+```

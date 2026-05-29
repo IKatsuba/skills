@@ -27,16 +27,14 @@ Use this skill when the user needs to:
 
 ### Step 2: Read All Documents
 
-Scan `.specs/<spec-name>/` and read the frontmatter of every document that exists:
+Scan `.specs/<spec-name>/` and note which of these documents **exist**:
 - `requirements.md`
 - `research.md`
 - `design.md`
 - `tasks.md`
 - `test-plan.md`
 
-For each document, extract:
-- **status** from frontmatter (`DRAFT`, `IN_REVIEW`, `APPROVED`, `SUPERSEDED`). If no frontmatter, treat as `DRAFT`.
-- **created** and **updated** dates
+Progress is tracked by file existence and checkbox counts — there is no approval status. For each document that exists, extract its `updated` date from frontmatter (if present).
 
 For `tasks.md`, also count checkboxes: `[x]` done, `[-]` in progress, `[ ]` pending.
 
@@ -49,13 +47,13 @@ Present to the user:
 ```
 # Spec: <spec-name>
 
-| Document         | Status   | Updated    |
-|------------------|----------|------------|
-| requirements.md  | APPROVED | 2026-03-20 |
-| research.md      | APPROVED | 2026-03-22 |
-| design.md        | DRAFT    | 2026-03-24 |
-| tasks.md         | —        | —          |
-| test-plan.md     | —        | —          |
+| Document         | Exists | Updated    |
+|------------------|--------|------------|
+| requirements.md  | ✅     | 2026-03-20 |
+| research.md      | ✅     | 2026-03-22 |
+| design.md        | ✅     | 2026-03-24 |
+| tasks.md         | —      | —          |
+| test-plan.md     | —      | —          |
 
 Pipeline:
 ✅ Requirements → ✅ Research → 🔄 Design → ⏳ Tasks → ⏳ Implement
@@ -63,10 +61,9 @@ Pipeline:
 ```
 
 Use these icons:
-- ✅ — document APPROVED
-- 🔄 — document exists (DRAFT or IN_REVIEW)
+- ✅ — document exists and the next phase has started (a downstream document exists)
+- 🔄 — document exists and is the most recent phase (work likely in progress here)
 - ⏳ — document not created yet
-- ⚠️ — document SUPERSEDED (needs attention)
 
 If `tasks.md` has progress, show: `Tasks: 8/12 done (2 in progress)`
 
@@ -74,30 +71,28 @@ If `test-plan.md` has progress, show: `Tests: 5/10 passed, 1 failed, 0 skipped`
 
 ### Step 4: Identify Blockers
 
-Check the gate table for the next logical skill:
+Each skill requires its prerequisite **document to exist** (no approval needed):
 
-| Next skill | Hard gate required |
+| Next skill | Prerequisite (must exist) |
 |---|---|
-| `spec:research` | requirements APPROVED |
-| `spec:design` | requirements APPROVED |
-| `spec:tasks` | design APPROVED |
-| `spec:test-plan` | design APPROVED |
-| `spec:implement` | tasks APPROVED |
-| `spec:test` | test-plan APPROVED + all tasks `[x]` |
+| `spec:research` | requirements.md |
+| `spec:design` | requirements.md (research.md recommended) |
+| `spec:tasks` | design.md |
+| `spec:test-plan` | design.md |
+| `spec:implement` | tasks.md (test-plan.md recommended) |
+| `spec:test` | test-plan.md + all tasks `[x]` |
 
 Report blockers:
-- **Hard blocker**: "`<document>` is `<status>` — must be APPROVED before `<skill>` can run"
-- **SUPERSEDED warning**: "`<document>` is SUPERSEDED — re-run the generating skill and re-approve"
+- **Missing prerequisite**: "`<document>` does not exist — run `<generating skill>` before `<skill>` can run"
 
 ### Step 5: Suggest Next Action
 
 Based on current state:
-1. Most recent document is DRAFT → suggest `spec:approve` or `spec:review`
-2. Most recent document is APPROVED, next document missing → suggest the next generating skill
+1. Most recent document exists, next document missing → suggest the next generating skill
+2. Want a quality check on the latest document → suggest `spec:review`
 3. Implementation in progress → suggest `spec:implement <name> next`
 4. Implementation complete, tests not started → suggest `spec:test-plan` or `spec:test`
 5. Tests in progress → suggest `spec:test <name> next`
-6. Any document SUPERSEDED → suggest re-running the generating skill
 
 Use the `AskUserQuestion` tool with 2-3 relevant options.
 

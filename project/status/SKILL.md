@@ -36,24 +36,19 @@ Use this skill when the user needs to:
 
 For each spec listed in `plan.md`, scan `.specs/<spec-name>/` to determine:
 
-**Stage detection** (based on files and their frontmatter status):
-
-Read each document's YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+**Stage detection** (based on which files exist and checkbox progress — there is no approval status):
 
 | Condition | Stage | Health |
 |---|---|---|
 | No documents exist | Not started | — |
-| `requirements.md` exists, not APPROVED | Requirements (draft) | Needs approval |
-| `requirements.md` APPROVED, no further docs | Requirements (ready) | Ready for research |
-| `research.md` exists, not APPROVED | Research (draft) | Needs approval |
-| `design.md` exists, not APPROVED | Design (draft) | Needs approval |
-| `design.md` APPROVED, no `tasks.md` | Design (ready) | Ready for tasks |
+| `requirements.md` exists, no `research.md`/`design.md` | Requirements | Ready for research |
+| `research.md` exists, no `design.md` | Research | Ready for design |
+| `design.md` exists, no `tasks.md` | Design | Ready for tasks |
 | `tasks.md` exists, no `[x]` or `[-]` | Tasks | Ready for implementation |
 | `tasks.md` has `[-]` or `[x]` (not all `[x]`) | Implementing | In progress |
 | `tasks.md` all `[x]` | Implemented | Ready for testing |
 | `test-plan.md` has `[-]` or `[x]` | Testing | In progress |
 | `test-plan.md` all `[x]` | Complete | Done |
-| Any document has `SUPERSEDED` | Needs revision | Warning |
 
 **Task progress** (if `tasks.md` exists):
 - Count checkboxes: `[x]` = done, `[-]` = in progress, `[ ]` = pending
@@ -81,11 +76,11 @@ Display the following to the user:
 
 ## Progress
 
-| Spec | Stage | Doc Status | Tasks | Tests | Status |
-|------|-------|------------|-------|-------|--------|
-| [name] | [stage] | [R:APPROVED D:DRAFT] | [N/M done] | [N/M passed] | [Ready/Blocked/In Progress/Complete] |
+| Spec | Stage | Docs | Tasks | Tests | Status |
+|------|-------|------|-------|-------|--------|
+| [name] | [stage] | [R D T] | [N/M done] | [N/M passed] | [Ready/Blocked/In Progress/Complete] |
 
-Include a `Doc Status` column showing abbreviations for each document's frontmatter status: `R:APPROVED D:DRAFT T:DRAFT` etc. (R=requirements, D=design, T=tasks).
+Include a `Docs` column showing which documents exist as a compact set of letters: `R D T` means requirements + design + tasks exist (R=requirements, S=research, D=design, T=tasks, P=test-plan). Omit a letter if that document is missing.
 
 ## Dependency Graph
 
@@ -113,8 +108,7 @@ Based on the current state, suggest the most useful next action via `AskUserQues
 - If a spec is in progress → "Continue with `spec:implement <name>`"
 - If specs are ready to start → "Start planning with `spec:requirements <name>`"
 - If a spec just finished implementation → "Create test plan with `spec:test-plan <name>`"
-- If a spec has DRAFT documents blocking others → suggest `spec:approve`
-- If a spec has SUPERSEDED documents → suggest re-running the generating skill for that document
+- If a spec's latest document needs a quality check → suggest `spec:review <name>`
 - If all specs are complete → "Project is complete!"
 
 Provide 2-3 options matching the current project state.

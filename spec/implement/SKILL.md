@@ -69,16 +69,16 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 
 ### Step 0: Check Prerequisites
 
-Read the frontmatter of each prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+Prerequisites are checked by **file existence**, not by an approval status. There is no approval step in this pipeline.
 
-| Prerequisite | Path | Gate |
+| Prerequisite | Path | Requirement |
 |---|---|---|
-| tasks | `.specs/<spec-name>/tasks.md` | HARD |
-| test-plan | `.specs/<spec-name>/test-plan.md` | SOFT |
+| tasks | `.specs/<spec-name>/tasks.md` | required |
+| test-plan | `.specs/<spec-name>/test-plan.md` | recommended |
 
-- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `tasks.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> tasks` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
-- **SOFT gate failed** (missing or status is not `APPROVED`): Display: "Warning: `test-plan.md` is missing or not APPROVED. Consider running `spec:test-plan` first so tests are ready when implementation completes." Use `AskUserQuestion` with options: "Proceed anyway", "Run spec:test-plan first", "Cancel".
-- **All gates pass**: Proceed silently to Step 1.
+- **Required prerequisite missing** (`tasks.md` does not exist): Display: "Cannot proceed: `tasks.md` does not exist. Run `spec:tasks <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:tasks now", "Cancel".
+- **Recommended prerequisite missing** (`test-plan.md` does not exist): Display: "Warning: `test-plan.md` does not exist. Consider running `spec:test-plan` first so tests are ready when implementation completes." Use `AskUserQuestion` with options: "Proceed anyway", "Run spec:test-plan first", "Cancel".
+- **Prerequisites satisfied**: Proceed silently to Step 1.
 
 ### Step 1: Locate and Read Specification Documents
 
@@ -356,7 +356,7 @@ Commit ALL subtasks from the parallel batch together as a single commit:
 
 When the design doesn't match reality during implementation, follow the protocol in [deviation-protocol.md](deviation-protocol.md).
 
-**Quick summary:** Minor deviations → log and continue. Moderate → pause and ask user. Major → STOP, mark design as SUPERSEDED, escalate.
+**Quick summary:** Minor deviations → log and continue. Moderate → pause and ask user. Major → STOP, append a `## Deviations` note to `design.md`, escalate.
 
 ## Error Handling
 

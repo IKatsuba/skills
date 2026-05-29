@@ -59,17 +59,17 @@ All specification documents are located in `.specs/<spec-name>/` directory:
 
 ### Step 0: Check Prerequisites
 
-Read the frontmatter of the prerequisite document. If no frontmatter exists, treat as `DRAFT`.
+Prerequisites are checked by **file existence**, not by an approval status. There is no approval step in this pipeline.
 
-| Prerequisite | Path | Gate |
+| Prerequisite | Path | Requirement |
 |---|---|---|
-| test-plan | `.specs/<spec-name>/test-plan.md` | HARD |
+| test-plan | `.specs/<spec-name>/test-plan.md` | required |
 
-- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `test-plan.md` is missing or not APPROVED. Run `spec:test-plan <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:test-plan now", "Cancel".
+- **Required prerequisite missing** (`test-plan.md` does not exist): Display: "Cannot proceed: `test-plan.md` does not exist. Run `spec:test-plan <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:test-plan now", "Cancel".
 
 Additionally, verify that `.specs/<spec-name>/tasks.md` exists and all implementation task checkboxes are marked `[x]`. If implementation is incomplete, display: "Cannot proceed: implementation is not complete (N/M tasks done). Run `spec:implement <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:implement now", "Proceed anyway", "Cancel".
 
-- **All gates pass**: Proceed silently to Step 1.
+- **Prerequisites satisfied**: Proceed silently to Step 1.
 
 ### Step 1: Locate and Read Test Plan
 

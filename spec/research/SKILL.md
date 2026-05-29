@@ -31,14 +31,14 @@ Use this skill when the user needs to:
 
 ### Step 0: Check Prerequisites
 
-Read the frontmatter of the prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+Prerequisites are checked by **file existence**, not by an approval status. There is no approval step in this pipeline.
 
-| Prerequisite | Path | Gate |
+| Prerequisite | Path | Requirement |
 |---|---|---|
-| requirements | `.specs/<spec-name>/requirements.md` | HARD |
+| requirements | `.specs/<spec-name>/requirements.md` | required |
 
-- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `requirements.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> requirements` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
-- **All gates pass**: Proceed silently to Step 1.
+- **Required prerequisite missing**: Display: "Cannot proceed: `requirements.md` does not exist. Run `spec:requirements <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:requirements now", "Cancel".
+- **Prerequisite exists**: Proceed silently to Step 1.
 
 ### Step 1: Read Requirements (and existing research, if any)
 
@@ -122,7 +122,6 @@ The document MUST begin with YAML frontmatter before the first `#` heading:
 
 ```yaml
 ---
-status: DRAFT
 created: <today's date YYYY-MM-DD>
 updated: <today's date YYYY-MM-DD>
 ---
@@ -209,9 +208,9 @@ After writing/updating `research.md`, do not jump to design. Use `AskUserQuestio
 - "Investigate [area X] in a different direction" — e.g. "look at this purely from a self-hosted angle"
 - "Drop [variant Y]" — confirmed non-starter, remove from catalogue
 - "Refresh evidence on [variant Z]" — re-run codebase/external checks
-- "Catalogue is complete — ready for spec:design"
+- "Catalogue is complete — proceed to design"
 
-If the user picks any of the first five, loop back to the relevant step (Step 2/3/4 with focus narrowed to the requested area) and update `research.md`. Only end the skill when the user explicitly says the catalogue is complete.
+If the user picks any of the first five, loop back to the relevant step (Step 2/3/4 with focus narrowed to the requested area) and update `research.md`. If the user picks "proceed to design", invoke the `spec:design` skill for this spec now — there is no separate approval step.
 
 ## Arguments
 

@@ -131,9 +131,9 @@ Choose the right frontmatter fields based on the skill's behavior:
 
 **For `spec/` skills**, also add:
 - `## Role` section with anti-pattern prevention
-- `### Step 0: Check Prerequisites` with HARD/SOFT gates (if downstream in pipeline)
-- Frontmatter injection instruction (if the skill generates a document)
-- Status system integration (`status: DRAFT` in generated documents)
+- `### Step 0: Check Prerequisites` that gate by **file existence** — required prereq missing → block and offer to run its generating skill; recommended prereq missing → warn. No approval status.
+- Frontmatter injection instruction (if the skill generates a document) — lightweight `created` / `updated` only, no `status` field
+- A `Confirm and Chain` final step that offers to proceed straight into the next phase (revise / proceed / stop)
 
 **For `git/` skills**: follow Conventional Commits patterns.
 

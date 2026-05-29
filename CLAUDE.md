@@ -23,8 +23,7 @@ spec/                       - Specification pipeline skills
   implement/SKILL.md        - Implement tasks (step 5) [Senior Engineer]
   test-plan/SKILL.md        - Generate test plan (step 6) [QA Engineer]
   test/SKILL.md             - Execute tests (step 7) [QA Engineer]
-  review/SKILL.md           - Review documents (any stage) [Staff Engineer]
-  approve/SKILL.md          - Approve phase gate
+  review/SKILL.md           - Review documents (any stage, optional) [Staff Engineer]
   status/SKILL.md           - Per-spec pipeline dashboard
 project/                    - Project-level orchestration skills
   init/SKILL.md             - Initialize project (goals, stakeholders, decisions)
@@ -66,19 +65,15 @@ PROJECT LEVEL
         Feature A  Feature B  Feature C
 
 
-FEATURE PIPELINE (per spec, each phase gated by APPROVED status)
+FEATURE PIPELINE (per spec — each phase needs only its prerequisite doc to EXIST)
 
   spec:requirements ──→ spec:research ──→ spec:design
    (requirements.md)    (research.md)     (design.md)
-        │                    │                 │
-     APPROVE              APPROVE           APPROVE
                                               │
                                  ┌────────────┴────────────┐
                                  ▼                         ▼
                            spec:tasks              spec:test-plan
                            (tasks.md)              (test-plan.md)
-                                 │                         │
-                              APPROVE                   APPROVE
                                  │                         │
                                  ▼                         │
                           spec:implement                   │
@@ -87,10 +82,12 @@ FEATURE PIPELINE (per spec, each phase gated by APPROVED status)
                                               ▼
                                          spec:test
 
+  No approval step. Each generating skill ends by offering to chain into the
+  next phase (revise / proceed / stop).
+
 CROSS-CUTTING
-  spec:approve   — promote DRAFT → APPROVED, unblock downstream
   spec:status    — per-spec pipeline dashboard
-  spec:review    — quality review at any stage [Staff Engineer]
+  spec:review    — optional quality review at any stage [Staff Engineer]
   project:status — project-wide dashboard
 ```
 
@@ -111,38 +108,32 @@ Each pipeline skill operates as a specialist with a defined role that prevents c
 
 Subagents launched within skills receive micro-roles (e.g., **Engineer**, **Patterns Analyst**, **Integration Validator**) that constrain them to their specific subtask.
 
-### Status System
+### Document Frontmatter
 
-Every spec document has YAML frontmatter tracking its lifecycle:
+Every spec document has lightweight YAML frontmatter with timestamps only — there is no approval status. Progress is tracked by which documents exist and by task/test checkbox counts.
 
 ```yaml
 ---
-status: DRAFT | IN_REVIEW | APPROVED | SUPERSEDED
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
 ```
 
-- **DRAFT** — skill created the document
-- **IN_REVIEW** — `spec:review` is reviewing (optional)
-- **APPROVED** — `spec:approve` promoted, gates open for next phase
-- **SUPERSEDED** — design changed during implementation
-
 ### Phase Gating
 
-Each skill checks prerequisites before proceeding:
+Each skill checks its prerequisites by **file existence**, not by an approval status. There is no approval step.
 
-| Skill | Hard gate (blocks) | Soft gate (warns) |
-|-------|-------------------|-------------------|
+| Skill | Required prerequisite (must exist) | Recommended (warns if missing) |
+|-------|-----------------------------------|-------------------------------|
 | `spec:requirements` | _(entry point)_ | — |
-| `spec:research` | requirements APPROVED | — |
-| `spec:design` | requirements APPROVED | research APPROVED |
-| `spec:tasks` | design APPROVED | — |
-| `spec:test-plan` | design APPROVED | — |
-| `spec:implement` | tasks APPROVED | test-plan APPROVED |
-| `spec:test` | test-plan APPROVED + all tasks `[x]` | — |
+| `spec:research` | requirements.md | — |
+| `spec:design` | requirements.md | research.md |
+| `spec:tasks` | design.md | — |
+| `spec:test-plan` | design.md | — |
+| `spec:implement` | tasks.md | test-plan.md |
+| `spec:test` | test-plan.md + all tasks `[x]` | — |
 
-Hard gates block execution. Soft gates warn but allow proceeding.
+Required prerequisites block execution (skill offers to run the generating skill). Recommended prerequisites warn but allow proceeding. After producing a document, each generating skill offers to chain straight into the next phase.
 
 ### Project Orchestration
 
@@ -158,7 +149,7 @@ For large systems composed of multiple specs:
    - Produces a dependency graph (Mermaid) and phased execution plan
 
 3. **`project:status [name]`** → Displays progress dashboard
-   - Reads frontmatter statuses from all spec documents
+   - Detects each spec's stage from which documents exist and checkbox progress
    - Shows blocked specs and ready-to-start specs
    - Suggests the next action based on current state
 
@@ -195,9 +186,8 @@ When a project exists, `spec:requirements` automatically reads the project conte
 
 ### Pipeline Management
 
-- **`spec:approve [spec] [document]`** → Promotes DRAFT → APPROVED, unblocks downstream
 - **`spec:status [spec]`** → Per-spec pipeline dashboard with blockers and next action
-- **`spec:review [spec] [document]`** → Quality review at any stage
+- **`spec:review [spec] [document]`** → Optional quality review at any stage
 
 All specification documents are stored in `.specs/<spec-name>/` directories using kebab-case naming.
 
@@ -235,8 +225,8 @@ Based on "Patterns for Building AI Agents" / "Principles of Building AI Agents" 
 
 - **Interactive questions**: Skills MUST use the `AskUserQuestion` tool for all user interactions — never output questions as plain text. Provide meaningful options to reduce user typing.
 - **Roles**: Each skill has a `role:` in frontmatter and a `## Role` section defining the specialist persona and anti-patterns to avoid.
-- **Status tracking**: Every generated spec document includes frontmatter with `status`, `created`, `updated` fields.
-- **Phase gating**: Skills check prerequisite document statuses before proceeding (HARD gates block, SOFT gates warn).
+- **Timestamps, not status**: Every generated spec document includes lightweight frontmatter with `created` / `updated`. There is no approval status — progress is tracked by which documents exist and by checkbox counts.
+- **Phase gating by existence**: Skills check whether the prerequisite document exists (required → block & offer to create; recommended → warn). No approval step; each generating skill offers to chain into the next phase.
 - **Traceability**: Each task references the requirements it fulfills (`_Requirements: X.X_`)
 - **Verification checkpoints**: Tasks include milestone verification steps
 - **Checkbox format**: Tasks use `[ ]` (pending), `[-]` (in progress), `[x]` (complete). Test plans extend this with `[!]` (failed) and `[s]` (skipped)

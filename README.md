@@ -59,8 +59,7 @@ npx skills add ikatsuba/skills --list
 | [`spec:implement`](spec/implement/) | Senior Engineer | Execute tasks — all, next, or specific task |
 | [`spec:test-plan`](spec/test-plan/) | QA Engineer | Generate manual test scenarios |
 | [`spec:test`](spec/test/) | QA Engineer | Execute tests — all, next, or specific test |
-| [`spec:review`](spec/review/) | Staff Engineer | Validate documents for quality and consistency |
-| [`spec:approve`](spec/approve/) | — | Approve phase gate, unblock downstream skills |
+| [`spec:review`](spec/review/) | Staff Engineer | Validate documents for quality and consistency (optional, any stage) |
 | [`spec:status`](spec/status/) | — | Per-spec pipeline dashboard |
 
 ### Project Orchestration
@@ -113,7 +112,7 @@ npx skills add ikatsuba/skills --list
 
 ## Workflow
 
-These skills support a complete specification-driven development workflow with **phase gating** — each phase must be approved before the next can begin.
+These skills support a complete specification-driven development workflow. Each phase produces a document the next phase consumes — there is no separate approval step. A phase can run as soon as its prerequisite document **exists**, and each generating skill ends by offering to chain straight into the next phase (revise / proceed / stop). Review is an optional quality check you can run at any stage.
 
 ### Phase 0: Project Planning
 
@@ -125,20 +124,17 @@ For large systems with multiple specs:
 
 ### Phase 1: Specification
 
-Build your blueprint. Each step requires approval before the next:
+Build your blueprint. Each step produces a document and offers to chain into the next — no approval command in between:
 
 ```
-/spec:requirements <name>        → requirements.md (DRAFT)
-/spec:approve <name> requirements → APPROVED ✓
-/spec:research <name>            → research.md (DRAFT)
-/spec:approve <name> research    → APPROVED ✓
-/spec:design <name>              → design.md (DRAFT)
-/spec:approve <name> design      → APPROVED ✓
-/spec:tasks <name>               → tasks.md (DRAFT)
-/spec:test-plan <name>           → test-plan.md (DRAFT)
-/spec:approve <name> tasks
-/spec:approve <name> test-plan
+/spec:requirements <name>        → requirements.md   → "proceed to research?"
+/spec:research <name>            → research.md       → "proceed to design?"
+/spec:design <name>              → design.md         → "proceed to tasks / test-plan?"
+/spec:tasks <name>               → tasks.md          → "start implementing?"
+/spec:test-plan <name>           → test-plan.md      → "start testing?"
 ```
+
+You can also run any phase directly — it only needs its prerequisite document to exist.
 
 ### Phase 2: Implementation
 
@@ -160,8 +156,7 @@ Build your blueprint. Each step requires approval before the next:
 
 ```
 /spec:status <name>              → See where a spec is in the pipeline
-/spec:review <name>              → Quality review at any stage
-/spec:approve <name> <document>  → Approve a phase to unblock the next
+/spec:review <name>              → Optional quality review at any stage
 ```
 
 ### Code Review
@@ -214,11 +209,10 @@ Build your blueprint. Each step requires approval before the next:
     └── agent-audit.md      # AI agent audit report (from agent:audit)
 ```
 
-Every spec document includes YAML frontmatter with status tracking:
+Every spec document includes lightweight YAML frontmatter with timestamps. Pipeline progress is tracked by which documents exist and by task/test checkbox counts — there is no approval status:
 
 ```yaml
 ---
-status: DRAFT | IN_REVIEW | APPROVED | SUPERSEDED
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---

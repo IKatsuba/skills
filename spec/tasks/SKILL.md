@@ -32,14 +32,14 @@ Use this skill when the user needs to:
 
 ### Step 0: Check Prerequisites
 
-Read the frontmatter of the prerequisite document. A document's status is in its YAML frontmatter `status` field. If no frontmatter exists, treat as `DRAFT`.
+Prerequisites are checked by **file existence**, not by an approval status. There is no approval step in this pipeline.
 
-| Prerequisite | Path | Gate |
+| Prerequisite | Path | Requirement |
 |---|---|---|
-| design | `.specs/<spec-name>/design.md` | HARD |
+| design | `.specs/<spec-name>/design.md` | required |
 
-- **HARD gate failed** (missing or status is not `APPROVED`): Display: "Cannot proceed: `design.md` is missing or not APPROVED (current status: `<status>`). Run `spec:approve <spec-name> design` first." Use `AskUserQuestion` with options: "Run spec:approve now", "Cancel". Do NOT offer "proceed anyway".
-- **All gates pass**: Proceed silently to Step 1.
+- **Required prerequisite missing** (`design.md` does not exist): Display: "Cannot proceed: `design.md` does not exist. Run `spec:design <spec-name>` first." Use `AskUserQuestion` with options: "Run spec:design now", "Cancel".
+- **Prerequisite exists**: Proceed silently to Step 1.
 
 ### Step 1: Locate Documents
 
@@ -118,7 +118,6 @@ The document MUST begin with YAML frontmatter before the first `#` heading:
 
 ```yaml
 ---
-status: DRAFT
 created: <today's date YYYY-MM-DD>
 updated: <today's date YYYY-MM-DD>
 ---
@@ -313,14 +312,20 @@ A **group checkpoint** (the final checkpoint inside each `### Group X:` section)
 - `[-]` - In progress
 - `[x]` - Completed
 
-### Step 5: Confirm with User
+### Step 5: Confirm and Chain
 
 After creating the document, show the user:
 1. The location of the created file
 2. The **group plan** — list each group (ID, name, blast radius, dependencies) so the user can sanity-check the merge ordering. Flag any cutovers explicitly; if there are none, say so in one line ("no cutovers — plan is purely additive").
 3. A summary of the task breakdown
 4. Total counts: groups, major tasks, subtasks, and checkpoints
-5. Use the `AskUserQuestion` tool to ask how to proceed, with options like "Looks good, start with first group", "I want to regroup", "Review tasks first", "Looks good, run all groups"
+5. Use the `AskUserQuestion` tool to offer the next step. There is no separate approval step — the plan is ready to execute as soon as it exists. Options:
+   - **"Start first group"** — invoke `spec:implement <spec-name> gA` now.
+   - **"Run all groups"** — invoke `spec:implement <spec-name>` now.
+   - **"Regroup"** — revise the group slicing in place.
+   - **"Stop here"** — end; the user can resume later with `spec:implement <spec-name>`.
+
+If the user picks a run option, invoke `spec:implement` now — do not wait for any approval command.
 
 ## Arguments
 
