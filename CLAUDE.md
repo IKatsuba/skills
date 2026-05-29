@@ -180,7 +180,7 @@ When a project exists, `spec:requirements` automatically reads the project conte
 5. **`spec:implement [spec] [all|next|N|gA|team]`** → Executes tasks
    - Supports parallel subtask execution when safe
    - Includes Design Deviation Protocol for handling plan divergence
-   - **Team mode** (`team`): implements shippable groups in parallel with a Claude Code agent team, gated behind `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`. No git worktrees — teammates share one tree and coordinate edits over messages. Falls back to standard execution when the env var is unset. See `spec/implement/team-mode.md`.
+   - **Team mode** (`team`): implements shippable groups in parallel with a Claude Code agent team, gated behind `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`. No git worktrees — teammates share one tree and coordinate edits over messages. Falls back to standard execution when the env var is unset. See `spec/implement/references/team-mode.md`.
 
 6. **`spec:test-plan`** → Creates `.specs/<name>/test-plan.md`
    - Test cases traced to requirements via `_Requirements: X.X_`

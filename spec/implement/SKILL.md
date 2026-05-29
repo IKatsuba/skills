@@ -36,7 +36,7 @@ Parse `$ARGUMENTS` to determine the execution mode:
 | `$0 next` | Next | Execute the next pending task |
 | `$0 $1` (task number) | Specific | Execute task N (e.g., "1.2", "3") |
 | `$0 gA` / `$0 groupA` / `$0 group A` | Group | Execute every pending task in group A and stop |
-| `$0 team` | Team | Implement groups in parallel with an agent team (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`). See [team-mode.md](team-mode.md) |
+| `$0 team` | Team | Implement groups in parallel with an agent team (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`). See [team-mode.md](references/team-mode.md) |
 
 - `$0` = spec name (e.g., "user-auth")
 - `$1` = mode — `next`, a task number (e.g., "2.1", "3"), a group identifier (`gA`, `groupB`, or the literal `group` followed by `$2 = A`), or `team`. If omitted, defaults to all.
@@ -220,7 +220,7 @@ For each major task:
 
 ### Analyze Subtask Dependencies and Execute
 
-Analyze subtask dependencies and choose parallel or sequential execution. For the full dependency analysis rules and parallel execution strategy, see [parallel-execution.md](parallel-execution.md).
+Analyze subtask dependencies and choose parallel or sequential execution. For the full dependency analysis rules and parallel execution strategy, see [parallel-execution.md](references/parallel-execution.md).
 
 **Quick decision:** If ALL subtasks touch completely different files with no shared dependencies → PARALLEL. Otherwise → SEQUENTIAL. When in doubt, choose sequential.
 
@@ -322,7 +322,7 @@ Read the **Shippable Groups** table at the top of `tasks.md`:
 Walk every pending major task inside the group, in document order:
 
 1. Apply the same flow as "Execute All Tasks → Execute Major Tasks Sequentially" — including the rule that **major tasks always execute sequentially**.
-2. For each major task, run the dependency analysis on its subtasks (parallel vs sequential) per [parallel-execution.md](parallel-execution.md).
+2. For each major task, run the dependency analysis on its subtasks (parallel vs sequential) per [parallel-execution.md](references/parallel-execution.md).
 3. Run the group's checkpoint task(s) as part of the walk.
 4. **Do not cross the group boundary.** When the next pending task is the first major task of the *next* group, stop.
 
@@ -345,7 +345,7 @@ Implement multiple shippable groups **in parallel** with a Claude Code agent tea
 This mode requires the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` environment variable; if
 it is not set, fall back to All mode.
 
-Follow the full protocol in [team-mode.md](team-mode.md). In short: as the
+Follow the full protocol in [team-mode.md](references/team-mode.md). In short: as the
 team lead, build a shared task list from the **Shippable Groups** table (encoding group
 dependencies), spawn named engineer teammates (one per independent group), and have
 them claim and implement groups concurrently. Teammates share one working tree — **no
@@ -384,7 +384,7 @@ Commit ALL subtasks from the parallel batch together as a single commit:
 
 ## Design Deviation Protocol
 
-When the design doesn't match reality during implementation, follow the protocol in [deviation-protocol.md](deviation-protocol.md).
+When the design doesn't match reality during implementation, follow the protocol in [deviation-protocol.md](references/deviation-protocol.md).
 
 **Quick summary:** Minor deviations → log and continue. Moderate → pause and ask user. Major → STOP, append a `## Deviations` note to `design.md`, escalate.
 
